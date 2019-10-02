@@ -1,0 +1,1106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated />
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="cffd30d0-854a-4bb2-ad4b-5b0255d5d0d9" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/tools/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/LICENCE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/azure-pipelines.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/cmake/AppendTargetProperty.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/cmake/CheckSSEFeatures.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/cmake/CheckSymbolExists.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/cmake/FindASan.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/cmake/FindBZip2.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/cmake/FindMSan.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/cmake/FindTSan.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/cmake/FindUBSan.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/cmake/GetGitRevisionDescription.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/cmake/GetGitRevisionDescription.cmake.in" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/cmake/MMseqsResourceCompiler.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/cmake/MMseqsSetupDerivedTarget.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/cmake/MMseqsSetupTest.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/cmake/checkshell.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/cmake/xxdi.pl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/CovSeqidQscPercMinDiag.lib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/CovSeqidQscPercMinDiagTargetCov.lib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/ExpOpt3_8_polished.cs32.lib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/Library255_may17.lib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM10.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM100.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM110.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM120.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM130.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM140.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM150.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM160.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM170.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM180.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM190.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM20.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM30.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM40.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM50.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM60.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM70.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM80.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/PAM90.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/VTML10.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/VTML120.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/VTML160.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/VTML20.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/VTML40.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/VTML80.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blastn.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blastp.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blastpgp.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blosum100.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blosum30.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blosum35.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blosum40.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blosum45.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blosum50.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blosum55.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blosum60.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blosum62.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blosum65.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blosum70.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blosum75.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blosum80.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blosum85.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blosum90.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/blosum95.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/cascaded_clustering.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/clustering.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/createindex.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/createtaxdb.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/cs219.lib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/easycluster.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/easysearch.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/easytaxonomy.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/enrich.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/libPolished_8.lib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/libPure_blosum62_255.lib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/libPure_blosum62_32.lib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/linclust.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/linsearch.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/map.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/multihitdb.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/multihitsearch.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/nucleotide.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/rbh.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/searchslicedtargetprofile.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/searchtargetprofile.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/summarizeresultsbyset.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/taxonomy.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/translated_search.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/data/update_clustering.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/examples/DB.fasta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/examples/QUERY.fasta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_approx.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_doubletype.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_dynprogprob.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_dynprogprob.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_dynprogproblim.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_dynprogproblim.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_dynprogprobproto.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_dynprogprobproto.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_function.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_integer.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_ioutil.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_ioutil.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_localmaxstat.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_localmaxstat.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_localmaxstatmatrix.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_localmaxstatmatrix.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_localmaxstatutil.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_localmaxstatutil.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_matrix.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_memutil.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_random.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_random.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_root.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_uniform.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/njn_vector.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/sls_alignment_evaluer.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/sls_alignment_evaluer.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/sls_alp.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/sls_alp.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/sls_alp_data.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/sls_alp_data.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/sls_alp_regression.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/sls_alp_regression.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/sls_alp_sim.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/sls_alp_sim.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/sls_basic.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/sls_basic.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/sls_normal_distr_array.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/sls_pvalues.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/alp/sls_pvalues.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/cacode/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/cacode/lambda_calculator.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/cacode/lambda_calculator.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/cacode/lubksb.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/cacode/ludcmp.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/cacode/nrutil.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/cacode/nrutil.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/gzstream/gzstream.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/kseq/kseq.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/kseq/kseq_buffer_reader.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/ksw2/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/ksw2/kseq.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/ksw2/ksw2.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/ksw2/ksw2_extz2_sse.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/omptl/Example.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/omptl/License.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/omptl/algorithm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/omptl/numeric" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/omptl/omptl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/omptl/omptl_algorithm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/omptl/omptl_algorithm_par.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/omptl/omptl_algorithm_ser.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/omptl/omptl_numeric" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/omptl/omptl_numeric_extensions.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/omptl/omptl_numeric_extensions_par.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/omptl/omptl_numeric_extensions_ser.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/omptl/omptl_numeric_par.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/omptl/omptl_numeric_ser.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/omptl/omptl_tools.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/simd/simd.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/simd/sse2neon.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/tinyexpr/.travis.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/tinyexpr/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/tinyexpr/CONTRIBUTING" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/tinyexpr/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/tinyexpr/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/tinyexpr/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/tinyexpr/benchmark.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/tinyexpr/doc/e1.dot" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/tinyexpr/doc/e1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/tinyexpr/doc/e2.dot" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/tinyexpr/doc/e2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/tinyexpr/example.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/tinyexpr/example2.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/tinyexpr/example3.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/tinyexpr/minctest.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/tinyexpr/test.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/tinyexpr/tinyexpr.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/tinyexpr/tinyexpr.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/.buckconfig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/.buckversion" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/.circleci/config.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/.travis.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/CHANGELOG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/CODE_OF_CONDUCT.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/CONTRIBUTING.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/COPYING" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/TESTING.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/appveyor.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS2008/fullbench/fullbench.vcproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS2008/fuzzer/fuzzer.vcproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS2008/zstd.sln" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS2008/zstd/zstd.vcproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS2008/zstdlib/zstdlib.vcproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS2010/CompileAsCpp.props" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS2010/datagen/datagen.vcxproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS2010/fullbench-dll/fullbench-dll.vcxproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS2010/fullbench/fullbench.vcxproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS2010/fuzzer/fuzzer.vcxproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS2010/libzstd-dll/libzstd-dll.rc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS2010/libzstd-dll/libzstd-dll.vcxproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS2010/libzstd/libzstd.vcxproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS2010/zstd.sln" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS2010/zstd/zstd.rc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS2010/zstd/zstd.vcxproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS_scripts/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS_scripts/build.VS2010.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS_scripts/build.VS2012.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS_scripts/build.VS2013.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS_scripts/build.VS2015.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS_scripts/build.VS2017.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS_scripts/build.VS2017Community.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS_scripts/build.VS2017Enterprise.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS_scripts/build.VS2017Professional.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/VS_scripts/build.generic.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/cmake/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/cmake/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/cmake/CMakeModules/AddZstdCompilationFlags.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/cmake/CMakeModules/GetZstdLibraryVersion.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/cmake/contrib/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/cmake/contrib/gen_html/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/cmake/contrib/pzstd/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/cmake/lib/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/cmake/lib/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/cmake/lib/cmake_uninstall.cmake.in" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/cmake/lib/pkgconfig.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/cmake/programs/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/cmake/programs/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/cmake/tests/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/cmake/tests/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/meson/GetZstdLibraryVersion.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/meson/InstallSymlink.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/meson/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/meson/contrib/gen_html/meson.build" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/meson/contrib/meson.build" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/meson/contrib/pzstd/meson.build" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/meson/lib/meson.build" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/meson/meson.build" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/meson/meson_options.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/meson/programs/meson.build" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/meson/tests/meson.build" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/build/meson/tests/valgrindTest.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/VS2005/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/VS2005/fullbench/fullbench.vcproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/VS2005/fuzzer/fuzzer.vcproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/VS2005/zstd.sln" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/VS2005/zstd/zstd.vcproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/VS2005/zstdlib/zstdlib.vcproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/adaptive-compression/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/adaptive-compression/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/adaptive-compression/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/adaptive-compression/adapt.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/adaptive-compression/datagencli.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/adaptive-compression/test-correctness.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/adaptive-compression/test-performance.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/cleanTabs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/docker/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/docker/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/benchmarkDictBuilder/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/benchmarkDictBuilder/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/benchmarkDictBuilder/benchmark.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/benchmarkDictBuilder/dictBuilder.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/benchmarkDictBuilder/test.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/fastCover/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/fastCover/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/fastCover/fastCover.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/fastCover/fastCover.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/fastCover/main.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/fastCover/test.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/randomDictBuilder/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/randomDictBuilder/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/randomDictBuilder/io.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/randomDictBuilder/io.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/randomDictBuilder/main.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/randomDictBuilder/random.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/randomDictBuilder/random.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/experimental_dict_builders/randomDictBuilder/test.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/gen_html/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/gen_html/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/gen_html/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/gen_html/gen-zstd-manual.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/gen_html/gen_html.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/largeNbDicts/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/largeNbDicts/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/largeNbDicts/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/largeNbDicts/largeNbDicts.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/0000-cover-letter.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/0001-lib-Add-xxhash-module.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/0002-lib-Add-zstd-modules.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/0003-btrfs-Add-zstd-support.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/0004-squashfs-Add-zstd-support.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/0005-crypto-Add-zstd-support.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/0006-squashfs-tools-Add-zstd-support.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/COPYING" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/btrfs-benchmark.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/btrfs-extract-benchmark.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/fs/btrfs/zstd.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/fs/squashfs/zstd_wrapper.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/include/linux/xxhash.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/include/linux/zstd.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/kernelize.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/Kconfig.diff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/Makefile.diff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/xxhash.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/zstd/.clang-format" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/zstd/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/zstd/bitstream.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/zstd/compress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/zstd/decompress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/zstd/entropy_common.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/zstd/error_private.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/zstd/fse.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/zstd/fse_compress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/zstd/fse_decompress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/zstd/huf.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/zstd/huf_compress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/zstd/huf_decompress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/zstd/mem.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/zstd/zstd_common.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/zstd/zstd_internal.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/lib/zstd/zstd_opt.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/squashfs-benchmark.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/test/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/test/DecompressCrash.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/test/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/test/RoundTripCrash.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/test/UserlandTest.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/test/XXHashUserlandTest.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/test/include/asm/unaligned.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/test/include/linux/compiler.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/test/include/linux/errno.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/test/include/linux/kernel.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/test/include/linux/math64.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/test/include/linux/module.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/test/include/linux/string.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/test/include/linux/types.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/xxhash_test.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/zstd_compress_test.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/linux-kernel/zstd_decompress_test.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/premake/premake4.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/premake/zstd.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/BUCK" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/ErrorHolder.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/Logging.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/Options.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/Options.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/Pzstd.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/Pzstd.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/SkippableFrame.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/SkippableFrame.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/images/Cspeed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/images/Dspeed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/test/BUCK" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/test/OptionsTest.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/test/PzstdTest.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/test/RoundTrip.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/test/RoundTripTest.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/utils/BUCK" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/utils/Buffer.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/utils/FileSystem.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/utils/Likely.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/utils/Range.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/utils/ResourcePool.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/utils/ScopeGuard.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/utils/ThreadPool.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/utils/WorkQueue.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/utils/test/BUCK" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/utils/test/BufferTest.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/utils/test/RangeTest.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/utils/test/ResourcePoolTest.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/utils/test/ScopeGuardTest.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/utils/test/ThreadPoolTest.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/pzstd/utils/test/WorkQueueTest.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/seekable_format/examples/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/seekable_format/examples/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/seekable_format/examples/parallel_compression.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/seekable_format/examples/parallel_processing.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/seekable_format/examples/seekable_compression.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/seekable_format/examples/seekable_decompression.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/seekable_format/zstd_seekable.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/seekable_format/zstd_seekable_compression_format.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/seekable_format/zstdseek_compress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/seekable_format/zstdseek_decompress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/contrib/snap/snapcraft.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/doc/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/doc/educational_decoder/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/doc/educational_decoder/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/doc/educational_decoder/harness.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/doc/educational_decoder/zstd_decompress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/doc/educational_decoder/zstd_decompress.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/doc/images/CSpeed2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/doc/images/DCspeed5.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/doc/images/DSpeed3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/doc/images/cdict_v136.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/doc/images/dict-cr.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/doc/images/dict-cs.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/doc/images/dict-ds.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/doc/images/zstd_cdict_v1_3_5.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/doc/images/zstd_logo86.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/doc/zstd_compression_format.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/doc/zstd_manual.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/examples/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/examples/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/examples/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/examples/dictionary_compression.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/examples/dictionary_decompression.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/examples/multiple_streaming_compression.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/examples/simple_compression.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/examples/simple_decompression.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/examples/streaming_compression.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/examples/streaming_decompression.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/examples/streaming_memory_usage.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/BUCK" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/bitstream.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/compiler.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/cpu.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/debug.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/debug.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/entropy_common.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/error_private.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/error_private.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/fse.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/fse_decompress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/huf.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/mem.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/pool.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/pool.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/threading.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/threading.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/xxhash.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/xxhash.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/zstd_common.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/zstd_errors.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/common/zstd_internal.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/compress/fse_compress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/compress/hist.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/compress/hist.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/compress/huf_compress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/compress/zstd_compress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/compress/zstd_compress_internal.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/compress/zstd_double_fast.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/compress/zstd_double_fast.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/compress/zstd_fast.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/compress/zstd_fast.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/compress/zstd_lazy.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/compress/zstd_lazy.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/compress/zstd_ldm.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/compress/zstd_ldm.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/compress/zstd_opt.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/compress/zstd_opt.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/compress/zstdmt_compress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/compress/zstdmt_compress.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/decompress/huf_decompress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/decompress/zstd_ddict.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/decompress/zstd_ddict.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/decompress/zstd_decompress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/decompress/zstd_decompress_block.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/decompress/zstd_decompress_block.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/decompress/zstd_decompress_internal.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/deprecated/zbuff.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/deprecated/zbuff_common.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/deprecated/zbuff_compress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/deprecated/zbuff_decompress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/dictBuilder/cover.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/dictBuilder/cover.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/dictBuilder/divsufsort.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/dictBuilder/divsufsort.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/dictBuilder/fastcover.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/dictBuilder/zdict.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/dictBuilder/zdict.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/dll/example/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/dll/example/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/dll/example/build_package.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/dll/example/fullbench-dll.sln" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/dll/example/fullbench-dll.vcxproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/dll/libzstd.def" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/legacy/zstd_legacy.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/legacy/zstd_v01.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/legacy/zstd_v01.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/legacy/zstd_v02.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/legacy/zstd_v02.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/legacy/zstd_v03.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/legacy/zstd_v03.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/legacy/zstd_v04.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/legacy/zstd_v04.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/legacy/zstd_v05.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/legacy/zstd_v05.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/legacy/zstd_v06.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/legacy/zstd_v06.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/legacy/zstd_v07.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/legacy/zstd_v07.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/libzstd.pc.in" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/lib/zstd.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/BUCK" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/benchfn.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/benchfn.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/benchzstd.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/benchzstd.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/datagen.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/datagen.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/dibio.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/dibio.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/fileio.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/fileio.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/platform.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/util.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/util.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/windres/generate_res.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/windres/verrsrc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/windres/zstd.rc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/windres/zstd32.res" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/windres/zstd64.res" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/zstd.1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/zstd.1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/zstdcli.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/zstdgrep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/zstdgrep.1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/zstdgrep.1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/zstdless" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/zstdless.1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/programs/zstdless.1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/checkTag.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/datagencli.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/decodecorpus.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/files/huffman-compressed-larger" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/fullbench.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/fuzz/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/fuzz/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/fuzz/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/fuzz/block_decompress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/fuzz/block_round_trip.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/fuzz/default.options" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/fuzz/fuzz.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/fuzz/fuzz.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/fuzz/fuzz_helpers.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/fuzz/regression_driver.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/fuzz/simple_decompress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/fuzz/simple_round_trip.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/fuzz/stream_decompress.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/fuzz/stream_round_trip.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/fuzz/zstd_helpers.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/fuzz/zstd_helpers.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/fuzzer.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/gzip-env.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/helin-segv.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/help-version.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/hufts-segv.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/hufts.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/init.cfg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/init.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/keep.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/list.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/memcpy-abuse.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/mixed.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/null-suffix-clobber.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/stdin.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/test-driver.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/trailing-nul.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/unpack-invalid.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/z-suffix.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/zdiff.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/zgrep-context.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/zgrep-f.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/zgrep-signal.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/gzip/znew-k.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/invalidDictionaries.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/legacy.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/libzstd_partial_builds.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/longmatch.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/paramgrill.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/playTests.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/poolTests.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/rateLimiter.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/regression/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/regression/config.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/regression/config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/regression/data.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/regression/data.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/regression/levels.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/regression/method.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/regression/method.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/regression/result.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/regression/result.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/regression/results.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/regression/test.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/roundTripCrash.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/seqgen.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/seqgen.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/symbols.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/test-zstd-speed.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/test-zstd-versions.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/zbufftest.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/tests/zstreamtest.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/zlibWrapper/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/zlibWrapper/BUCK" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/zlibWrapper/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/zlibWrapper/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/zlibWrapper/examples/example.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/zlibWrapper/examples/example_original.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/zlibWrapper/examples/fitblk.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/zlibWrapper/examples/fitblk_original.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/zlibWrapper/examples/minigzip.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/zlibWrapper/examples/zwrapbench.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/zlibWrapper/gzclose.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/zlibWrapper/gzcompatibility.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/zlibWrapper/gzguts.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/zlibWrapper/gzlib.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/zlibWrapper/gzread.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/zlibWrapper/gzwrite.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/zlibWrapper/zstd_zlibwrapper.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/lib/zstd/zlibWrapper/zstd_zlibwrapper.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/mmseqs_test/data/blastp.sh" beforeDir="false" afterPath="$PROJECT_DIR$/tools/mmseqs_test/data/blastp.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/CommandDeclarations.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/Alignment.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/Alignment.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/BandedNucleotideAligner.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/BandedNucleotideAligner.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/CompressedA3M.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/CompressedA3M.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/DistanceCalculator.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/EvalueComputation.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/Main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/Matcher.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/Matcher.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/MsaFilter.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/MsaFilter.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/MultipleAlignment.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/MultipleAlignment.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/PSSMCalculator.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/PSSMCalculator.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/StripedSmithWaterman.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/StripedSmithWaterman.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/alignment/rescorediagonal.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/clustering/AlignmentSymmetry.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/clustering/AlignmentSymmetry.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/clustering/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/clustering/Clustering.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/clustering/Clustering.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/clustering/ClusteringAlgorithms.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/clustering/ClusteringAlgorithms.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/clustering/Main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/clustering/SetElement.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/A3MReader.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/A3MReader.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/AminoAcidLookupTables.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/Application.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/BacktraceTranslator.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/BaseMatrix.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/BaseMatrix.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/ByteParser.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/Command.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/Command.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/CommandCaller.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/CommandCaller.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/Concat.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/CpuInfo.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/DBConcat.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/DBConcat.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/DBReader.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/DBReader.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/DBWriter.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/DBWriter.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/Debug.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/Debug.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/Domain.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/ExpressionParser.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/ExpressionParser.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/FileUtil.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/FileUtil.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/HeaderSummarizer.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/HeaderSummarizer.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/IndexReader.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/KSeqWrapper.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/KSeqWrapper.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/LibraryReader.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/LibraryReader.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/MMseqsMPI.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/MMseqsMPI.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/MathUtil.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/MemoryMapped.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/MemoryMapped.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/NucleotideMatrix.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/NucleotideMatrix.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/Orf.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/Orf.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/Parameters.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/Parameters.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/PatternCompiler.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/ProfileStates.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/ProfileStates.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/ScoreMatrix.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/Sequence.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/Sequence.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/SubstitutionMatrix.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/SubstitutionMatrix.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/SubstitutionMatrixProfileStates.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/Timer.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/TranslateNucl.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/UniprotKB.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/UniprotKB.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/Util.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/Util.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/itoa.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/tantan.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/commons/tantan.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/linclust/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/linclust/KmerIndex.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/linclust/LinsearchIndexReader.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/linclust/LinsearchIndexReader.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/linclust/MarkovKmerScore.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/linclust/kmerindexdb.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/linclust/kmermatcher.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/linclust/kmermatcher.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/linclust/kmersearch.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/linclust/kmersearch.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/mmseqs.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/multihit/Aggregation.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/multihit/Aggregation.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/multihit/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/multihit/MultiHitDb.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/multihit/MultiHitSearch.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/multihit/SummarizeResultsBySet.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/multihit/besthitperset.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/multihit/combinepvalperset.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/multihit/resultsbyset.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/CacheFriendlyOperations.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/CacheFriendlyOperations.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/ExtendedSubstitutionMatrix.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/ExtendedSubstitutionMatrix.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/IndexBuilder.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/IndexBuilder.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/IndexTable.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/Indexer.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/Indexer.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/KmerGenerator.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/KmerGenerator.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/Main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/Prefiltering.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/Prefiltering.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/PrefilteringIndexReader.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/PrefilteringIndexReader.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/QueryMatcher.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/QueryMatcher.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/ReducedMatrix.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/ReducedMatrix.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/SequenceLookup.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/SequenceLookup.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/UngappedAlignment.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/UngappedAlignment.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/prefiltering/ungappedprefilter.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/taxonomy/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/taxonomy/NcbiTaxonomy.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/taxonomy/NcbiTaxonomy.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/taxonomy/addtaxonomy.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/taxonomy/createtaxdb.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/taxonomy/filtertaxdb.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/taxonomy/lca.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/taxonomy/taxonomyreport.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestAlignment.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestAlignmentPerformance.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestAlignmentTraceback.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestAlp.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestBacktraceTranslator.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestBestAlphabet.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestCompositionBias.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestCounting.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestDBReader.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestDBReaderIndexSerialization.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestDBReaderZstd.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestDiagonalScoring.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestDiagonalScoringPerformance.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestExtendedSubstitutionMatrix.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestIndexTable.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestKmerGenerator.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestKmerGeneratorPerf.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestKmerGeneratorProfile.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestKmerNucl.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestKmerScore.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestKsw2.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestKwayMerge.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestMerge.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestMultipleAlignment.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestOrf.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestPSSM.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestPSSMPrune.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestProfileAlignment.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestProfileStates.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestReduceMatrix.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestScoreMatrixSerialization.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestSequenceIndex.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestTanTan.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestTaxonomy.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestTinyExpr.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestTranslate.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/TestUtil.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/dataGap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/dataGap.index" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/dataLinear" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/test/dataLinear.index" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/alignall.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/alignbykmer.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/apply.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/clusthash.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/compress.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/convert2fasta.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/convertalignments.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/convertca3m.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/convertkb.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/convertmsa.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/convertprofiledb.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/countkmer.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/createdb.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/createseqfiledb.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/createsubdb.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/createtsv.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/dbtype.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/diffseqdbs.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/diskspaceavail.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/expandaln.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/extractalignedregion.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/extractdomains.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/extractframes.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/extractorfs.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/filterdb.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/filterdb.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/gff2db.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/indexdb.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/maskbygff.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/masksequence.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/mergeclusters.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/mergedbs.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/mergeresultsbyset.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/msa2profile.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/mvdb.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/offsetalignment.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/orftocontig.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/prefixid.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/profile2cs.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/profile2pssm.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/proteinaln2nucl.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/result2flat.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/result2msa.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/result2pp.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/result2profile.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/result2rbh.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/result2repseq.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/result2stats.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/result2stats.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/reverseseq.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/rmdb.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/shellcompletion.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/sortresult.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/splitdb.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/splitsequence.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/subtractdbs.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/summarizealis.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/summarizeheaders.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/summarizeresult.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/summarizetabs.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/swapresults.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/touchdb.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/transitivealign.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/translateaa.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/translatenucs.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/tsv2db.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/versionstring.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/util/view.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/version/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/version/Version.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/workflow/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/workflow/Cluster.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/workflow/ClusterUpdate.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/workflow/CreateIndex.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/workflow/EasyCluster.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/workflow/EasyLinclust.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/workflow/EasySearch.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/workflow/EasyTaxonomy.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/workflow/Enrich.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/workflow/Linclust.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/workflow/Linsearch.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/workflow/Map.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/workflow/Rbh.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/workflow/Search.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/workflow/Taxonomy.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/util/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/util/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/util/bash-completion.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/util/build_osx.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/util/build_windows.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/util/format_substitution_matrix.R" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/util/make-release.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/util/mmseqs_wrapper.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/util/mmseqs_wrapper.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/util/update_zstd.sh" beforeDir="false" />
+    </list>
+    <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tools/hmmer_test/src/hmmer.c">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-287" />
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tools/hmmer_test/src/p7_pipeline.c">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="300">
+              <caret line="20" column="12" lean-forward="true" selection-start-line="20" selection-start-column="12" selection-end-line="20" selection-end-column="12" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tools/hmmer_test/src/hmmer.h">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/tools" />
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="1280" />
+    <option name="y" value="-257" />
+    <option name="width" value="1920" />
+    <option name="height" value="843" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Project" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Project" type="462c0819:PsiDirectoryNode" />
+              <item name="tools" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Project" type="462c0819:PsiDirectoryNode" />
+              <item name="tools" type="462c0819:PsiDirectoryNode" />
+              <item name="hmmer_test" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Project" type="462c0819:PsiDirectoryNode" />
+              <item name="tools" type="462c0819:PsiDirectoryNode" />
+              <item name="hmmer_test" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="cffd30d0-854a-4bb2-ad4b-5b0255d5d0d9" name="Default Changelist" comment="" />
+      <created>1565125396712</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1565125396712</updated>
+      <workItem from="1565125400594" duration="409000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="409000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="1280" y="-257" width="1920" height="843" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Favorites" side_tool="true" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.115548454" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Database Changes" />
+      <window_info anchor="bottom" id="Version Control" />
+      <window_info anchor="bottom" id="Terminal" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="bottom" id="CMake" weight="0.328594" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="right" id="Database" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/tools/hmmer_test/src/hmmer.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-287" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tools/hmmer_test/src/p7_pipeline.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="20" column="12" lean-forward="true" selection-start-line="20" selection-start-column="12" selection-end-line="20" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tools/hmmer_test/src/hmmer.h">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+  </component>
+</project>
