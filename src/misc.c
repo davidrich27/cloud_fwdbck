@@ -25,7 +25,7 @@ static float logsum_lookup[LOGSUM_TBL];
 bool logsum_initialized = false;
 
 /* Get max value of two floats */
-inline
+// static inline
 float calc_Max (float x, float y)
 {
    if (x > y)
@@ -36,7 +36,7 @@ float calc_Max (float x, float y)
 }
 
 /* Get min value of two floats */
-inline
+// static inline
 float calc_Min (float x, float y)
 {
    if (x < y)
@@ -62,7 +62,7 @@ void init_Logsum ()
 
 /* Takes two logscale numbers and returns the log of their real sum (approx) */
 /* ans = log( exp(x) + exp(y) ) */
-inline
+// static inline
 float calc_Logsum (float x, float y)
 {
    float max, min;
@@ -83,7 +83,7 @@ float calc_Logsum (float x, float y)
 }
 
 /* Takes two log numbers and returns the log of their real sum (exact) */
-inline
+// static inline
 float calc_Logsum_exact(float x, float y)
 {
    return log( exp(x) + exp(y) );

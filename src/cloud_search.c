@@ -97,15 +97,14 @@ void cloud_search_forward_Run(const SEQ* query,
                               float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
                               float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ], 
                               RESULTS* res,
-                              TRACEBACK* tr,
-                              EDGEBOUNDS* bounds)
+                              TRACEBACK* tr)
 {
    printf("cloud forward search...\n");
 
-   char   a;                  /* store current character in sequence */
-   int    A;                  /* store int value of character */
-   int    d,i,j,k,x = 0;        /* row, column indices */
-   char   *seq = query->seq;  /* alias for getting seq */
+   char   a;                     /* store current character in sequence */
+   int    A;                     /* store int value of character */
+   int    d,i,j,k;               /* diagonal, row, column indices */
+   char   *seq = query->seq;     /* alias for getting seq */
    float  diag_max, diag_limit;  /* max prob score in the diag, and the pruning floor */
    int    d_cnt = 0;             /* number of anti-diags from starting position */
    int    left_bound, right_bound, left_new, right_new, left_edge, right_edge;

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/******************************************************************************
  *  @file misc.h
  *  @brief Miscellaneous helper functions.
  *
@@ -14,16 +14,16 @@
 #define LOGSUM_TBL 16000
 
 /* Min/Max Fns for Viterbi */
-inline
+// static inline
 float calc_Max (float x, float y);
-inline
+// static inline
 float calc_Min (float x, float y);
 
 /* Logsum fns for Forward/Backward */
 void init_Logsum ();
-inline
+// static inline
 float calc_Logsum (float x, float y);
-inline
+// static inline
 float calc_Logsum_exact (float x, float y);
 void print_Logsum ();
 
