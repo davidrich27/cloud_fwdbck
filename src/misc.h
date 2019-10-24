@@ -14,12 +14,16 @@
 #define LOGSUM_TBL 16000
 
 /* Min/Max Fns for Viterbi */
+inline
 float calc_Max (float x, float y);
+inline
 float calc_Min (float x, float y);
 
 /* Logsum fns for Forward/Backward */
 void init_Logsum ();
+inline
 float calc_Logsum (float x, float y);
+inline
 float calc_Logsum_exact (float x, float y);
 void print_Logsum ();
 
@@ -34,5 +38,8 @@ void dp_matrix_Save (const int Q, const int T,
                      const float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
                      const float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ],
                      const char *_filename_);
+
+void test_matrix_Print (const int Q, const int T, 
+                        const float test_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ]);
 
 #endif /* _MISC_H */

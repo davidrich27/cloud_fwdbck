@@ -27,9 +27,27 @@ void parse_args (int argc, char *argv, ARGS *args);
 /* MAIN */
 int main (int argc, char *argv[])
 {
-   printf("Test begins... \n");
+   printf("Test begins ^^^... \n");
 
    ARGS *args = (ARGS *)malloc( sizeof(ARGS) );
+
+   char *hmm_file, *fasta_file;
+
+   if (argc == 3)
+   {
+      hmm_file = argv[1];
+      fasta_file = argv[2];
+   }
+   else
+   {
+      /* TEST 1 */
+      char *hmm_file = "../data/test1_2.hmm";
+      char *fasta_file = "../data/test1_1.fa";
+
+      printf("Usage: <target_file> <query_file>\n");
+      // exit(0);
+   }
+
    //parse_args(argc, *argv, args);
 
    /* load substitution matrix */
@@ -37,11 +55,7 @@ int main (int argc, char *argv[])
    // SUBMAT *submat = (SUBMAT *)malloc( sizeof(SUBMAT) );
    // submat_Create(submat, submat_file);
    // submat_Display(submat);
-
-   /* TEST 1 */
-   char *hmm_file = "../data/test1_2.hmm";
-   char *fasta_file = "../data/test1_1.fa";
-
+   
    /* get target profile */
    HMM_PROFILE *target_prof1 = (HMM_PROFILE *)malloc( sizeof(HMM_PROFILE) );
    hmmprofile_Create(target_prof1, hmm_file);
@@ -70,6 +84,7 @@ int main (int argc, char *argv[])
    dp_matrix_Save(Q, T, st_MX, sp_MX, "viterbi.tsv");
 
    /* run forward/backward algorithms */
+   init_Logsum();
    dp_matrix_Clear(Q, T, st_MX, sp_MX);
    forward_Run(query_seq1, target_prof1, Q, T, st_MX, sp_MX, results1);
    printf("=== FORWARD RESULTS ===\n");

@@ -22,8 +22,12 @@ extern float BG_MODEL_log[];
 #define IMX(i,j)           (st_MX[ (INS_ST*(Q+1)*(T+1)) + ((i)*(T+1)) + (j) ])
 #define DMX(i,j)           (st_MX[ (DEL_ST*(Q+1)*(T+1)) + ((i)*(T+1)) + (j) ])
 
+/* SPECIAL STATE MATRIX MACROS */
 #define SP_MX(mx,sp,i)     (mx[ ((sp)*(Q+1)) + (i) ])
 #define XMX(sp,i)          (sp_MX[ ((sp)*(Q+1)) + (i) ])
+
+/* TEST MATRIX */
+#define TMX(i,j)           (test_MX[ ((i)*(T+1)) + (j) ])
 
 /* TRANSITION SCORE, SPECIAL TRANSITION SCORE, MATCH SCORE, INSERT SCORE MACROS */
 #define TSC(j,tr)       (target->hmm_model[j].trans[tr])
