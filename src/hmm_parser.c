@@ -22,7 +22,7 @@
 /* parse .hmm file and build HMM_PROFILE object */
 void hmmprofile_Create(HMM_PROFILE *prof, char *_filename_)
 {
-   printf("creating profile...\n");
+   printf("building profile object...\n");
 
    /* parser objects */
    char * token;
@@ -56,12 +56,12 @@ void hmmprofile_Create(HMM_PROFILE *prof, char *_filename_)
          line_buf[--line_buf_size] = '\0';
       }
 
-      /* write the line */
-      //printf ("[%d] %zd: %s \n", line_count, line_size, line_buf );
-
       /* delimit words on space and remove newline */
       token = strtok ( line_buf, " \n" );
       header = token;
+
+      /* write the line */
+      // printf ("[%d] %zd: %s \n", line_count, line_size, token );
 
       /* header - field */
       if ( strcmp( header, "NAME" ) == 0 ) {
@@ -91,6 +91,12 @@ void hmmprofile_Create(HMM_PROFILE *prof, char *_filename_)
          field = strtok( NULL, " \n" );
          prof->alph = malloc( sizeof (field) );
          strcpy( prof->alph, field );
+
+         int i = 0;
+         while (field[i] != '\0') {
+            field[i] = tolower(field[i]);
+            i++;
+         }
 
          if ( strcmp(field, "amino") == 0 ) {
             prof->alph_leng = NUM_AMINO;
@@ -468,7 +474,7 @@ void hmmprofile_Config(HMM_PROFILE *prof)
    }
 
    /*  */
-   printf("B2M:\t");
+   // printf("B2M:\t");
    if (IS_LOCAL)
    {
       /* set B-to-M transition probs (local entry mode) */
@@ -479,7 +485,7 @@ void hmmprofile_Config(HMM_PROFILE *prof)
       for (k = 0; k <= prof->leng; k++)
       {
          prof->hmm_model[k-1].trans[B2M] = log( occ[k] / Z );
-         printf("%.3f\t", prof->hmm_model[k-1].trans[B2M]);
+         // printf("%.3f\t", prof->hmm_model[k-1].trans[B2M]);
       }
       free(occ);
    }
@@ -487,16 +493,16 @@ void hmmprofile_Config(HMM_PROFILE *prof)
    {
       Z = log(prof->hmm_model[0].trans[M2D]);
       prof->hmm_model[0].trans[B2M] = log(1.0 - prof->hmm_model[0].trans[M2D]);
-      printf("%.3f\t", prof->hmm_model[0].trans[B2M]);
+      // printf("%.3f\t", prof->hmm_model[0].trans[B2M]);
 
       for (k = 1; k < prof->leng; k++)
       {
          prof->hmm_model[k].trans[B2M] = log(1.0 - prof->hmm_model[k].trans[D2M]);
          Z += log(prof->hmm_model[k].trans[D2D]);
-         printf("%.3f\t", prof->hmm_model[0].trans[B2M]);
+         // printf("%.3f\t", prof->hmm_model[0].trans[B2M]);
       }
    }
-   printf("\n\n");
+   // printf("\n\n");
 
    /* Set E state loop/move probabilities  */
    if (IS_MULTIHIT)
@@ -590,7 +596,7 @@ void hmmprofile_ReconfigLength(HMM_PROFILE *prof, int L)
    pmove = -3.53612;
 
 
-   printf("nj = %d, pmove = %.3f %.3f, ploop = %.3f %.3f\n", prof->bg_model->num_J, pmove, log(pmove), ploop, log(ploop));
+   // printf("nj = %d, pmove = %.3f %.3f, ploop = %.3f %.3f\n", prof->bg_model->num_J, pmove, log(pmove), ploop, log(ploop));
 
    prof->bg_model->spec[SP_N][SP_LOOP] = ploop;
    prof->bg_model->spec[SP_C][SP_LOOP] = ploop;
@@ -604,6 +610,8 @@ void hmmprofile_ReconfigLength(HMM_PROFILE *prof, int L)
 /* parse .fasta file and build SEQ object */
 void seq_Create(SEQ *seq, char *_filename_)
 {
+   printf("Building query object...\n");
+
    /* line reader objects */
    char *line_buf = NULL;
    size_t line_buf_size = 0;
@@ -629,6 +637,12 @@ void seq_Create(SEQ *seq, char *_filename_)
       /* remove newline from end of line */
       if( line_buf[line_size-1] == '\n' ) {
          line_buf[line_size-1] = '\0';
+         line_size -= 1;
+      }
+
+      // capitalize all dna
+      for (int i=0; i<line_size; i++) {
+         line_buf[i] = toupper(line_buf[i]);
       }
 
       /* write line to console */
@@ -656,7 +670,8 @@ void seq_Create(SEQ *seq, char *_filename_)
       else /* otherwise, append to current sequence */
       {
          /* resize sequence to new length and concat new line onto end of sequence */
-         seq_len += line_size - 1;
+
+         seq_len += line_size;
          seq->seq = (char *)realloc( seq->seq, sizeof(char) * seq_len);
          strcat( seq->seq, line_buf );
       }
@@ -717,6 +732,9 @@ void submat_Create(SUBMAT *submat, char *_filename_)
 		{
 			b = AA[y];
 			x = 0; /* reset x at start of each line */
+
+         /* write the line */
+         printf ("[%d] %zd: %s \n", line_count, line_size, line_buf );
 
 			if (line_buf[0] != '#') /* if not a comment, parse line */
 			{
@@ -814,8 +832,8 @@ void results_Display(RESULTS *results)
 
    printf("\n");
    printf("===== RESULTS ========================================\n");
-   printf("NUM_HITS: %d\n", results->num_hits);
-   for (int i = 0; i < results->num_hits; i++)
+   printf("NUM_HITS: %d\n", results->N);
+   for (int i = 0; i < results->N; i++)
    {
       hit = &results->hits[i];
       printf("> HIT[%d]:\n", i);

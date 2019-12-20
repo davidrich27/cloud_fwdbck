@@ -24,30 +24,30 @@
 #include "hmm_parser.h"
 #include "viterbi.h"
 
-/* 
+/*
  *  FUNCTION:  viterbi_Run()
  *  SYNOPSIS:  Run Viterbi Algorithm (Seq-to-Profile, general unoptimized)
  *
  *  PURPOSE:
  *
- *  ARGS:      <query>     query sequence, 
+ *  ARGS:      <query>     query sequence,
  *             <target>    HMM model,
  *             <res>       Results Data
  *             <tr>        Traceback Data
  *
- *  RETURN: 
+ *  RETURN:
  */
-float viterbi_Run (const SEQ* query, 
-                  const HMM_PROFILE* target, 
-                  int Q, int T, 
-                  float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
-                  float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ], 
-                  RESULTS* res,
-                  TRACEBACK* tr)
+float viterbi_Run (const SEQ* query,
+                   const HMM_PROFILE* target,
+                   int Q, int T,
+                   float st_MX[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
+                   float sp_MX[ NUM_SPECIAL_STATES * (Q + 1) ],
+                   RESULTS* res,
+                   TRACEBACK* tr)
 {
    char   a;           /* store current character in sequence */
    int    A;           /* store int value of character */
-   int    i,j,k = 0;   /* row, column indices */
+   int    i, j, k = 0; /* row, column indices */
    char   *seq  = query->seq; /* alias for getting seq */
 
    float  prev_mat, prev_del, prev_ins, prev_beg, prev_best;
@@ -58,241 +58,199 @@ float viterbi_Run (const SEQ* query,
    float  sc_E = (is_local) ? 0 : -INF;
 
    /* initialize special states (?) */
-   XMX(SP_N,0) = 0;                                         /* S->N, p=1             */
-   XMX(SP_B,0) = XSC(SP_N,SP_MOVE);                         /* S->N->B, no N-tail    */
-   XMX(SP_E,0) = XMX(SP_C,0) = XMX(SP_J,0) = -INF;          /* need seq to get here  */
+   XMX(SP_N, 0) = 0;                                        /* S->N, p=1             */
+   XMX(SP_B, 0) = XSC(SP_N, SP_MOVE);                       /* S->N->B, no N-tail    */
+   XMX(SP_E, 0) = XMX(SP_C, 0) = XMX(SP_J, 0) = -INF;       /* need seq to get here  */
 
    /* initialize zero row (top-edge) */
    for (j = 0; j <= T; j++)
-      { MMX(0,j) = IMX(0,j) = DMX(0,j) = -INF; }            /* need seq to get here  */
+   { MMX(0, j) = IMX(0, j) = DMX(0, j) = -INF; }         /* need seq to get here  */
 
 
    /* FOR every position in QUERY seq */
    for (i = 1; i <= Q; i++)
    {
       /* Get next character in Query */
-      a = seq[i-1];
+      a = seq[i - 1];
       A = AA_REV[a];
 
       /* Initialize zero column (left-edge) */
-      MMX(i,0) = IMX(i,0) = DMX(i,0) = -INF;
-      XMX(SP_E,i) = -INF;
+      MMX(i, 0) = IMX(i, 0) = DMX(i, 0) = -INF;
+      XMX(SP_E, i) = -INF;
 
       /* FOR every position in TARGET profile */
       for (j = 1; j < T; j++)
       {
          /* FIND BEST PATH TO MATCH STATE (FROM MATCH, INSERT, DELETE, OR BEGIN) */
          /* best previous state transition (match takes the diag element of each prev state) */
-         prev_mat = MMX(i-1,j-1)  + TSC(j-1,M2M);
-         prev_ins = IMX(i-1,j-1)  + TSC(j-1,I2M);
-         prev_del = DMX(i-1,j-1)  + TSC(j-1,D2M);
-         prev_beg = XMX(SP_B,i-1) + TSC(j-1,B2M); /* from begin match state (new alignment) */
+         prev_mat = MMX(i - 1, j - 1)  + TSC(j - 1, M2M);
+         prev_ins = IMX(i - 1, j - 1)  + TSC(j - 1, I2M);
+         prev_del = DMX(i - 1, j - 1)  + TSC(j - 1, D2M);
+         prev_beg = XMX(SP_B, i - 1) + TSC(j - 1, B2M); /* from begin match state (new alignment) */
          /* best-to-match */
          prev_best = calc_Max( calc_Max( prev_mat, prev_ins ) , calc_Max( prev_del, prev_beg ) );
-         MMX(i,j)  = prev_best + MSC(j,A);
+         MMX(i, j)  = prev_best + MSC(j, A);
 
          /* FIND BEST PATH TO INSERT STATE (FROM MATCH OR INSERT) */
          /* previous states (match takes the left element of each state) */
-         prev_mat = MMX(i-1,j) + TSC(j,M2I);
-         prev_ins = IMX(i-1,j) + TSC(j,I2I);
+         prev_mat = MMX(i - 1, j) + TSC(j, M2I);
+         prev_ins = IMX(i - 1, j) + TSC(j, I2I);
          /* best-to-insert */
          prev_best = calc_Max(prev_mat, prev_ins);
-         IMX(i,j) = prev_best + ISC(j,A);
-         
+         IMX(i, j) = prev_best + ISC(j, A);
+
          /* FIND BEST PATH TO DELETE STATE (FOMR MATCH OR DELETE) */
          /* previous states (match takes the left element of each state) */
-         prev_mat = MMX(i,j-1) + TSC(j-1,M2D);
-         prev_del = DMX(i,j-1) + TSC(j-1,D2D);
+         prev_mat = MMX(i, j - 1) + TSC(j - 1, M2D);
+         prev_del = DMX(i, j - 1) + TSC(j - 1, D2D);
          /* best-to-delete */
          prev_best = calc_Max(prev_mat, prev_del);
-         DMX(i,j) = prev_best;
+         DMX(i, j) = prev_best;
 
          /* UPDATE E STATE */
-         XMX(SP_E,i) = calc_Max( XMX(SP_E,i), MMX(i,j) + sc_E );
+         XMX(SP_E, i) = calc_Max( XMX(SP_E, i), MMX(i, j) + sc_E );
 
-         /* check for best score seen so far (best score should end in a match state) */
-         if (sc_max < MMX(i,j))
+         /* (?!) check for best score seen so far (best score should end in a match state) */
+         if (sc_max < MMX(i, j))
          {
-            tr->sc_max = MMX(i,j);
-            tr->end.i = i;
-            tr->end.j = j;
+            tr->sc_last_m = MMX(i, j);
+            tr->last_m.i = i;
+            tr->last_m.j = j;
          }
-         
+
       }
 
       /* UNROLLED FINAL LOOP ITERATION */
-      j = T; 
+      j = T;
 
       /* FIND BEST PATH TO MATCH STATE (FROM MATCH, INSERT, DELETE, OR BEGIN) */
       /* best previous state transition (match takes the diag element of each prev state) */
-      prev_mat = MMX(i-1,j-1)  + TSC(j-1,M2M);
-      prev_ins = IMX(i-1,j-1)  + TSC(j-1,I2M);
-      prev_del = DMX(i-1,j-1)  + TSC(j-1,D2M);
-      prev_beg = XMX(SP_B,i-1) + TSC(j-1,B2M);    /* from begin match state (new alignment) */
+      prev_mat = MMX(i - 1, j - 1)  + TSC(j - 1, M2M);
+      prev_ins = IMX(i - 1, j - 1)  + TSC(j - 1, I2M);
+      prev_del = DMX(i - 1, j - 1)  + TSC(j - 1, D2M);
+      prev_beg = XMX(SP_B, i - 1) + TSC(j - 1, B2M); /* from begin match state (new alignment) */
       /* best-to-match */
-      prev_best = calc_Max( 
-                     calc_Max( prev_mat, prev_ins ), 
-                     calc_Max( prev_del, prev_beg ) 
+      prev_best = calc_Max(
+                     calc_Max( prev_mat, prev_ins ),
+                     calc_Max( prev_del, prev_beg )
                   );
-      MMX(i,j) = prev_best + MSC(j,A);
+      MMX(i, j) = prev_best + MSC(j, A);
 
       /* FIND BEST PATH TO DELETE STATE (FOMR MATCH OR DELETE) */
       /* previous states (match takes the left element of each state) */
-      prev_mat = MMX(i,j-1) + TSC(j-1,M2D);
-      prev_del = DMX(i,j-1) + TSC(j-1,D2D);
+      prev_mat = MMX(i, j - 1) + TSC(j - 1, M2D);
+      prev_del = DMX(i, j - 1) + TSC(j - 1, D2D);
       /* best-to-delete */
       prev_best = calc_Max( prev_mat, prev_del );
-      DMX(i,j) = prev_best;
+      DMX(i, j) = prev_best;
 
       /* UPDATE E STATE */
-      XMX(SP_E,i) = calc_Max( XMX(SP_E,i), MMX(i,j) );
-      XMX(SP_E,i) = calc_Max( XMX(SP_E,i), DMX(i,j) );
+      XMX(SP_E, i) = calc_Max( XMX(SP_E, i), MMX(i, j) );
+      XMX(SP_E, i) = calc_Max( XMX(SP_E, i), DMX(i, j) );
 
       /* SPECIAL STATES */
       /* J state */
-      sc_1 = XMX(SP_J,i-1) + XSC(SP_J,SP_LOOP);     /* J->J */
-      sc_2 = XMX(SP_E,i)   + XSC(SP_E,SP_LOOP);     /* E->J is E's "loop" */
-      XMX(SP_J,i) = calc_Max( sc_1, sc_2 );         
+      sc_1 = XMX(SP_J, i - 1) + XSC(SP_J, SP_LOOP); /* J->J */
+      sc_2 = XMX(SP_E, i)   + XSC(SP_E, SP_LOOP);   /* E->J is E's "loop" */
+      XMX(SP_J, i) = calc_Max( sc_1, sc_2 );
 
       /* C state */
-      sc_1 = XMX(SP_C,i-1) + XSC(SP_C,SP_LOOP);  
-      sc_2 = XMX(SP_E,i)   + XSC(SP_E,SP_MOVE);            
-      XMX(SP_C,i) = calc_Max( sc_1, sc_2 );
+      sc_1 = XMX(SP_C, i - 1) + XSC(SP_C, SP_LOOP);
+      sc_2 = XMX(SP_E, i)   + XSC(SP_E, SP_MOVE);
+      XMX(SP_C, i) = calc_Max( sc_1, sc_2 );
 
       /* N state */
-      XMX(SP_N,i) = XMX(SP_N,i-1) + XSC(SP_N,SP_LOOP);
+      XMX(SP_N, i) = XMX(SP_N, i - 1) + XSC(SP_N, SP_LOOP);
 
       /* B state */
-      sc_1 = XMX(SP_N,i) + XSC(SP_N,SP_MOVE);       /* N->B is N's move */
-      sc_2 = XMX(SP_J,i) + XSC(SP_J,SP_MOVE);       /* J->B is J's move */
-      XMX(SP_B,i) = calc_Max( sc_1, sc_2 );        
+      sc_1 = XMX(SP_N, i) + XSC(SP_N, SP_MOVE);     /* N->B is N's move */
+      sc_2 = XMX(SP_J, i) + XSC(SP_J, SP_MOVE);     /* J->B is J's move */
+      XMX(SP_B, i) = calc_Max( sc_1, sc_2 );
    }
 
    /* T state */
-   sc_best = XMX(SP_C,Q) + XSC(SP_C,SP_MOVE);
+   sc_best = XMX(SP_C, Q) + XSC(SP_C, SP_MOVE);
+
+   tr->sc_max = sc_best;
    return sc_best;
 }
 
-/* 
- *  FUNCTION:  viterbi_Traceback()
- *  SYNOPSIS:  Run Viterbi Traceback to find Optimal Alignment
+/*
+ *  FUNCTION:  traceback_Build()
+ *  SYNOPSIS:  Run Viterbi Traceback to recover Optimal Alignment.
  *
  *  PURPOSE:
  *
- *  ARGS:      <query>     query sequence, 
+ *  ARGS:      <query>     query sequence,
  *             <target>    HMM model,
- *             <Q>         query length, 
+ *             <Q>         query length,
  *             <T>         target length,
  *             <st_MX>     Normal State (Match, Insert, Delete) Matrix,
  *             <sp_MX>     Special State (J,N,B,C,E) Matrix,
- *             <res>       Results Data,
  *             <tr>        Traceback Alignment
  *
- *  RETURN: 
+ *  RETURN:
  */
-void viterbi_Traceback (const SEQ* query, 
-                        const HMM_PROFILE* target, 
-                        int Q, int T, 
-                        float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
-                        float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ], 
-                        RESULTS* res,
-                        TRACEBACK* tr)
+void traceback_Build (const SEQ* query,
+                      const HMM_PROFILE* target,
+                      int Q, int T,
+                      float st_MX[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
+                      float sp_MX[ NUM_SPECIAL_STATES * (Q + 1) ],
+                      TRACEBACK* tr)
 {
+   int    i = Q;              /* position in query seq (row) (1...L) */
+   int    j = 0;              /* position in target model (col) (1...M) */
    char   a;                  /* store current character in sequence */
    int    A;                  /* store int value of character */
-   int    i,j,k = 0;          /* row, column indices */
-   int    st_cur, st_prev;    /* current and previous state */
-   int    len = 0;
-
-   float  tol = 1e-5;         /* acceptable tolerance for equality */
+   int    st_cur, st_prev;    /* current, previous state in trace */
+   float  tol = 1e-5;         /* acceptable tolerance for "equality" tests */
    char   *seq = query->seq;  /* alias for getting seq */
-   float  total = tr->sc_max; /* running total of alignment */
 
-   bool is_local = false;
+   /* local or global? */
+   const bool is_local = true;
 
    /* allocate memory for trace */
-   tr->i = malloc(1024 * sizeof(int));
-   tr->j = malloc(1024 * sizeof(int));
-   tr->trace = malloc(1024 * sizeof(int));
+   const int min_size = 256;
+   tr->N = 0;
+   tr->size = min_size;
+   tr->traces = malloc(min_size * sizeof(TRACE));
+   printf("traceback test...\n");
 
-   i = tr->end.i;
-   j = tr->end.j;
-
-   /* final state of trace is match state */
-   st_cur = -1;
+   /* Backtracing, so C is end state */
+   traceback_Append(tr, T_ST, i, j);
+   traceback_Append(tr, C_ST, i, j);
    st_prev = C_ST;
 
-   tr->i[len] = i;
-   tr->j[len] = j;
-   tr->trace[len] = st_prev;
-
    /* End of trace is S state */
-   while(st_prev != S_ST)
+   while (st_prev != S_ST)
    {
-      a = seq[i-1];
+      a = seq[i - 1];
       A = AA_REV[a];
 
       /* jump from current state to the prev state */
-      switch(st_prev)
+      switch (st_prev)
       {
-         case M_ST:  /* M connects from i-1,k-1, or B */
-            if (MMX(i,j) == -INF ) {
-               printf("ERROR: Impossible M_ST reached at (%d,%d)\n", i,j);
+         /* C STATE */
+         case C_ST:  /* C(i) comes from C(i-1) or E(i) */
+            if (XMX(SP_C, i) == -INF ) {
+               printf("ERROR: Impossible C_ST reached at (%d,%d)\n", i, j);
                exit(1);
             }
 
-            if ( CMP_TOL( MMX(i,j), MMX(i-1,j-1) + TSC(j-1,M2M) + MSC(j,A) ) ) 
-               st_cur = M_ST;
-            else if ( CMP_TOL( MMX(i,j), IMX(i-1,j-1) + TSC(j-1,I2M) + MSC(j,A) ) ) 
-               st_cur = I_ST;
-            else if ( CMP_TOL( MMX(i,j), MMX(i-1,j-1) + TSC(j-1,D2M) + MSC(j,A) ) ) 
-               st_cur = D_ST;
-            else if ( CMP_TOL( MMX(i,j), XMX(SP_B,j-1) + TSC(j-1,B2M) + MSC(j,A) ) ) 
-               st_cur = B_ST;
+            if ( CMP_TOL( XMX(SP_C, i), XMX(SP_C, i - 1) + XSC(SP_C, SP_LOOP) ) )
+               st_cur = C_ST;
+            else if ( CMP_TOL( XMX(SP_C, i), XMX(SP_E, i) + XSC(SP_E, SP_MOVE) ) )
+               st_cur = E_ST;
             else {
-               printf("ERROR: Failed to trace from M_ST at (%d,%d)\n", i, j);
+               printf("ERROR: Failed to trace from B_ST at (%d,%d)\n", i, j);
                exit(1);
             }
-            k--; i--;
             break;
 
-         case I_ST:  /* I connects from M,I at i-1,k */
-            if (IMX(i,j) == -INF ) {
-               printf("ERROR: Impossible I_ST reached at (%d,%d)\n", i,j);
-               exit(1);
-            }
-
-            if ( CMP_TOL( MMX(i,j), MMX(i-1,j) + TSC(j,M2I) + ISC(j,A) ) ) 
-               st_cur = M_ST;
-            else if ( CMP_TOL( MMX(i,j), IMX(i-1,j) + TSC(j,I2I) + ISC(j,A) ) ) 
-               st_cur = I_ST;
-            else {
-               printf("ERROR: Failed to trace from I_ST at (%d,%d)\n", i, j);
-               exit(1);
-            }
-            i--;
-            break;
-
-         case D_ST:  /* D connects from M,D at i,k-1 */
-            if (DMX(i,j) == -INF ) {
-               printf("ERROR: Impossible D_ST reached at (%d,%d)\n", i,j);
-               exit(1);
-            }
-
-            if ( CMP_TOL( MMX(i,j), MMX(i-1,j-1) + TSC(j-1,M2M) ) ) 
-               st_cur = M_ST;            
-            else if ( CMP_TOL( MMX(i,j), MMX(i-1,j-1) + TSC(j-1,D2M) ) ) 
-               st_cur = D_ST;
-            else {
-               printf("ERROR: Failed to trace from D_ST at (%d,%d)\n", i, j);
-               exit(1);
-            }
-            k--;
-            break;
-
+         /* E STATE */
          case E_ST:  /* E connects from any M state. k set here */
-            if (XMX(SP_E,i) == -INF ) {
-               printf("ERROR: Impossible E_ST reached at (%d,%d)\n", i,j);
+            if (XMX(SP_E, i) == -INF ) {
+               printf("ERROR: Impossible E_ST reached at (%d,%d)\n", i, j);
                exit(1);
             }
 
@@ -300,7 +258,7 @@ void viterbi_Traceback (const SEQ* query,
             {
                st_cur = M_ST;    /* can't come from D, in a *local* Viterbi trace. */
                for (j = T; j >= 1; j--) {
-                  if ( CMP_TOL( XMX(SP_E, i), MMX(i,j) ) )
+                  if ( CMP_TOL( XMX(SP_E, i), MMX(i, j) ) )
                      break;
                }
                if (j == 0) {
@@ -310,11 +268,11 @@ void viterbi_Traceback (const SEQ* query,
             }
             else     /* glocal mode: we either come from D_M or M_M */
             {
-               if ( CMP_TOL( XMX(SP_E,i), MMX(i,T) ) ) {
+               if ( CMP_TOL( XMX(SP_E, i), MMX(i, T) ) ) {
                   st_cur = M_ST;
                   j = T;
                }
-               else if ( CMP_TOL( XMX(SP_E,i), DMX(i,T) ) ) {
+               else if ( CMP_TOL( XMX(SP_E, i), DMX(i, T) ) ) {
                   st_cur = D_ST;
                   j = T;
                }
@@ -325,76 +283,397 @@ void viterbi_Traceback (const SEQ* query,
             }
             break;
 
+         /* M STATE */
+         case M_ST:  /* M connects from i-1,k-1, or B */
+            if (MMX(i, j) == -INF ) {
+               printf("ERROR: Impossible M_ST reached at (%d,%d)\n", i, j);
+               exit(1);
+            }
+
+            if ( CMP_TOL( MMX(i, j), XMX(SP_B, j - 1) + TSC(j - 1, B2M) + MSC(j, A) ) )
+               st_cur = B_ST;
+            else if ( CMP_TOL( MMX(i, j), MMX(i - 1, j - 1) + TSC(j - 1, M2M) + MSC(j, A) ) )
+               st_cur = M_ST;
+            else if ( CMP_TOL( MMX(i, j), IMX(i - 1, j - 1) + TSC(j - 1, I2M) + MSC(j, A) ) )
+               st_cur = I_ST;
+            else if ( CMP_TOL( MMX(i, j), MMX(i - 1, j - 1) + TSC(j - 1, D2M) + MSC(j, A) ) )
+               st_cur = D_ST;
+            else {
+               printf("ERROR: Failed to trace from M_ST at (%d,%d)\n", i, j);
+               exit(1);
+            }
+            j--; i--;
+            break;
+
+         /* D STATE */
+         case D_ST:  /* D connects from M,D at i,k-1 */
+            if (DMX(i, j) == -INF ) {
+               printf("ERROR: Impossible D_ST reached at (%d,%d)\n", i, j);
+               exit(1);
+            }
+
+            if ( CMP_TOL( MMX(i, j), MMX(i - 1, j - 1) + TSC(j - 1, M2M) ) )
+               st_cur = M_ST;
+            else if ( CMP_TOL( MMX(i, j), MMX(i - 1, j - 1) + TSC(j - 1, D2M) ) )
+               st_cur = D_ST;
+            else {
+               printf("ERROR: Failed to trace from D_ST at (%d,%d)\n", i, j);
+               exit(1);
+            }
+            j--;
+            break;
+
+         /* I STATE */
+         case I_ST:  /* I connects from M,I at i-1,k */
+            if (IMX(i, j) == -INF ) {
+               printf("ERROR: Impossible I_ST reached at (%d,%d)\n", i, j);
+               exit(1);
+            }
+
+            if ( CMP_TOL( MMX(i, j), MMX(i - 1, j) + TSC(j, M2I) + ISC(j, A) ) )
+               st_cur = M_ST;
+            else if ( CMP_TOL( MMX(i, j), IMX(i - 1, j) + TSC(j, I2I) + ISC(j, A) ) )
+               st_cur = I_ST;
+            else {
+               printf("ERROR: Failed to trace from I_ST at (%d,%d)\n", i, j);
+               exit(1);
+            }
+            i--;
+            break;
+
+         /* N STATE */
          case N_ST:  /* N connects from S, N */
-            if (XMX(SP_N,i) == -INF ) {
-               printf("ERROR: Impossible N_ST reached at (%d,%d)\n", i,j);
+            if (XMX(SP_N, i) == -INF ) {
+               printf("ERROR: Impossible N_ST reached at (%d,%d)\n", i, j);
                exit(1);
             }
 
             st_cur = ( (i == 0) ? S_ST : N_ST );
             break;
 
+         /* B STATE */
+         case B_ST:  /* B connects from N, J */
+            if ( CMP_TOL( XMX(SP_B, i), XMX(SP_N, i) + XSC(SP_N, SP_MOVE) ) )
+               st_cur = N_ST;
+            else if ( CMP_TOL( XMX(SP_B, i), XMX(SP_J, i) + XSC(SP_J, SP_MOVE) ) )
+               st_cur = J_ST;
+            else {
+               printf("ERROR: Failed to trace from B_ST at (%d,%d)\n", i, j);
+               exit(1);
+            }
+            break;
+
+         /* J STATE */
          case J_ST:  /* J connects from E(i) or J(i-1) */
-            if (XMX(SP_J,i) == -INF ) {
-               printf("ERROR: Impossible J_ST reached at (%d,%d)\n", i,j);
+            if (XMX(SP_J, i) == -INF ) {
+               printf("ERROR: Impossible J_ST reached at (%d,%d)\n", i, j);
                exit(1);
             }
 
-            if ( CMP_TOL( XMX(SP_J,i), XMX(SP_J,i-1) + XSC(SP_J, SP_LOOP) ) )
+            if ( CMP_TOL( XMX(SP_J, i), XMX(SP_J, i - 1) + XSC(SP_J, SP_LOOP) ) )
                st_cur = J_ST;
-            else if ( CMP_TOL( XMX(SP_J,i), XMX(SP_E,i) + XSC(SP_E, SP_LOOP) ) )
+            else if ( CMP_TOL( XMX(SP_J, i), XMX(SP_E, i) + XSC(SP_E, SP_LOOP) ) )
                st_cur = E_ST;
             else {
-                  printf("ERROR: Failed to trace from J_ST at (%d,%d)\n", i, j);
-                  exit(1);
-            }
-            break;
-
-         case C_ST:  /* C(i) comes from C(i-1) or E(i) */
-            if (XMX(SP_C,i) == -INF ) {
-               printf("ERROR: Impossible C_ST reached at (%d,%d)\n", i,j);
+               printf("ERROR: Failed to trace from J_ST at (%d,%d)\n", i, j);
                exit(1);
-            }
-
-            if ( CMP_TOL( XMX(SP_C,i), XMX(SP_C,i-1) + XSC(SP_C,SP_LOOP) ) )
-               st_cur = N_ST;
-            else if ( CMP_TOL( XMX(SP_C,i), XMX(SP_E,i) + XSC(SP_E,SP_MOVE) ) )
-               st_cur = J_ST;
-            else {
-                  printf("ERROR: Failed to trace from B_ST at (%d,%d)\n", i, j);
-                  exit(1);
-            }
-            break;
-
-         case B_ST:  /* B connects from N, J */
-            if ( CMP_TOL( XMX(SP_B,i), XMX(SP_N,i) + XSC(SP_N,SP_MOVE) ) )
-               st_cur = N_ST;
-            else if ( CMP_TOL( XMX(SP_B,i), XMX(SP_J,i) + XSC(SP_J,SP_MOVE) ) )
-               st_cur = J_ST;
-            else {
-                  printf("ERROR: Failed to trace from B_ST at (%d,%d)\n", i, j);
-                  exit(1);
             }
             break;
 
          default:
             printf("ERROR: Hit Bogus State!!!\n");
-            tr->start.i = i;
-            tr->start.j = j;
-            return;
+            exit(1);
       }
 
       /* Add new state and (i,j) to trace */
-      st_cur = st_prev;
-      len++;
-      tr->i[len] = i;
-      tr->j[len] = j;
-      tr->trace[len] = st_prev;
+      traceback_Append(tr, st_cur, i, j);
 
-      /* For NCJ, defer i decrement. */
-      if ( (st_cur == N_ST || st_cur == J_ST || st_cur == C_ST) && st_cur == st_prev) 
+      /* Update previous state */
+      st_prev = st_cur;
+
+      /* For NCJ, we deferred i decrement. */
+      if ( (st_cur == N_ST || st_cur == J_ST || st_cur == C_ST) && st_cur == st_prev) {
          i--;
+      }
+   }
+
+   /* reverse order of traceback */
+   traceback_Reverse(tr);
+
+   /* find end and begin alignment points (first and last match state) */
+   for (i = 0; i < tr->N; ++i) {
+      if (tr->traces[i].st == M_ST) {
+         tr->end = i;
+         tr->first_m.i = tr->traces[i].i;
+         tr->first_m.j = tr->traces[i].j;
+         break;
+      }
+   }
+   for (i = tr->N - 1; i >= 0; --i) {
+      if (tr->traces[i].st == M_ST) {
+         tr->start = i;
+         tr->last_m.i = tr->traces[i].i;
+         tr->last_m.j = tr->traces[i].j;
+         break;
+      }
    }
 
    return;
+}
+
+
+/*
+ *  FUNCTION:  traceback_Reverse()
+ *  SYNOPSIS:  Reverse Traceback from backwards to forwards.
+ *
+ *  PURPOSE:
+ *
+ *  ARGS:      <tr> traceback object
+ *
+ *  RETURN:
+ */
+void traceback_Reverse (TRACEBACK* tr)
+{
+
+   TRACE *tr1, *tr2, tmp;
+   int N = tr->N;
+
+   for (int i = 0; i < (tr->N / 2); ++i) 
+   {
+      tr1 = &tr->traces[i];
+      tr2 = &tr->traces[N - 1 - i];
+
+      tmp.st = tr1->st;
+      tmp.i = tr1->i;
+      tmp.j = tr1->j;
+
+      tr1->st = tr2->st;
+      tr1->i = tr2->i;
+      tr1->j = tr2->j;
+
+      tr2->st = tmp.st;
+      tr2->i = tmp.i;
+      tr2->j = tmp.j;
+   }
+}
+
+
+/*
+ *  FUNCTION:  traceback_Append()
+ *  SYNOPSIS:  Append next state to Optimal Alignment.
+ *
+ *  PURPOSE:
+ *
+ *  ARGS:      <tr> traceback object
+ *             <st> state
+ *             <i>  index in sequence
+ *             <j>  index in model
+ *
+ *  RETURN:
+ */
+void traceback_Append (TRACEBACK* tr,
+                       int st,
+                       int i,
+                       int j)
+{
+   static char * states[] = {"ST_M",
+                             "ST_I",
+                             "ST_D",
+                             "ST_E",
+                             "ST_N",
+                             "ST_J",
+                             "ST_C",
+                             "ST_B",
+                             "ST_S",
+                             "ST_T",
+                             "ST_X" };
+   int N = tr->N;
+   int size = tr->size;
+
+   /* grow trace length if needed */
+   if (tr->N >= tr->size - 1) {
+      tr->traces = (TRACE *)realloc(tr->traces, tr->size * 2 * sizeof(TRACE));
+   }
+
+   /* jump from current state to the prev state */
+   switch (st)
+   {
+      /* Emit-on-Transition States: */
+      /* N STATE */
+      case N_ST:
+      /* C STATE */
+      case C_ST:
+      /* J STATE */
+      case J_ST:
+         tr->traces[N].i = ( (tr->traces[N - 1].st == st) ? i : 0 );
+         tr->traces[N].j = 0;
+         break;
+
+      /* Non-Emitting States: */
+      /* X STATE */
+      case X_ST:
+      /* S STATE */
+      case S_ST:
+      /* B STATE */
+      case B_ST:
+      /* E STATE */
+      case E_ST:
+      /* T STATE */
+      case T_ST:
+         tr->traces[N].i = 0;
+         tr->traces[N].j = 0;
+         break;
+
+      /* Emitting States: */
+      /* D STATE */
+      case D_ST:
+         tr->traces[N].i = 0;
+         tr->traces[N].j = j;
+         break;
+      /* M STATE */
+      case M_ST:
+      /* I STATE */
+      case I_ST:
+         tr->traces[N].i = i;
+         tr->traces[N].j = j;
+         break;
+
+      default:
+         printf("ERROR: Hit Bogus State!!!\n");
+         exit(0);
+   }
+
+   tr->traces[N].st = st;
+   tr->N++;
+   return;
+}
+
+
+/*
+ *  FUNCTION:  traceback_Show()
+ *  SYNOPSIS:  Build path into dynamic programming matrix according to traceback (1-index).
+ *
+ *  PURPOSE:
+ *
+ *  ARGS:      <Q>         query length,
+ *             <T>         target length,
+ *             <st_MX>     Normal State (Match, Insert, Delete) Matrix,
+ *             <sp_MX>     Special State (J,N,B,C,E) Matrix
+ *             <tr>        Trace
+ *
+ *  RETURN:
+ */
+void traceback_Show (const int Q, const int T,
+                     float st_MX[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
+                     float sp_MX[ NUM_SPECIAL_STATES * (Q + 1) ],
+                     TRACEBACK *tr)
+{
+   int          i, j, k, m;
+   int          st;
+   int          N = tr->N;
+
+   /* Zero out Matrices */
+   for (i = 0; i <= Q; i++)
+   {
+      for (j = 0; j <= T; j++)
+      {
+         MMX(i, j) = IMX(i, j) = DMX(i, j) = 0;
+      }
+      XMX(SP_N, i) = 0;
+      XMX(SP_J, i) = 0;
+      XMX(SP_E, i) = 0;
+      XMX(SP_C, i) = 0;
+      XMX(SP_B, i) = 0;
+   }
+
+   /*
+   p7T_BOGUS =  0,
+   p7T_M     =  1,
+   p7T_D     =  2,
+   p7T_I     =  3,
+   p7T_S     =  4,
+   p7T_N     =  5,
+   p7T_B     =  6,
+   p7T_E     =  7,
+   p7T_C     =  8,
+   p7T_T     =  9,
+   p7T_J     = 10,
+   p7T_X     = 11,
+   */
+
+   /* Input vals along the trace */
+   for (k = 0; k < N; k++)
+   {
+      st = tr->traces[k].st;
+      i = tr->traces[k].i;
+      j = tr->traces[k].j;
+      m = k + 1;
+      printf("%d/%d: %d(%d,%d) -> ", k, N, st, i, j);
+
+      switch (st) {
+      case M_ST:
+         MMX(i, j) = m;
+         break;
+      case I_ST:
+         IMX(i, j) = m;
+         break;
+      case D_ST:
+         DMX(i, j) = m;
+         break;
+      case N_ST:
+         XMX(SP_N, i) = m;
+         break;
+      case B_ST:
+         XMX(SP_B, i) = m;
+         break;
+      case E_ST:
+         XMX(SP_E, i) = m;
+         break;
+      case C_ST:
+         XMX(SP_C, i) = m;
+         break;
+      case J_ST:
+         XMX(SP_J, i) = m;
+         break;
+      default:
+         break;
+      }
+   }
+   printf("\n");
+}
+
+
+
+
+/*
+ *  FUNCTION: traceback_Print()
+ *  SYNOPSIS: Print Traceback object
+ *
+ *  PURPOSE:
+ *
+ *  ARGS:      <tr>      TRACEBACK Object
+ *
+ *  RETURN:
+ */
+void traceback_Print(TRACEBACK *tr)
+{
+   static char * states[] = {"ST_M",
+                             "ST_I",
+                             "ST_D",
+                             "ST_E",
+                             "ST_N",
+                             "ST_J",
+                             "ST_C",
+                             "ST_B",
+                             "ST_S",
+                             "ST_T",
+                             "ST_X" };
+
+   printf("LENGTH: %d / START: [%d](%d, %d) / END: [%d](%d, %d)\n", tr->N, tr->start, tr->first_m.i, tr->first_m.j, tr->end, tr->last_m.i, tr->last_m.j);
+   
+   for (unsigned int i = 0; i < tr->N; ++i)
+   {
+      printf("[%d](%s,%d,%d)-> \n", i, states[tr->traces[i].st], tr->traces[i].i, tr->traces[i].j);
+   }
+   printf("\n");
 }

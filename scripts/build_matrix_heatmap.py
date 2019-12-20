@@ -125,19 +125,93 @@ def remove_inf_matrix(NM_MX, SP_MX, min_val, max_val):
 def normalize_matrix(NM_MX, min_val, max_val, rang):
    NM_MX -= min_val
    NM_MX *= (1 / rang)
+   NM_MX = np.exp(NM_MX)
    # NM_MX *= 255
    # NM_MX = NM_MX.astype(int)
 
+# Normalize all anti-diagonals of matrix
+def normalize_antidiags(NM_MX):
+   print(NM_MX.shape)
+   x,y,C = NM_MX.shape
+   min_corner = min(x,y)
+   max_corner = max(x,y)
+   num_diags = x+y-1
+
+   for c in range(C):
+      num_cells = 0
+      start_i = 0
+      M = NM_MX
+
+      print("num_diags:",num_diags)
+
+      # for each diagonal in matrix...
+      for d in range(num_diags):
+         if d < max_corner:
+            num_cells += 1
+         if d > min_corner-1:
+            num_cells -= 1
+         if d > y-1:
+            start_i += 1
+         cell_cnt = 0
+         min_val = np.inf
+         max_val = -np.inf
+
+         # find min and max values
+         for i in range(start_i, start_i+num_cells):
+            for c in range(C):
+               j = d-i
+               # M[i,j,c] = d
+               cell_cnt += 1
+               # print(d,i,j)
+               if M[i,j,c] == np.inf or M[i,j,c] == -np.inf:
+                  next
+               if M[i,j,c] > max_val:
+                  max_val = M[i,j,c]
+               if M[i,j,c] < min_val:
+                  min_val = M[i,j,c]
+
+         # replace inf vals with min/max vals
+         for i in range(start_i, start_i+num_cells):
+            for c in range(C):
+               j = d-i
+               # M[i,j,c] = d
+               cell_cnt += 1
+               # print(d,i,j)
+               if M[i,j,c] == np.inf:
+                  M[i,j,c] = max_val
+               if M[i,j,c] == -np.inf:
+                  M[i,j,c] = min_val
+
+         range_val = max_val - min_val
+         print("PRE d:",d,"range_val:",range_val,"min_val:",min_val, "max_val:", max_val)
+
+         # normalize the diagonal
+         for i in range(start_i, start_i+num_cells):
+            for c in range(C):
+               j = d-i
+               if (range_val != 0):
+                  M[i,j,c] = ((M[i,j,c] - min_val)/ range_val)
+               else:
+                  M[i,j,c] = 0.5
+         print("POST d:",d,"range_val:",range_val,"min_val:",min_val, "max_val:", max_val)         
+
+
+      print("M:\n", M)
+
+
 # Output matrix at heatmap
-def output_heatmap(MAT_MX, INS_MX, DEL_MX):
-   fig, ( (ax1, ax2, ax3) ) = plt.subplots(1, 3)
+def output_heatmap(MAT_MX, INS_MX, DEL_MX, SP_MX):
+   fig, ( (ax1, ax2), (ax3, ax4) ) = plt.subplots(2, 2)
+
    ax1.set_title( "MATCH" )
+   # ax1.pcolor( MAT_MX, cmap='plasma', edgecolor='white', linewidths=.5 )
    ax1.imshow( MAT_MX, cmap='plasma', interpolation='nearest' )
    ax2.set_title( "INSERT" )
    ax2.imshow( INS_MX, cmap='plasma', interpolation='nearest' )
    ax3.set_title( "DELETE" )
    ax3.imshow( DEL_MX, cmap='plasma', interpolation='nearest' )
-   # ax4.imshow( SP_MX, cmap='plasma', interpolation='nearest' )
+   ax4.set_title( "SPECIAL" )
+   ax4.imshow( SP_MX, cmap='plasma', interpolation='nearest' )
 
    plt.tight_layout()
    plt.show()
@@ -166,7 +240,6 @@ for i in range(N):
    NM_MX.append(N_MX)
    SP_MX.append(S_MX)
 
-
 # Find min, max, range of matrix
 min_val = np.inf
 max_val = -np.inf
@@ -177,17 +250,24 @@ for i in range(N):
 rang = max_val - min_val
 # print(min_val, max_val, rang)
 
+print(NM_MX[i].shape)
+print(len(NM_MX))
 
 # Remove infinite values from matrix
 for i in range(N):
    remove_inf_matrix(NM_MX[i], SP_MX[i], min_val, max_val)
+   next
 
+# # Normalize matrix
+# for i in range(N):
+#    normalize_matrix(NM_MX[i], min_val, max_val, rang)
+#    normalize_matrix(SP_MX[i], min_val, max_val, rang)
+#    next
 
-# Normalize matrix
-for i in range(N):
-   normalize_matrix(NM_MX[i], min_val, max_val, rang)
-   normalize_matrix(SP_MX[i], min_val, max_val, rang)
-
+# # Normalize matrix by antidiag (for each channel)
+# for i in range(N):
+#    normalize_antidiags(NM_MX[i])
+#    next
 
 # Split matrix into state matrices: match, delete, insert
 MAT_MX = []
@@ -197,7 +277,7 @@ for i in range(N):
    MAT_MX.append( NM_MX[i][:,:,0] )
    INS_MX.append( NM_MX[i][:,:,1] )
    DEL_MX.append( NM_MX[i][:,:,2] )
-
+   next
 
 # Print matrices
 for i in range(N):
@@ -205,8 +285,9 @@ for i in range(N):
    print( 'INS:\n', INS_MX[i] )
    print( 'DEL:\n', DEL_MX[i] )
    print( 'SPECIAL:\n', SP_MX[i] )
+   next
 
 # Output matrices as heatmaps
 for i in range(N):
-   output_heatmap(MAT_MX[i], INS_MX[i], DEL_MX[i])
-
+   output_heatmap(MAT_MX[i], INS_MX[i], DEL_MX[i], SP_MX[i])
+   next

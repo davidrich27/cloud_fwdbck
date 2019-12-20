@@ -1,6 +1,6 @@
 /*******************************************************************************
  *  @file misc.h
- *  @brief Miscellaneous helper functions.
+ *  @brief Miscellaneous Helper Functions.
  *
  *  @author Dave Rich (devrek)
  *  @bug Lots.
@@ -23,6 +23,8 @@
 /* table of logsum values */
 static float logsum_lookup[LOGSUM_TBL];
 bool logsum_initialized = false;
+
+/* TODO: inline small functions? */
 
 /* Get max value of two floats */
 // static inline
@@ -228,13 +230,13 @@ void test_matrix_Print (const int Q, const int T,
  *             <st_MX>     Normal State (Match, Insert, Delete) Matrix,
  *             <sp_MX>     Special State (J,N,B,C,E) Matrix
  *
- *  RETURN: 
+ *  RETURN:   
  */
 void dp_matrix_Clear (const int Q, const int T, 
                       float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
                       float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ])
 {
-   for (int i = 0; i < Q+1; i++)
+   for (int i = 0; i <= Q; i++)
    {
       for (int j = 0; j <= T; j++)
          MMX(i,j) = IMX(i,j) = DMX(i,j) = -INF;
@@ -244,10 +246,26 @@ void dp_matrix_Clear (const int Q, const int T,
    }
 }
 
+/* Set all matrix values to val */
+void dp_matrix_Clear_X (const int Q, const int T, 
+                       float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
+                       float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ],
+                       float val)
+{
+   for (int i = 0; i <= Q; i++)
+   {
+      for (int j = 0; j <= T; j++)
+         MMX(i,j) = IMX(i,j) = DMX(i,j) = val;
+
+      for (int j = 0; j < NUM_SPECIAL_STATES; j++)
+         XMX(j,i) = val;
+   }
+}
+
 
 /* 
  *  FUNCTION:  dp_matrix_Save()
- *  SYNOPSIS:  Clear all matrix values to -INF. (for testing)
+ *  SYNOPSIS:  Save dynamic programming matrix to file.
  *
  *  PURPOSE:
  *

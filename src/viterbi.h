@@ -16,12 +16,26 @@ float viterbi_Run (const SEQ* query,
                   float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ], 
                   RESULTS* res,
                   TRACEBACK* tr);
-void viterbi_Traceback (const SEQ* query, 
-                        const HMM_PROFILE* target, 
-                        int Q, int T, 
-                        float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
-                        float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ], 
-                        RESULTS* res,
-                        TRACEBACK* tr);
+
+void traceback_Build (const SEQ* query, 
+                     const HMM_PROFILE* target, 
+                     int Q, int T, 
+                     float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
+                     float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ],
+                     TRACEBACK* tr);
+
+void traceback_Append (TRACEBACK* tr,
+                     int st,
+                     int i,
+                     int j);
+
+void traceback_Reverse (TRACEBACK* tr);
+
+void traceback_Show (const int Q, const int T, 
+                     float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
+                     float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ],
+                     TRACEBACK *tr);
+
+void traceback_Print (TRACEBACK *tr);
 
 #endif /* _VITERBI_H */

@@ -1,6 +1,6 @@
 /*******************************************************************************
  *  @file structs.h
- *  @brief Structures used in file parser and forward_backward
+ *  @brief All Data Structures used by Cloud Search.
  *
  *  @author Dave Rich (devrek)
  *  @bug Lots.
@@ -21,6 +21,10 @@ extern float BG_MODEL_log[];
 #define MMX(i,j)           (st_MX[ (MAT_ST*(Q+1)*(T+1)) + ((i)*(T+1)) + (j) ])
 #define IMX(i,j)           (st_MX[ (INS_ST*(Q+1)*(T+1)) + ((i)*(T+1)) + (j) ])
 #define DMX(i,j)           (st_MX[ (DEL_ST*(Q+1)*(T+1)) + ((i)*(T+1)) + (j) ])
+/* MATCH, INSERT, DELETE, SPECIAL ANTI-DIAG ACCESS MACROS */
+#define MMX3(i,d)          (st_MX3[ (MAT_ST*(Q+1)*3) + ((j)*(Q+1)) + (i) ])
+#define IMX3(i,d)          (st_MX3[ (INS_ST*(Q+1)*3) + ((j)*(Q+1)) + (i) ])
+#define DMX3(i,d)          (st_MX3[ (DEL_ST*(Q+1)*3) + ((j)*(Q+1)) + (i) ])
 
 /* SPECIAL STATE MATRIX MACROS */
 #define SP_MX(mx,sp,i)     (mx[ ((sp)*(Q+1)) + (i) ])
@@ -40,11 +44,11 @@ extern float BG_MODEL_log[];
 #define getName(var) #var
 
 /* BASIC FUNCTION MACROS */
-#define MAX(i,j)     ((i > j ? i : j))
-#define MIN(i,j)     ((i < j ? i : j))
-#define ABS(i)       ((i > 0 ? i : -i))
+#define MAX(i,j)     (( (i) > (j) ? (i) : (j) ))
+#define MIN(i,j)     (( (i) < (j) ? (i) : (j) ))
+#define ABS(i)       (( (i) > (0) ? (i) : (-i) ))
 /* check if two value are equal within tolerance */
-#define CMP_TOL(i,j) (( ABS(i - j) < tol ? 1 : 0 )) 
+#define CMP_TOL(i,j) (( fabs( (i) - (j) ) < tol ? 1 : 0 )) 
 
 /* DEFINED CONSTANTS */
 #define CONST_LOG2 0.69314718055994529
@@ -83,7 +87,9 @@ typedef enum {
    J_ST = 5, 
    C_ST = 6, 
    B_ST = 7, 
-   S_ST = 8
+   S_ST = 8,
+   T_ST = 9,
+   X_ST = 10
 } ALL_STATES;
 #define NUM_ALL_STATES 9
 
@@ -243,17 +249,39 @@ typedef struct {
 
 typedef struct {
    char *filename;
-   int num_hits;
+   int N;        /* current length */
+   int size;     /* allocated length */
    HIT *hits;
 } RESULTS;
 
 typedef struct {
-   int N;
-   COORDS start, end;
-   float sc_max;
-   int *trace; /* example: "MMMDIMMDI" */
-   int *i;
-   int *j;
+   int i;
+   int j;
+   int st;
+} TRACE;
+
+typedef struct {
+   int N;                     /* current length */
+   int size;                  /* allocated length */
+   int L,W;                   /* length, width dimensions of query/target window */
+   COORDS first_m, last_m;    /* (i,j) position of the last match found */
+   float sc_last_m;
+   int start, end;            /* position in trace for first/last MID state */
+   float sc_max;              /* max alignment score in Viterbi */
+   TRACE *traces;
 } TRACEBACK;
 
-#endif /* _STRUCTs_H */
+typedef struct {
+   int lb;                    /* bottom-left (lower) edge-bound */
+   int rb;                    /* top-right (upper) edge-bound */
+   int diag;                  /* current anti-diagonal */
+} BOUND;
+
+typedef struct {
+   int N;                     /* current length */
+   int size;                  /* allocated length */
+   COORDS start, end;         /* starting point */
+   BOUND *bounds;               
+} EDGEBOUNDS;
+
+#endif /* _STRUCTS_H */

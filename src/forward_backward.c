@@ -33,12 +33,12 @@
  *
  *  RETURN: 
  */
-void forward_backward_Run (const SEQ* query, 
-                           const HMM_PROFILE* target,
-                           int Q, int T, 
-                           float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
-                           float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ], 
-                           RESULTS* res)
+void fwdbck_Run (const SEQ* query, 
+                  const HMM_PROFILE* target,
+                  int Q, int T, 
+                  float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
+                  float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ], 
+                  RESULTS* res)
 {
    init_Logsum();
    // print_Logsum();
@@ -106,7 +106,7 @@ void forward_backward_Run (const SEQ* query,
 float forward_Run (const SEQ* query, 
                    const HMM_PROFILE* target, 
                    int Q, int T, 
-                   float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
+                   float st_MX[ NUM_NORMAL_STATES * (Q+1) * 3 ], 
                    float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ], 
                    RESULTS* res)
 {
@@ -298,12 +298,12 @@ float backward_Run (const SEQ* query,
    XMX(SP_C,Q) = XSC(SP_C,SP_MOVE);
    XMX(SP_E,Q) = XMX(SP_C,Q) + XSC(SP_E,SP_MOVE);
 
-   printf("(%d) C: %.2f E: %.2f Cm: %.2f Em: %.2f\n", Q, XMX(SP_C,Q), XMX(SP_E,Q), XSC(SP_C,SP_MOVE), XSC(SP_E,SP_MOVE));
+   // printf("(%d) C: %.2f E: %.2f Cm: %.2f Em: %.2f\n", Q, XMX(SP_C,Q), XMX(SP_E,Q), XSC(SP_C,SP_MOVE), XSC(SP_E,SP_MOVE));
 
    MMX(Q,T) = DMX(Q,T) = XMX(SP_E,Q);
    IMX(Q,T) = -INF;
 
-   printf("(%d,%d) M: %.2f D: %.2f I: %2.f\n", Q,T, MMX(Q,T), DMX(Q,T), IMX(Q,T) );
+   // printf("(%d,%d) M: %.2f D: %.2f I: %2.f\n", Q,T, MMX(Q,T), DMX(Q,T), IMX(Q,T) );
 
    for (j = T-1; j >= 1; j--)
    {
@@ -313,8 +313,8 @@ float backward_Run (const SEQ* query,
                               DMX(Q,j+1)  + TSC(j,D2D) );
       IMX(Q,j) = -INF;
 
-      printf("(%d,%d) M: %.2f D: %.2f I: %2.f, ", Q,j, MMX(Q,j), DMX(Q,j), IMX(Q,j) );
-      printf("E: %.2f Dp: %.2f Tmd: %.2f Tdd: %.2f\n", XMX(SP_E,Q), DMX(Q,j+1), TSC(j,M2D), TSC(j,D2D) );
+      // printf("(%d,%d) M: %.2f D: %.2f I: %2.f, ", Q,j, MMX(Q,j), DMX(Q,j), IMX(Q,j) );
+      // printf("E: %.2f Dp: %.2f Tmd: %.2f Tdd: %.2f\n", XMX(SP_E,Q), DMX(Q,j+1), TSC(j,M2D), TSC(j,D2D) );
    }
 
    /* MAIN RECURSION */
@@ -383,13 +383,13 @@ float backward_Run (const SEQ* query,
          prev_sum = calc_Logsum( prev_sum, prev_end );
          DMX(i,j) = prev_sum;
 
-         /* SAVE FOR DEBUGGING (transition states slightly off?) */
-         printf("(%d, %d): ", i, j);
-         printf("Mp: %.2f, Mtr: %.2f Msc: %2f, ", MMX(i+1,j+1), TSC(j,M2M), sc_M);
-         printf("Ip: %.2f, Itr: %.2f Isc: %.2f, ", IMX(i+1,j), TSC(j,M2I), sc_I);
-         printf("Dp: %.2f, Dtr: %.2f, ", DMX(i,j+1), TSC(j,M2D));
-         printf("Ep: %.2f, Esc: %.2f, ", XMX(SP_E,i), sc_E);
-         printf("sum: %.2f, Mc: %.2f\n", prev_sum, MMX(i,j));
+         // /* SAVE FOR DEBUGGING (transition states slightly off?) */
+         // printf("(%d, %d): ", i, j);
+         // printf("Mp: %.2f, Mtr: %.2f Msc: %2f, ", MMX(i+1,j+1), TSC(j,M2M), sc_M);
+         // printf("Ip: %.2f, Itr: %.2f Isc: %.2f, ", IMX(i+1,j), TSC(j,M2I), sc_I);
+         // printf("Dp: %.2f, Dtr: %.2f, ", DMX(i,j+1), TSC(j,M2D));
+         // printf("Ep: %.2f, Esc: %.2f, ", XMX(SP_E,i), sc_E);
+         // printf("sum: %.2f, Mc: %.2f\n", prev_sum, MMX(i,j));
       }
    }
 
