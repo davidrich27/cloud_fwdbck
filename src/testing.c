@@ -22,15 +22,16 @@
 
 /* test to cycle through all diags */
 void test_cycle(int Q, int T,
-                float st_MX[ NUM_NORMAL_STATES * (Q*1) * (T+1) ],
-                float sp_MX[ NUM_NORMAL_STATES * (Q+1) ])
+                float st_MX[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
+                float sp_MX[ NUM_NORMAL_STATES * (Q + 1) ],
+                TRACEBACK* tr)
 {
-   int d,i,j,k;
-   int lb,rb,le,re;              /* right/left bounds and edges */
+   int d, i, j, k;
+   int lb, rb, le, re;           /* right/left bounds and edges */
    int num_cells;                /* number of cells in current diagonal */
    int d_cnt, total_cnt;         /* count of cells in current diag, count of total cells */
    int d_st, d_end;              /* starting and ending diagonal indices */
-   int dim_min, dim_max;         /* diagonal index where num cells reaches highest point and begins diminishing */ 
+   int dim_min, dim_max;         /* diagonal index where num cells reaches highest point and begins diminishing */
    int dim_T, dim_Q;             /* dimensions of submatrix being searched */
    COORDS start, end;            /* start and end point of alignment */
 
@@ -40,7 +41,7 @@ void test_cycle(int Q, int T,
 
    // test coords
    start = (COORDS) {4, 8};
-   end = (COORDS) {12, 14}; 
+   end = (COORDS) {12, 14};
 
    // diag index at corners of dp matrix
    d_st = 0;
@@ -78,7 +79,7 @@ void test_cycle(int Q, int T,
       if (d > dim_max)
          num_cells--;
 
-      printf("[%d,%d]\n", lb, rb);
+      // printf("[%d,%d]\n", lb, rb);
 
       /* find diag cells that are inside matrix bounds */
       le = max(start.i, d - T);
@@ -99,11 +100,11 @@ void test_cycle(int Q, int T,
       {
          i = k;
          j = d - i;
-         printf("(%d,%d)->", i,j);
+         // printf("(%d,%d)->", i, j);
 
-         MMX(i,j) = i;
-         IMX(i,j) = j;
-         DMX(i,j) = total_cnt;
+         MMX(i, j) = i;
+         IMX(i, j) = j;
+         DMX(i, j) = total_cnt;
 
          d_cnt++;
          total_cnt++;
@@ -112,19 +113,20 @@ void test_cycle(int Q, int T,
    }
 
    dp_matrix_Print(Q, T, st_MX, sp_MX);
-}  
+}
 
 /* test to cycle through all diags in reverse */
 void rev_test_cycle(int Q, int T,
-                float st_MX[ NUM_NORMAL_STATES * (Q*1) * (T+1) ],
-                float sp_MX[ NUM_NORMAL_STATES * (Q+1) ])
+                    float st_MX[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
+                    float sp_MX[ NUM_NORMAL_STATES * (Q + 1) ],
+                    TRACEBACK* tr)
 {
-   int d,i,j,k;
-   int lb,rb,le,re;                       /* right/left bounds and edges */
+   int d, i, j, k;
+   int lb, rb, le, re;                    /* right/left bounds and edges */
    int num_cells;                         /* number of cells in current diagonal */
    int d_cnt, d_total_cnt, total_cnt;     /* count of diags, count of cells in current diag, count of total cells */
    int d_st, d_end;                       /* starting and ending diagonal indices */
-   int dim_min, dim_max;                  /* diagonal index where num cells reaches highest point and begins diminishing */ 
+   int dim_min, dim_max;                  /* diagonal index where num cells reaches highest point and begins diminishing */
    int dim_T, dim_Q;                      /* dimensions of submatrix being searched */
    COORDS start, end;                     /* start and end point of alignment */
 
@@ -134,7 +136,7 @@ void rev_test_cycle(int Q, int T,
 
    // test coords
    start = (COORDS) {4, 8};
-   end = (COORDS) {14, 12}; 
+   end = (COORDS) {14, 12};
 
    // diag index at corners of dp matrix
    d_st = 0;
@@ -193,11 +195,11 @@ void rev_test_cycle(int Q, int T,
       {
          i = k;
          j = d - i;
-         printf("(%d,%d)->", i,j);
+         printf("(%d,%d)->", i, j);
 
-         MMX(i,j) = i;
-         IMX(i,j) = j;
-         DMX(i,j) = total_cnt;
+         MMX(i, j) = i;
+         IMX(i, j) = j;
+         DMX(i, j) = total_cnt;
 
          d_cnt++;
          total_cnt++;
@@ -206,21 +208,21 @@ void rev_test_cycle(int Q, int T,
    }
 
    dp_matrix_Print(Q, T, st_MX, sp_MX);
-}  
+}
 
-/* test to show the cloud area */
+/* test to show the cloud area, fill with value */
 void test_cloud(int Q, int T,
-                float st_MX[ NUM_NORMAL_STATES * (Q*1) * (T+1) ],
-                float sp_MX[ NUM_NORMAL_STATES * (Q+1) ],
+                float st_MX[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
+                float sp_MX[ NUM_NORMAL_STATES * (Q + 1) ],
                 EDGEBOUNDS* edg,
                 float val)
 {
    int d_st, d_end, d_cnt;
-   int d,i,j,k;
-   int rb,lb;
+   int d, i, j, k;
+   int rb, lb;
 
    d_st = edg->bounds[0].diag;
-   d_end = edg->bounds[edg->N-1].diag;
+   d_end = edg->bounds[edg->N - 1].diag;
    d_cnt = 0;
 
    for (d = d_st; d < d_end; d++, d_cnt++)
@@ -233,9 +235,9 @@ void test_cloud(int Q, int T,
          i = k;
          j = d - i;
 
-         MMX(i,j) += 1;
-         IMX(i,j) = 1;
-         DMX(i,j) += val;
+         MMX(i, j) += 1;
+         IMX(i, j) = 1;
+         DMX(i, j) += val;
       }
    }
 }

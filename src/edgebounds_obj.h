@@ -22,6 +22,14 @@ void edgebounds_Merge(EDGEBOUNDS *edg_fwd,
                      EDGEBOUNDS *edg_bck,
                      EDGEBOUNDS *edg_new);
 
-void edgebounds_Reorient(EDGEBOUNDS *edg);
+void edgebounds_Reorient(EDGEBOUNDS *edg_diag, 
+                         EDGEBOUNDS *edg_row);
+
+int edgebounds_Merge_Reorient(EDGEBOUNDS *edg_fwd,
+                               EDGEBOUNDS *edg_bck,
+                               EDGEBOUNDS *edg_new,
+                               int Q, int T,
+                               float st_MX[ NUM_NORMAL_STATES * (Q * 1) * (T + 1) ],
+                               float sp_MX[ NUM_NORMAL_STATES * (Q + 1) ]);
 
 #endif /* _EDGEBOUNDS_OBJ_H */

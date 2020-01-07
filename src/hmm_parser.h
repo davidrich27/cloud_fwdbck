@@ -12,8 +12,9 @@
 void hmmprofile_Create(HMM_PROFILE *prof, char *_filename_);
 void hmmprofile_Config(HMM_PROFILE *prof);
 void hmmprofile_CalcOccupancy(HMM_PROFILE *prof, float *occ);
-void hmmprofile_Display(HMM_PROFILE *prof);
 void hmmprofile_ReconfigLength(HMM_PROFILE *prof, int L);
+void hmmprofile_Display(HMM_PROFILE *prof);
+void hmmprofile_Save(HMM_PROFILE *prof, char *_filename_);
 
 void seq_Create(SEQ *seq, char *_filename_);
 void seq_Display(SEQ *seq);

@@ -292,6 +292,7 @@ void cloud_backward_Run(const SEQ* query,
       edg->N += 1;
       /* resize if needed */
       if (edg->N >= edg->size) {
+         printf("resizing bounds...\n");
          edg->size *= 2;
          edg->bounds = (BOUND *)realloc(edg->bounds, edg->size * sizeof(BOUND) );
       }
@@ -485,9 +486,9 @@ void cloud_forward_Run(const SEQ* query,
 
    /* INITIALIZE VALUES */
    /* initialize special states (?) */
-   XMX(SP_N,0) = 0;                                         /* S->N, p=1             */
-   XMX(SP_B,0) = XSC(SP_N,SP_MOVE);                         /* S->N->B, no N-tail    */
-   XMX(SP_E,0) = XMX(SP_C,0) = XMX(SP_J,0) = -INF;          /* need seq to get here (?)  */
+   // XMX(SP_N,0) = 0;                                         /* S->N, p=1             */
+   // XMX(SP_B,0) = XSC(SP_N,SP_MOVE);                         /* S->N->B, no N-tail    */
+   // XMX(SP_E,0) = XMX(SP_C,0) = XMX(SP_J,0) = -INF;          /* need seq to get here (?)  */
 
    /* initialize 0 row (top-edge) and ) column (left-edge) */
    for (j = 0; j <= T; j++)
@@ -624,7 +625,8 @@ void cloud_forward_Run(const SEQ* query,
          prev_mat = MMX(i-1,j-1)  + TSC(j-1,M2M);
          prev_ins = IMX(i-1,j-1)  + TSC(j-1,I2M);
          prev_del = DMX(i-1,j-1)  + TSC(j-1,D2M);
-         prev_beg = XMX(SP_B,i-1) + TSC(j-1,B2M); /* from begin match state (new alignment) */
+         // prev_beg = XMX(SP_B,i-1) + TSC(j-1,B2M); /* from begin match state (new alignment) */
+         prev_beg = 0;
          /* best-to-match */
          prev_sum = calc_Logsum( 
                         calc_Logsum( prev_mat, prev_ins ),
@@ -648,30 +650,30 @@ void cloud_forward_Run(const SEQ* query,
          prev_sum = calc_Logsum(prev_mat, prev_del);
          DMX(i,j) = prev_sum;
 
-         /* UPDATE E STATE */
-         XMX(SP_E,i) = calc_Logsum( XMX(SP_E,i), 
-                                    MMX(i,j) + sc_E );
-         XMX(SP_E,i) = calc_Logsum( XMX(SP_E,i), 
-                                    DMX(i,j) + sc_E );
+         // /* UPDATE E STATE */
+         // XMX(SP_E,i) = calc_Logsum( XMX(SP_E,i), 
+         //                            MMX(i,j) + sc_E );
+         // XMX(SP_E,i) = calc_Logsum( XMX(SP_E,i), 
+         //                            DMX(i,j) + sc_E );
 
-         /* SPECIAL STATES */
-         /* J state */
-         sc_1 = XMX(SP_J,i-1) + XSC(SP_J,SP_LOOP);       /* J->J */
-         sc_2 = XMX(SP_E,i)   + XSC(SP_E,SP_LOOP);       /* E->J is E's "loop" */
-         XMX(SP_J,i) = calc_Logsum( sc_1, sc_2 );         
+         // /* SPECIAL STATES */
+         // /* J state */
+         // sc_1 = XMX(SP_J,i-1) + XSC(SP_J,SP_LOOP);       /* J->J */
+         // sc_2 = XMX(SP_E,i)   + XSC(SP_E,SP_LOOP);       /* E->J is E's "loop" */
+         // XMX(SP_J,i) = calc_Logsum( sc_1, sc_2 );         
 
-         /* C state */
-         sc_1 = XMX(SP_C,i-1) + XSC(SP_C,SP_LOOP);
-         sc_2 = XMX(SP_E,i)   + XSC(SP_E,SP_MOVE);
-         XMX(SP_C,i) = calc_Logsum( sc_1, sc_2 );
+         // /* C state */
+         // sc_1 = XMX(SP_C,i-1) + XSC(SP_C,SP_LOOP);
+         // sc_2 = XMX(SP_E,i)   + XSC(SP_E,SP_MOVE);
+         // XMX(SP_C,i) = calc_Logsum( sc_1, sc_2 );
 
-         /* N state */
-         XMX(SP_N,i) = XMX(SP_N,i-1) + XSC(SP_N,SP_LOOP);
+         // /* N state */
+         // XMX(SP_N,i) = XMX(SP_N,i-1) + XSC(SP_N,SP_LOOP);
 
-         /* B state */
-         sc_1 = XMX(SP_N,i) + XSC(SP_N,SP_MOVE);         /* N->B is N's move */
-         sc_2 = XMX(SP_J,i) + XSC(SP_J,SP_MOVE);         /* J->B is J's move */
-         XMX(SP_B,i) = calc_Logsum( sc_1, sc_2 );   
+         // /* B state */
+         // sc_1 = XMX(SP_N,i) + XSC(SP_N,SP_MOVE);         /* N->B is N's move */
+         // sc_2 = XMX(SP_J,i) + XSC(SP_J,SP_MOVE);         /* J->B is J's move */
+         // XMX(SP_B,i) = calc_Logsum( sc_1, sc_2 );   
 
          // printf("CALC (%d,%d): %.1f %.1f %.1f \n", i, j, MMX(i,j),IMX(i,j),DMX(i,j));
       }
@@ -681,7 +683,7 @@ void cloud_forward_Run(const SEQ* query,
 
 /*  
  *  FUNCTION: forward_bounded_Run()
- *  SYNOPSIS: Perform Forward part of Cloud Search Algorithm.
+ *  SYNOPSIS: Perform Edge-Bounded Forward part of Cloud Search Algorithm.
  *
  *  PURPOSE:
  *
@@ -696,7 +698,7 @@ void cloud_forward_Run(const SEQ* query,
  *
  *  RETURN: 
  */
-void forward_bounded_Run(const SEQ* query, 
+float forward_bounded_Run(const SEQ* query, 
                         const HMM_PROFILE* target,
                         int Q, int T, 
                         float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
@@ -704,79 +706,69 @@ void forward_bounded_Run(const SEQ* query,
                         RESULTS* res,
                         EDGEBOUNDS* edg)
 {
-   /* vars for navigating matrix */
-   int d,i,j,k;                  /* diagonal, row, column indices */
-   int lb, rb, le, re;           /* right/left bounds and edges */
-   int lb_new, rb_new;           /* tmp vars for new right/left bounds */
-   int num_cells;                /* number of cells in diagonal */
-   int d_st, d_end, d_cnt;       /* starting and ending diagonal indices */
-   int dim_min, dim_max;         /* diagonal index where num cells reaches highest point and diminishing point */ 
-   int dim_T, dim_Q;             /* dimensions of submatrix being searched */
-   int total_cnt;                /* number of cells computed */
-   COORDS start, end;            /* start and end point of alignment */
+   char   a;           /* store current character in sequence */
+   int    A;           /* store int value of character */
+   int    i,j,k = 0;   /* row, column indices */
+   char   *seq = query->seq; /* alias for getting seq */
+   int    N = edg->N;
+   int    x,y1,y2;
 
-   /* vars for computing cells */
-   char   a;                     /* store current character in sequence */
-   int    A;                     /* store int value of character */
-   char   *seq = query->seq;     /* alias for getting seq */
+   float  prev_mat, prev_del, prev_ins, prev_beg, prev_sum;
+   float  sc, sc_1, sc_2;
+   float  sc_max, sc_best;
+   COORDS tr_end; /* ending match state of optimal alignment (for traceback) */
 
-   /* vars for recurrance */
-   float  prev_mat, prev_del, prev_ins, prev_beg, prev_end, prev_sum;
-   float  sc, sc_1, sc_2, sc_best, sc_max;
-   float  sc_M, sc_I, sc_D;
-   /* vars for pruning */
-   float  cell_max, total_max, diag_max, diag_limit;
-
-   /* local or global? (multiple alignments) */
-   bool   is_local = false;
+   /* local or global (multiple alignments) */
+   bool   is_local = true;
    float  sc_E = (is_local) ? 0 : -INF;
 
-   dp_matrix_Clear(Q, T, st_MX, sp_MX);
-   d_cnt = 0;
+   /* initialize matrix */
+   for (i = 0; i <= Q; i++)
+   {
+      for (j = 0; j <= T; j++)
+      {
+         MMX(i,j) = IMX(i,j) = DMX(i,j) = -INF;
+      }
+   }
 
-   /* INITIALIZE VALUES */
    /* initialize special states (?) */
    XMX(SP_N,0) = 0;                                         /* S->N, p=1             */
    XMX(SP_B,0) = XSC(SP_N,SP_MOVE);                         /* S->N->B, no N-tail    */
    XMX(SP_E,0) = XMX(SP_C,0) = XMX(SP_J,0) = -INF;          /* need seq to get here (?)  */
 
-   /* initialize 0 row (top-edge) and ) column (left-edge) */
-   for (j = 0; j <= T; j++)
-      for (i = 0; i <= Q; i++)
-         MMX(0,j) = IMX(0,j) = DMX(0,j) = -INF;
+   /* initialize 0 row (top-edge) */
+   for (j = 0; j < T; j++)
+      { MMX(0,j) = IMX(0,j) = DMX(0,j) = -INF; }       /* need seq to get here (?)  */
 
-   d_st = edg->bounds[0].diag;
-   d_end = edg->bounds[edg->N-1].diag;
-
-   /* ITERATE THROUGH ANTI-DIAGONALS */
-   for (d = d_st; d <= d_end; d++, d_cnt++)
+   /* MAIN RECURSION */
+   /* FOR every bound in EDGEBOUND */
+   for (k = 0; k < N; ++k)
    {
-      if (d < 2) {
-         continue;
-      }
+      x = edg->bounds[k].diag;
+      y1 = edg->bounds[k].lb;
+      y2 = edg->bounds[k].rb;
 
-      lb = max(1, edg->bounds[d_cnt].lb);
-      rb = edg->bounds[d_cnt].rb;
+      i = x;
 
-      printf("%d: (%d,%d)\n", d,lb,rb);
+      /* Get next sequence character */
+      a = seq[i-1];
+      A = AA_REV[a];
 
-      /* ITERATE THROUGH CELLS OF ANTI-DIAGONAL */
-      for (k = lb; k < rb; k++, total_cnt++)
+      /* Initialize zero column (left-edge) */
+      MMX(i,0) = IMX(i,0) = DMX(i,0) = -INF;
+      // XMX(SP_E,i) = -INF;
+
+      /* MAIN RECURSION */
+      /* FOR every position in TARGET profile */
+      for (j = y1; j < y2-1; j++)
       {
-         i = k;
-         j = d - i;
-
-         a = seq[i];
-         A = AA_REV[a];
-
-         /* MAIN RECURSION */
-
          /* FIND BEST PATH TO MATCH STATE (FROM MATCH, INSERT, DELETE, OR BEGIN) */
          /* best previous state transition (match takes the diag element of each prev state) */
          prev_mat = MMX(i-1,j-1)  + TSC(j-1,M2M);
          prev_ins = IMX(i-1,j-1)  + TSC(j-1,I2M);
          prev_del = DMX(i-1,j-1)  + TSC(j-1,D2M);
-         prev_beg = XMX(SP_B,i-1) + TSC(j-1,B2M); /* from begin match state (new alignment) */
+         // prev_beg = XMX(SP_B,i-1) + TSC(j-1,B2M); /* from begin match state (new alignment) */
+         prev_beg = 0;
          /* best-to-match */
          prev_sum = calc_Logsum( 
                         calc_Logsum( prev_mat, prev_ins ),
@@ -806,6 +798,48 @@ void forward_bounded_Run(const SEQ* query,
          XMX(SP_E,i) = calc_Logsum( XMX(SP_E,i), 
                                     DMX(i,j) + sc_E );
 
+         /* NOTE: SAVE FOR DEBUGGING (transition states slightly off?) */
+         // printf("(%d, %d): ", i, j);
+         // printf("Mp: %.2f, Mtr: %.2f, ", MMX(i-1,j-1),TSC(j-1,M2M));
+         // printf("Ip: %.2f, Itr: %.2f, ", IMX(i-1,j-1),TSC(j-1,I2M));
+         // printf("Dp: %.2f, Dtr: %.2f, ", DMX(i-1,j-1),TSC(j-1,D2M));
+         // printf("Bp: %.2f, Btr: %.2f, ", XMX(SP_B,i-1),TSC(j-1,B2M));
+         // printf("sum: %.2f, Mc: %.2f\n", prev_sum, MMX(i,j));
+      }
+
+      /* UNROLLED FINAL LOOP ITERATION */
+      j = T; 
+
+      // /* FIND BEST PATH TO MATCH STATE (FROM MATCH, INSERT, DELETE, OR BEGIN) */
+      // /* best previous state transition (match takes the diag element of each prev state) */
+      // prev_mat = MMX(i-1,j-1)  + TSC(j-1,M2M);
+      // prev_ins = IMX(i-1,j-1)  + TSC(j-1,I2M);
+      // prev_del = DMX(i-1,j-1)  + TSC(j-1,D2M);
+      // prev_beg = XMX(SP_B,i-1) + TSC(j-1,B2M);    /* from begin match state (new alignment) */
+      // /* best-to-match */
+      // prev_sum = calc_Logsum( 
+      //                   calc_Logsum( prev_mat, prev_ins ),
+      //                   calc_Logsum( prev_del, prev_beg )
+      //             );
+      // MMX(i,j) = prev_sum + MSC(j,A);
+
+      // /* FIND BEST PATH TO INSERT STATE */
+      // IMX(i,j) = -INF;
+
+      // /* FIND BEST PATH TO DELETE STATE (FOMR MATCH OR DELETE) */
+      // /* previous states (match takes the left element of each state) */
+      // prev_mat = MMX(i,j-1) + TSC(j-1,M2D);
+      // prev_del = DMX(i,j-1) + TSC(j-1,D2D);
+      // /* best-to-delete */
+      // prev_sum = calc_Logsum( prev_mat, prev_del );
+      // DMX(i,j) = prev_sum;
+
+      // /* UPDATE E STATE */
+      // XMX(SP_E,i) = calc_Logsum( XMX(SP_E,i), MMX(i,j) );
+      // XMX(SP_E,i) = calc_Logsum( XMX(SP_E,i), DMX(i,j) );
+
+      if (edg->bounds[N+1].diag != x)
+      {
          /* SPECIAL STATES */
          /* J state */
          sc_1 = XMX(SP_J,i-1) + XSC(SP_J,SP_LOOP);       /* J->J */
@@ -824,8 +858,6 @@ void forward_bounded_Run(const SEQ* query,
          sc_1 = XMX(SP_N,i) + XSC(SP_N,SP_MOVE);         /* N->B is N's move */
          sc_2 = XMX(SP_J,i) + XSC(SP_J,SP_MOVE);         /* J->B is J's move */
          XMX(SP_B,i) = calc_Logsum( sc_1, sc_2 );   
-
-         // printf("CALC (%d,%d): %.1f %.1f %.1f \n", i, j, MMX(i,j),IMX(i,j),DMX(i,j));
       }
    }
 
@@ -833,4 +865,182 @@ void forward_bounded_Run(const SEQ* query,
    sc_best = XMX(SP_C,Q) + TSC(SP_C,SP_MOVE);
 
    // return sc_best;
+}
+
+
+/*  
+ *  FUNCTION: backward_bounded_Run()
+ *  SYNOPSIS: Perform Edge-Bounded Backward part of Cloud Search Algorithm.
+ *
+ *  PURPOSE:
+ *
+ *  ARGS:      <query>     query sequence, 
+ *             <target>    HMM model,
+ *             <Q>         query length, 
+ *             <T>         target length,
+ *             <st_MX>     Normal State (Match, Insert, Delete) Matrix,
+ *             <sp_MX>     Special State (J,N,B,C,E) Matrix,
+ *             <res>       Results Data
+ *             <bnd>       Bounds Data
+ *
+ *  RETURN: 
+ */
+float backward_bounded_Run(const SEQ* query, 
+                        const HMM_PROFILE* target,
+                        int Q, int T, 
+                        float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
+                        float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ], 
+                        RESULTS* res,
+                        EDGEBOUNDS* edg)
+{
+   char   a;           /* store current character in sequence */
+   int    A;           /* store int value of character */
+   int    i,j,k = 0;   /* row, column indices */
+   char   *seq = query->seq; /* alias for getting seq */
+   int    N = edg->N;
+   int    x,y1,y2;
+
+   float  prev_mat, prev_del, prev_ins, prev_end, prev_sum;
+   float  sc, sc_1, sc_2, sc_M, sc_I;
+   float  sc_max, sc_best;
+   COORDS tr_end; /* ending match state of optimal alignment (for traceback) */
+
+   /* local or global (multiple alignments) */
+   bool   is_local = true;
+   float  sc_E = (is_local) ? 0 : -INF;
+
+   /* initialize matrix */
+   for (i = 0; i <= Q; i++)
+   {
+      for (j = 0; j <= T; j++)
+      {
+         MMX(i,j) = IMX(i,j) = DMX(i,j) = -INF;
+      }
+   }
+
+   /* initialize special states (?) */
+   XMX(SP_N,0) = 0;                                         /* S->N, p=1             */
+   XMX(SP_B,0) = XSC(SP_N,SP_MOVE);                         /* S->N->B, no N-tail    */
+   XMX(SP_E,0) = XMX(SP_C,0) = XMX(SP_J,0) = -INF;          /* need seq to get here (?)  */
+
+   /* initialize 0 row (top-edge) */
+   for (j = 0; j < T; j++)
+      { MMX(0,j) = IMX(0,j) = DMX(0,j) = -INF; }       /* need seq to get here (?)  */
+
+   /* MAIN RECURSION */
+   /* FOR every bound in EDGEBOUND */
+   for (k = N-1; k >= 0; --k)
+   {
+      x = edg->bounds[k].diag;
+      y1 = max(1, edg->bounds[k].lb);
+      y2 = edg->bounds[k].rb;
+
+      i = x;
+
+      if (x <= 0) {
+         continue;
+      }
+
+      /* Get next sequence character */
+      a = seq[i];
+      A = AA_REV[a];
+
+      if (N > 0 && edg->bounds[N-1].diag != x)
+      {
+         /* SPECIAL STATES */
+         XMX(SP_B,i) = MMX(i+1,1) + TSC(0,B2M) + MSC(1,A);
+
+         /* B -> MATCH */
+         for (j = 2; j <= T; j++)
+         {
+            XMX(SP_B,i) = calc_Logsum( XMX(SP_B,i),
+                                       MMX(i+1,j) + TSC(j-1,B2M) + MSC(j,A) );
+         }
+
+         XMX(SP_J,i) = calc_Logsum( XMX(SP_J,i+1) + XSC(SP_J,SP_LOOP),
+                                    XMX(SP_B,i)   + XSC(SP_J,SP_MOVE) );
+
+         XMX(SP_C,i) = XMX(SP_C,i+1) + XSC(SP_C,SP_LOOP);
+
+         XMX(SP_E,i) = calc_Logsum( XMX(SP_J,i) + XSC(SP_E,SP_LOOP),
+                                    XMX(SP_C,i) + XSC(SP_E,SP_MOVE) );
+
+         XMX(SP_N,i) = calc_Logsum( XMX(SP_N,i+1) + XSC(SP_N,SP_LOOP),
+                                    XMX(SP_B,i)   + XSC(SP_N,SP_MOVE) );
+
+         MMX(i,T) = DMX(i,T) = XMX(SP_E,i);
+         IMX(i,T) = -INF;
+      }
+      
+      /* FOR every position in TARGET profile */
+      for (j = y2-1; j >= y1; --j)
+      {
+         sc_M = MSC(j+1,A);
+         sc_I = ISC(j+1,A);
+
+         /* FIND SUM OF PATHS FROM MATCH, INSERT, DELETE, OR END STATE (TO PREVIOUS MATCH) */
+         prev_mat = MMX(i+1,j+1) + TSC(j,M2M) + sc_M;
+         prev_ins = IMX(i+1,j)   + TSC(j,M2I) + sc_I;
+         prev_del = DMX(i,j+1)   + TSC(j,M2D);
+         prev_end = XMX(SP_E,i)  + sc_E;     /* from end match state (new alignment) */
+         /* best-to-match */
+         prev_sum = calc_Logsum( 
+                           calc_Logsum( prev_mat, prev_ins ),
+                           calc_Logsum( prev_del, prev_end )
+                     );
+         MMX(i,j) = prev_sum;
+
+         /* FIND SUM OF PATHS FROM MATCH OR INSERT STATE (TO PREVIOUS INSERT) */
+         prev_mat = MMX(i+1,j+1) + TSC(j,I2M) + sc_M;
+         prev_ins = IMX(i+1,j)   + TSC(j,I2I) + sc_I;
+         /* best-to-insert */
+         prev_sum = calc_Logsum( prev_mat, prev_ins );
+         IMX(i,j) = prev_sum;
+
+         /* FIND SUM OF PATHS FROM MATCH OR DELETE STATE (FROM PREVIOUS DELETE) */
+         prev_mat = MMX(i+1,j+1) + TSC(j,D2M) + sc_M;
+         prev_del = DMX(i,j+1)   + TSC(j,D2D);
+         prev_end = XMX(SP_E,i)  + sc_E;
+         /* best-to-delete */
+         prev_sum = calc_Logsum( prev_mat, prev_del );
+         prev_sum = calc_Logsum( prev_sum, prev_end );
+         DMX(i,j) = prev_sum;
+
+         // /* NOTE: SAVE FOR DEBUGGING (transition states slightly off?) */
+         // printf("(%d, %d): ", i, j);
+         // printf("Mp: %.2f, Mtr: %.2f Msc: %2f, ", MMX(i+1,j+1), TSC(j,M2M), sc_M);
+         // printf("Ip: %.2f, Itr: %.2f Isc: %.2f, ", IMX(i+1,j), TSC(j,M2I), sc_I);
+         // printf("Dp: %.2f, Dtr: %.2f, ", DMX(i,j+1), TSC(j,M2D));
+         // printf("Ep: %.2f, Esc: %.2f, ", XMX(SP_E,i), sc_E);
+         // printf("sum: %.2f, Mc: %.2f\n", prev_sum, MMX(i,j));
+      }
+   }
+
+   /* FINAL i = 0 row */
+   a = seq[1];
+   A = AA_REV[a];
+
+   XMX(SP_B,0) = MMX(1,1) + TSC(0,B2M) + MSC(1,A);
+
+   for (j = 2; j >= T; j++)
+   {
+      XMX(SP_B,0) = calc_Logsum( XMX(SP_B,0),
+                                 MMX(1,j) + TSC(j-1,B2M) + MSC(j,A) );
+   }
+
+   XMX(SP_J,i) = -INF;
+   XMX(SP_C,i) = -INF;
+   XMX(SP_E,i) = -INF;
+
+   XMX(SP_N,i) = calc_Logsum( XMX(SP_N,1) + XSC(SP_N,SP_LOOP),
+                              XMX(SP_B,0) + XSC(SP_N,SP_MOVE) );
+
+   for (j = T; j >= 1; j--)
+   {
+      MMX(i,j) = IMX(i,j) = DMX(i,j) = -INF;
+   }
+
+   sc_best = XMX(SP_N,0);
+
+   return sc_best;
 }

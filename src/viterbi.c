@@ -52,9 +52,10 @@ float viterbi_Run (const SEQ* query,
 
    float  prev_mat, prev_del, prev_ins, prev_beg, prev_best;
    float  sc, sc_1, sc_2, sc_best, sc_max;
+   float  sc1, sc2, sc3, sc4;
 
    /* local or global (multiple alignments) */
-   bool   is_local = false;
+   bool   is_local = true;
    float  sc_E = (is_local) ? 0 : -INF;
 
    /* initialize special states (?) */
@@ -65,7 +66,6 @@ float viterbi_Run (const SEQ* query,
    /* initialize zero row (top-edge) */
    for (j = 0; j <= T; j++)
    { MMX(0, j) = IMX(0, j) = DMX(0, j) = -INF; }         /* need seq to get here  */
-
 
    /* FOR every position in QUERY seq */
    for (i = 1; i <= Q; i++)
@@ -83,13 +83,15 @@ float viterbi_Run (const SEQ* query,
       {
          /* FIND BEST PATH TO MATCH STATE (FROM MATCH, INSERT, DELETE, OR BEGIN) */
          /* best previous state transition (match takes the diag element of each prev state) */
-         prev_mat = MMX(i - 1, j - 1)  + TSC(j - 1, M2M);
-         prev_ins = IMX(i - 1, j - 1)  + TSC(j - 1, I2M);
-         prev_del = DMX(i - 1, j - 1)  + TSC(j - 1, D2M);
-         prev_beg = XMX(SP_B, i - 1) + TSC(j - 1, B2M); /* from begin match state (new alignment) */
+         sc1 = prev_mat = MMX(i - 1, j - 1)  + TSC(j - 1, M2M);
+         sc2 = prev_ins = IMX(i - 1, j - 1)  + TSC(j - 1, I2M);
+         sc3 = prev_del = DMX(i - 1, j - 1)  + TSC(j - 1, D2M);
+         sc4 = prev_beg = XMX(SP_B, i - 1) + TSC(j - 1, B2M); /* from begin match state (new alignment) */
          /* best-to-match */
          prev_best = calc_Max( calc_Max( prev_mat, prev_ins ) , calc_Max( prev_del, prev_beg ) );
          MMX(i, j)  = prev_best + MSC(j, A);
+
+         // printf("(%d, %d)  \tMM: %.3f\t IM: %.3f\t DM: %.3f\t BM: %.3f\t MSC: %.3f\n", i, j, sc1, sc2, sc3, sc4, MSC(j, A));
 
          /* FIND BEST PATH TO INSERT STATE (FROM MATCH OR INSERT) */
          /* previous states (match takes the left element of each state) */
@@ -108,7 +110,11 @@ float viterbi_Run (const SEQ* query,
          DMX(i, j) = prev_best;
 
          /* UPDATE E STATE */
-         XMX(SP_E, i) = calc_Max( XMX(SP_E, i), MMX(i, j) + sc_E );
+         sc1 = XMX(SP_E, i);
+         sc2 = MMX(i, j) + sc_E;
+         sc4 = XMX(SP_E, i) = calc_Max( XMX(SP_E, i), MMX(i, j) + sc_E );
+
+         // printf("(%d, %d)  \tEE: %.3f\t ME: %.3f\t E_sc: %.3f\t E_MAX: %.3f\n", i,j, sc1, sc2, sc_E, sc4);
 
          /* (?!) check for best score seen so far (best score should end in a match state) */
          if (sc_max < MMX(i, j))
@@ -125,16 +131,19 @@ float viterbi_Run (const SEQ* query,
 
       /* FIND BEST PATH TO MATCH STATE (FROM MATCH, INSERT, DELETE, OR BEGIN) */
       /* best previous state transition (match takes the diag element of each prev state) */
-      prev_mat = MMX(i - 1, j - 1)  + TSC(j - 1, M2M);
-      prev_ins = IMX(i - 1, j - 1)  + TSC(j - 1, I2M);
-      prev_del = DMX(i - 1, j - 1)  + TSC(j - 1, D2M);
-      prev_beg = XMX(SP_B, i - 1) + TSC(j - 1, B2M); /* from begin match state (new alignment) */
+      sc1 = prev_mat = MMX(i - 1, j - 1)  + TSC(j - 1, M2M);
+      sc2 = prev_ins = IMX(i - 1, j - 1)  + TSC(j - 1, I2M);
+      sc3 = prev_del = DMX(i - 1, j - 1)  + TSC(j - 1, D2M);
+      sc4 = prev_beg = XMX(SP_B, i - 1) + TSC(j - 1, B2M); /* from begin match state (new alignment) */
       /* best-to-match */
       prev_best = calc_Max(
                      calc_Max( prev_mat, prev_ins ),
                      calc_Max( prev_del, prev_beg )
                   );
       MMX(i, j) = prev_best + MSC(j, A);
+
+      // DAVID RICH EDIT
+      // printf("(%d, %d)  \tMM: %.3f\t IM: %.3f\t DM: %.3f\t BM: %.3f\t MSC: %.3f\n", i, j, sc1, sc2, sc3, sc4, MSC(j, A));
 
       /* FIND BEST PATH TO DELETE STATE (FOMR MATCH OR DELETE) */
       /* previous states (match takes the left element of each state) */
@@ -145,8 +154,12 @@ float viterbi_Run (const SEQ* query,
       DMX(i, j) = prev_best;
 
       /* UPDATE E STATE */
-      XMX(SP_E, i) = calc_Max( XMX(SP_E, i), MMX(i, j) );
-      XMX(SP_E, i) = calc_Max( XMX(SP_E, i), DMX(i, j) );
+      sc1 = XMX(SP_E, i);
+      sc2 = MMX(i, j);
+      sc3 = DMX(i, j);
+      sc4 = XMX(SP_E, i) = calc_Max( sc1, calc_Max( sc2, sc3 ) );
+
+      // printf("(%d, %d) \t EE: %.3f\t ME: %.3f\t DE: %.3f\t E_MAX: %.3f\n", i, j, sc1, sc2, sc3, sc4);
 
       /* SPECIAL STATES */
       /* J state */
@@ -183,8 +196,8 @@ float viterbi_Run (const SEQ* query,
  *
  *  ARGS:      <query>     query sequence,
  *             <target>    HMM model,
- *             <Q>         query length,
- *             <T>         target length,
+ *             <Q>         query/seq length,
+ *             <T>         target/model length,
  *             <st_MX>     Normal State (Match, Insert, Delete) Matrix,
  *             <sp_MX>     Special State (J,N,B,C,E) Matrix,
  *             <tr>        Traceback Alignment
@@ -206,6 +219,8 @@ void traceback_Build (const SEQ* query,
    float  tol = 1e-5;         /* acceptable tolerance for "equality" tests */
    char   *seq = query->seq;  /* alias for getting seq */
 
+   printf("L=%d, M=%d\n", Q, T);
+
    /* local or global? */
    const bool is_local = true;
 
@@ -214,7 +229,7 @@ void traceback_Build (const SEQ* query,
    tr->N = 0;
    tr->size = min_size;
    tr->traces = malloc(min_size * sizeof(TRACE));
-   printf("traceback test...\n");
+   // printf("traceback test...\n");
 
    /* Backtracing, so C is end state */
    traceback_Append(tr, T_ST, i, j);
@@ -258,6 +273,7 @@ void traceback_Build (const SEQ* query,
             {
                st_cur = M_ST;    /* can't come from D, in a *local* Viterbi trace. */
                for (j = T; j >= 1; j--) {
+                  // printf("testing E at (%d, %d) => (%.2f v. %.2f) \n", i, j, XMX(SP_E, i), MMX(i, j) );
                   if ( CMP_TOL( XMX(SP_E, i), MMX(i, j) ) )
                      break;
                }
@@ -330,9 +346,9 @@ void traceback_Build (const SEQ* query,
                exit(1);
             }
 
-            if ( CMP_TOL( MMX(i, j), MMX(i - 1, j) + TSC(j, M2I) + ISC(j, A) ) )
+            if ( CMP_TOL( IMX(i, j), MMX(i - 1, j) + TSC(j, M2I) + ISC(j, A) ) )
                st_cur = M_ST;
-            else if ( CMP_TOL( MMX(i, j), IMX(i - 1, j) + TSC(j, I2I) + ISC(j, A) ) )
+            else if ( CMP_TOL( IMX(i, j), IMX(i - 1, j) + TSC(j, I2I) + ISC(j, A) ) )
                st_cur = I_ST;
             else {
                printf("ERROR: Failed to trace from I_ST at (%d,%d)\n", i, j);
@@ -348,7 +364,7 @@ void traceback_Build (const SEQ* query,
                exit(1);
             }
 
-            st_cur = ( (i == 0) ? S_ST : N_ST );
+            st_cur = ( (i <= 0) ? S_ST : N_ST );
             break;
 
          /* B STATE */
@@ -489,6 +505,7 @@ void traceback_Append (TRACEBACK* tr,
                              "ST_X" };
    int N = tr->N;
    int size = tr->size;
+   // printf("[%d](%s,%d,%d) -> \n", N, states[st], i, j);
 
    /* grow trace length if needed */
    if (tr->N >= tr->size - 1) {
@@ -608,7 +625,7 @@ void traceback_Show (const int Q, const int T,
       i = tr->traces[k].i;
       j = tr->traces[k].j;
       m = k + 1;
-      printf("%d/%d: %d(%d,%d) -> ", k, N, st, i, j);
+      // printf("%d/%d: %d(%d,%d) -> ", k, N, st, i, j);
 
       switch (st) {
       case M_ST:
@@ -669,7 +686,7 @@ void traceback_Print(TRACEBACK *tr)
                              "ST_T",
                              "ST_X" };
 
-   printf("LENGTH: %d / START: [%d](%d, %d) / END: [%d](%d, %d)\n", tr->N, tr->start, tr->first_m.i, tr->first_m.j, tr->end, tr->last_m.i, tr->last_m.j);
+   // printf("LENGTH: %d / START: [%d](%d, %d) / END: [%d](%d, %d)\n", tr->N, tr->start, tr->first_m.i, tr->first_m.j, tr->end, tr->last_m.i, tr->last_m.j);
    
    for (unsigned int i = 0; i < tr->N; ++i)
    {

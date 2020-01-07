@@ -57,9 +57,20 @@ void init_Logsum ()
       int i;
       for (i = 0; i < LOGSUM_TBL; i++)
       {
-         logsum_lookup[i] = log(1. + exp((double) -i / LOGSUM_SCALE));
+         logsum_lookup[i] = log(1. + exp((double) - i / LOGSUM_SCALE));
       }
    }
+
+   // /* DAVID RICH EDIT */
+   // printf("LOGSUM TABLE:\n");
+   // FILE *fp = fopen("logsum.mine.txt", "w+");
+   // for (int i = 0; i < LOGSUM_TBL; i++)
+   // {
+   //    fprintf(fp, "%d -> %f\n", i, logsum_lookup[i]);
+   // }
+   // fclose(fp);
+   // exit(0);
+
 }
 
 /* Takes two logscale numbers and returns the log of their real sum (approx) */
@@ -80,8 +91,8 @@ float calc_Logsum (float x, float y)
       min = x;
    }
 
-   return (min == log(0) || (max - min) >= 15.7f) ? 
-      max : max + logsum_lookup[(int)((max - min) * LOGSUM_SCALE)];
+   return (min == -INF || (max - min) >= 15.7f) ?
+          max : max + logsum_lookup[ (int)((max - min) * LOGSUM_SCALE) ];
 }
 
 /* Takes two log numbers and returns the log of their real sum (exact) */
@@ -95,29 +106,29 @@ float calc_Logsum_exact(float x, float y)
 void print_Logsum()
 {
    printf("=== LOGSUM TABLE ===\n");
-   for (int i = 0; i < 16000; i+=160)
+   for (int i = 0; i < 16000; i += 160)
    {
       printf("[%d] %.2f\n", i, logsum_lookup[i]);
    }
    printf("\n\n");
 }
 
-/* 
+/*
  *  FUNCTION:  dp_matrix_Print()
  *  SYNOPSIS:  Print out dynamic programming matrix to screen.
  *
  *  PURPOSE:
  *
- *  ARGS:      <Q>         query length, 
+ *  ARGS:      <Q>         query length,
  *             <T>         target length,
  *             <st_MX>     Normal State (Match, Insert, Delete) Matrix,
  *             <sp_MX>     Special State (J,N,B,C,E) Matrix
  *
- *  RETURN: 
+ *  RETURN:
  */
-void dp_matrix_Print (const int Q, const int T, 
-                      const float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
-                      const float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ])
+void dp_matrix_Print (const int Q, const int T,
+                      const float st_MX[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
+                      const float sp_MX[ NUM_SPECIAL_STATES * (Q + 1) ])
 {
    /* PRINT resulting dp matrix */
    printf("\n\n==== DP MATRIX BEGIN ==== \n");
@@ -130,70 +141,70 @@ void dp_matrix_Print (const int Q, const int T,
    printf("\n");
 
    /* Row-by-Row */
-   for (int i = 0; i < Q+1; i++)
+   for (int i = 0; i < Q + 1; i++)
    {
       printf( "%d M\t", i );
       for (int j = 0; j <= T; j++)
       {
-         printf( "%.3f\t", MMX(i,j) );
+         printf( "%.3f\t", MMX(i, j) );
       }
       printf("\n");
 
       printf( "%d I\t", i );
       for (int j = 0; j <= T; j++)
       {
-         printf( "%.3f\t", IMX(i,j) );
+         printf( "%.3f\t", IMX(i, j) );
       }
       printf("\n");
 
       printf( "%d D\t", i );
       for (int j = 0; j <= T; j++)
       {
-         printf( "%.3f\t", DMX(i,j) );
+         printf( "%.3f\t", DMX(i, j) );
       }
       printf("\n\n");
    }
 
-     printf("=== SPECIAL STATES ===\n");
-      printf("N:\t");
-      for (int i = 0; i <= Q; i++)
-         { printf( "%.3f\t", XMX(SP_N,i) ); }
-      printf("\n");
-      printf("J:\t");
-      for (int i = 0; i <= Q; i++)
-         { printf( "%.3f\t", XMX(SP_J,i) ); }
-      printf("\n");
-      printf("E:\t");
-      for (int i = 0; i <= Q; i++)
-         { printf( "%.3f\t", XMX(SP_E,i) ); }
-      printf("\n");
-      printf("C:\t");
-      for (int i = 0; i <= Q; i++)
-         { printf( "%.3f\t", XMX(SP_C,i) ); }
-      printf("\n");
-      printf("B:\t");
-      for (int i = 0; i <= Q; i++)
-         { printf( "%.3f\t", XMX(SP_B,i) ); }
-      printf("\n");
+   printf("=== SPECIAL STATES ===\n");
+   printf("N:\t");
+   for (int i = 0; i <= Q; i++)
+   { printf( "%.3f\t", XMX(SP_N, i) ); }
+   printf("\n");
+   printf("J:\t");
+   for (int i = 0; i <= Q; i++)
+   { printf( "%.3f\t", XMX(SP_J, i) ); }
+   printf("\n");
+   printf("E:\t");
+   for (int i = 0; i <= Q; i++)
+   { printf( "%.3f\t", XMX(SP_E, i) ); }
+   printf("\n");
+   printf("C:\t");
+   for (int i = 0; i <= Q; i++)
+   { printf( "%.3f\t", XMX(SP_C, i) ); }
+   printf("\n");
+   printf("B:\t");
+   for (int i = 0; i <= Q; i++)
+   { printf( "%.3f\t", XMX(SP_B, i) ); }
+   printf("\n");
 
    printf("==== DP MATRIX END ==== \n\n");
 }
 
-/* 
+/*
  *  FUNCTION:  test_matrix_Print()
  *  SYNOPSIS:  Print out dynamic programming matrix to screen.
  *
  *  PURPOSE:
  *
- *  ARGS:      <Q>         query length, 
+ *  ARGS:      <Q>         query length,
  *             <T>         target length,
  *             <st_MX>     Normal State (Match, Insert, Delete) Matrix,
  *             <sp_MX>     Special State (J,N,B,C,E) Matrix
  *
- *  RETURN: 
+ *  RETURN:
  */
-void test_matrix_Print (const int Q, const int T, 
-                        const float test_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ])
+void test_matrix_Print (const int Q, const int T,
+                        const float test_MX[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ])
 {
    /* PRINT resulting dp matrix */
    printf("\n\n==== TEST MATRIX BEGIN ==== \n");
@@ -206,12 +217,12 @@ void test_matrix_Print (const int Q, const int T,
    printf("\n");
 
    /* Row-by-Row */
-   for (int i = 0; i < Q+1; i++)
+   for (int i = 0; i < Q + 1; i++)
    {
       printf( "%d\t", i );
       for (int j = 0; j <= T; j++)
       {
-         printf( "%3.0f\t", TMX(i,j) );
+         printf( "%3.0f\t", TMX(i, j) );
       }
       printf("\n");
    }
@@ -219,67 +230,67 @@ void test_matrix_Print (const int Q, const int T,
    printf("==== TEST MATRIX END ==== \n\n");
 }
 
-/* 
+/*
  *  FUNCTION:  dp_matrix_Clear()
  *  SYNOPSIS:  Clear all matrix values to -INF. (for testing)
  *
  *  PURPOSE:
  *
- *  ARGS:      <Q>         query length, 
+ *  ARGS:      <Q>         query length,
  *             <T>         target length,
  *             <st_MX>     Normal State (Match, Insert, Delete) Matrix,
  *             <sp_MX>     Special State (J,N,B,C,E) Matrix
  *
- *  RETURN:   
+ *  RETURN:
  */
-void dp_matrix_Clear (const int Q, const int T, 
-                      float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
-                      float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ])
+void dp_matrix_Clear (const int Q, const int T,
+                      float st_MX[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
+                      float sp_MX[ NUM_SPECIAL_STATES * (Q + 1) ])
 {
    for (int i = 0; i <= Q; i++)
    {
       for (int j = 0; j <= T; j++)
-         MMX(i,j) = IMX(i,j) = DMX(i,j) = -INF;
+         MMX(i, j) = IMX(i, j) = DMX(i, j) = -INF;
 
       for (int j = 0; j < NUM_SPECIAL_STATES; j++)
-         XMX(j,i) = -INF;
+         XMX(j, i) = -INF;
    }
 }
 
 /* Set all matrix values to val */
-void dp_matrix_Clear_X (const int Q, const int T, 
-                       float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
-                       float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ],
-                       float val)
+void dp_matrix_Clear_X (const int Q, const int T,
+                        float st_MX[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
+                        float sp_MX[ NUM_SPECIAL_STATES * (Q + 1) ],
+                        float val)
 {
    for (int i = 0; i <= Q; i++)
    {
       for (int j = 0; j <= T; j++)
-         MMX(i,j) = IMX(i,j) = DMX(i,j) = val;
+         MMX(i, j) = IMX(i, j) = DMX(i, j) = val;
 
       for (int j = 0; j < NUM_SPECIAL_STATES; j++)
-         XMX(j,i) = val;
+         XMX(j, i) = val;
    }
 }
 
 
-/* 
+/*
  *  FUNCTION:  dp_matrix_Save()
  *  SYNOPSIS:  Save dynamic programming matrix to file.
  *
  *  PURPOSE:
  *
- *  ARGS:      <Q>         query length, 
+ *  ARGS:      <Q>         query length,
  *             <T>         target length,
  *             <st_MX>     Normal State (Match, Insert, Delete) Matrix,
  *             <sp_MX>     Special State (J,N,B,C,E) Matrix
  *             <f>         Filename
  *
- *  RETURN: 
+ *  RETURN:
  */
-void dp_matrix_Save (const int Q, const int T, 
-                     const float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
-                     const float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ],
+void dp_matrix_Save (const int Q, const int T,
+                     const float st_MX[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
+                     const float sp_MX[ NUM_SPECIAL_STATES * (Q + 1) ],
                      const char *_filename_)
 {
    FILE *fp;
@@ -297,51 +308,51 @@ void dp_matrix_Save (const int Q, const int T,
    fprintf(fp, "\n");
 
    /* Row-by-Row */
-   for (int i = 0; i < Q+1; i++)
+   for (int i = 0; i < Q + 1; i++)
    {
       fprintf(fp, "M %d\t", i );
       for (int j = 0; j <= T; j++)
       {
-         fprintf(fp, "%.3f\t", MMX(i,j) );
+         fprintf(fp, "%.3f\t", MMX(i, j) );
       }
       fprintf(fp, "\n");
 
       fprintf(fp, "I %d\t", i );
       for (int j = 0; j <= T; j++)
       {
-         fprintf(fp, "%.3f\t", IMX(i,j) );
+         fprintf(fp, "%.3f\t", IMX(i, j) );
       }
       fprintf(fp, "\n");
 
       fprintf(fp, "D %d\t", i );
       for (int j = 0; j <= T; j++)
       {
-         fprintf(fp, "%.3f\t", DMX(i,j) );
+         fprintf(fp, "%.3f\t", DMX(i, j) );
       }
       fprintf(fp, "\n\n");
    }
 
-      fprintf(fp, "###### SPECIAL STATES #####\n");
-      fprintf(fp, "N\t");
-      for (int i = 0; i <= Q; i++)
-         { fprintf(fp, "%.3f\t", XMX(SP_N,i) ); }
-      fprintf(fp, "\n");
-      fprintf(fp, "J\t");
-      for (int i = 0; i <= Q; i++)
-         { fprintf(fp, "%.3f\t", XMX(SP_J,i) ); }
-      fprintf(fp, "\n");
-      fprintf(fp, "E\t");
-      for (int i = 0; i <= Q; i++)
-         { fprintf(fp, "%.3f\t", XMX(SP_E,i) ); }
-      fprintf(fp, "\n");
-      fprintf(fp, "C\t");
-      for (int i = 0; i <= Q; i++)
-         { fprintf(fp, "%.3f\t", XMX(SP_C,i) ); }
-      fprintf(fp, "\n");
-      fprintf(fp, "B\t");
-      for (int i = 0; i <= Q; i++)
-         { fprintf(fp, "%.3f\t", XMX(SP_B,i) ); }
-      fprintf(fp, "\n");
+   fprintf(fp, "###### SPECIAL STATES #####\n");
+   fprintf(fp, "N\t");
+   for (int i = 0; i <= Q; i++)
+   { fprintf(fp, "%.3f\t", XMX(SP_N, i) ); }
+   fprintf(fp, "\n");
+   fprintf(fp, "J\t");
+   for (int i = 0; i <= Q; i++)
+   { fprintf(fp, "%.3f\t", XMX(SP_J, i) ); }
+   fprintf(fp, "\n");
+   fprintf(fp, "E\t");
+   for (int i = 0; i <= Q; i++)
+   { fprintf(fp, "%.3f\t", XMX(SP_E, i) ); }
+   fprintf(fp, "\n");
+   fprintf(fp, "C\t");
+   for (int i = 0; i <= Q; i++)
+   { fprintf(fp, "%.3f\t", XMX(SP_C, i) ); }
+   fprintf(fp, "\n");
+   fprintf(fp, "B\t");
+   for (int i = 0; i <= Q; i++)
+   { fprintf(fp, "%.3f\t", XMX(SP_B, i) ); }
+   fprintf(fp, "\n");
 
    fclose(fp);
 }

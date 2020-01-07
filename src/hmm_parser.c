@@ -66,17 +66,17 @@ void hmmprofile_Create(HMM_PROFILE *prof, char *_filename_)
       /* header - field */
       if ( strcmp( header, "NAME" ) == 0 ) {
          field = strtok( NULL, " \n" );
-         prof->name = malloc( sizeof (field) );
+         prof->name = malloc( sizeof (char) * 128 );
          strcpy( prof->name, field );
       }
       else if ( strcmp( header, "ACC" ) == 0 ) {
          field = strtok( NULL, " \n" );
-         prof->acc = malloc( sizeof (field) );
+         prof->acc = malloc( sizeof (char) * 128 );
          strcpy( prof->acc, field );
       }
       else if ( strcmp( header, "DESC" ) == 0 ) {
          field = strtok( NULL, " \n");
-         prof->desc = malloc( sizeof (field) );
+         prof->desc = malloc( sizeof (char) * 128 );
          strcpy( prof->desc, field );
       }
       else if ( strcmp( header, "LENG" ) == 0 ) {
@@ -89,7 +89,7 @@ void hmmprofile_Create(HMM_PROFILE *prof, char *_filename_)
       }
       else if ( strcmp( header, "ALPH" ) == 0 ) {
          field = strtok( NULL, " \n" );
-         prof->alph = malloc( sizeof (field) );
+         prof->alph = malloc( sizeof (char) * 128 );
          strcpy( prof->alph, field );
 
          int i = 0;
@@ -110,6 +110,9 @@ void hmmprofile_Create(HMM_PROFILE *prof, char *_filename_)
             exit(EXIT_FAILURE);
          }
       }
+      else if ( strcmp( header, "RF" ) == 0 ) {}
+      else if ( strcmp( header, "MM" ) == 0 ) {}
+
       else if ( strcmp( header, "STATS" ) == 0 ) {
          field = strtok( NULL, " \n" ); /* LOCAL */
          field = strtok( NULL, " \n" ); /* distribution type */
@@ -298,6 +301,145 @@ void hmmprofile_Create(HMM_PROFILE *prof, char *_filename_)
 }
 
 /* display HMM_PROFILE to console */
+void hmmprofile_Save(HMM_PROFILE *prof, char *_filename_)
+{
+   int i,j;
+   float best_val, new_val;
+   char best_amino;
+   HMM_NODE curr_node;
+
+   FILE *fp = fopen(_filename_, "w");
+
+   fprintf(fp, "\n");
+   fprintf(fp, "===== HMM PROFILE ====================================\n");
+   fprintf(fp, "\t         NAME:\t%s\n", prof->name);
+   fprintf(fp, "\t       LENGTH:\t%d\n", prof->leng);
+   char *seq = (char *)malloc( sizeof(char) * prof->leng );
+
+   /* print consensus sequence */
+   fprintf(fp, "\tCONSENSUS SEQ:\t");
+   for (int i = 1; i < prof->leng+1; i++)
+   {
+      best_val = -INF;
+      curr_node = prof->hmm_model[i];
+      for (int j = 0; j < NUM_AMINO; j++)
+      {
+         new_val = curr_node.match[j];
+         if (best_val < new_val)
+         {
+            best_val = new_val;
+            best_amino = AA[j];
+         }
+      }
+      fprintf(fp, "%c", best_amino);
+   }
+   fprintf(fp, "\n");
+
+   fprintf(fp, "\t        COMPO:\n");
+   fprintf(fp, "FREQ:\t");
+   for (int j = 0; j < NUM_AMINO; j++)
+   {
+      fprintf(fp, "\t%.4f", prof->bg_model->freq[j]);
+   }
+   fprintf(fp, "\nCOMPO:\t");
+   for (int j = 0; j < NUM_AMINO; j++)
+   {
+      fprintf(fp, "\t%.4f", prof->bg_model->compo[j]);
+   }
+   fprintf(fp, "\nINSERT:\t");
+   for (int j = 0; j < NUM_AMINO; j++)
+   {
+      fprintf(fp, "\t%.4f", prof->bg_model->insert[j]);
+   }
+   fprintf(fp, "\nTRANS:\t");
+   for (int j = 0; j < NUM_TRANS_STATES; j++)
+   {
+      fprintf(fp, "\t%.4f", prof->bg_model->trans[j]);
+   }
+   fprintf(fp, "\n\n");
+
+   fprintf(fp, "\tHMM:\n\t\t");
+   for (int i = 0; i < NUM_AMINO; i++)
+   {
+      fprintf(fp, "%d\t", i);
+   }
+   fprintf(fp, "\n");
+
+   /* */
+   fprintf(fp, "=== TRANSITION PROBS ===\n");
+   for (int i = 0; i < prof->leng+1; i++)
+   {
+      for (int j = 0; j < NUM_AMINO; j++)
+      {
+         fprintf(fp, "\t%.4f", prof->hmm_model[i].match[j]);
+      }
+      fprintf(fp, "\n");
+   }
+   for (int i = 0; i < prof->leng+1; i++)
+   {
+      for (int j = 0; j < NUM_AMINO; j++)
+      {
+         fprintf(fp, "\t%.4f", prof->hmm_model[i].insert[j]);
+      }
+      fprintf(fp, "\n");
+   }
+   for (int i = 0; i < prof->leng+1; i++)
+   {
+      for (int j = 0; j < NUM_TRANS_STATES; j++)
+      {
+         fprintf(fp, "\t%.4f", prof->hmm_model[i].trans[j]);
+      }
+      fprintf(fp, "\n");
+   }
+
+   /* */
+   // for (int i = 0; i < prof->leng+1; i++)
+   // {
+   //    fprintf(fp, "\t%d", i);
+   //    for (int j = 0; j < NUM_AMINO; j++)
+   //    {
+   //       fprintf(fp, "\t%.4f", prof->hmm_model[i].match[j]);
+   //    }
+   //    fprintf(fp, "\n\t");
+   //    for (int j = 0; j < NUM_AMINO; j++)
+   //    {
+   //       fprintf(fp, "\t%.4f", prof->hmm_model[i].insert[j]);
+   //    }
+   //    fprintf(fp, "\n\t");
+   //    for (int j = 0; j < NUM_TRANS_STATES; j++)
+   //    {
+   //       fprintf(fp, "\t%.4f", prof->hmm_model[i].trans[j]);
+   //    }
+   //    fprintf(fp, "\n");
+   // }
+   // fprintf(fp, "\n");
+
+   fprintf(fp, "BACKGROUND:\n");
+   fprintf(fp, "LOG:\t\t");
+   for (int i = 0; i < NUM_AMINO; i++)
+   {
+      fprintf(fp, "%.4f\t", BG_MODEL_log[i]);
+   }
+   fprintf(fp, "\n");
+   fprintf(fp, "ACTUAL:\t\t");
+   for (int i = 0; i < NUM_AMINO; i++)
+   {
+      fprintf(fp, "%.4f\t", BG_MODEL[i]);
+   }
+   fprintf(fp, "\n\n");
+
+   fprintf(fp, "SPECIAL:\n");
+   fprintf(fp, "\tE:\t%.4f\t%.4f\n", prof->bg_model->spec[SP_E][SP_LOOP], prof->bg_model->spec[SP_E][SP_MOVE]);
+   fprintf(fp, "\tN:\t%.4f\t%.4f\n", prof->bg_model->spec[SP_N][SP_LOOP], prof->bg_model->spec[SP_N][SP_MOVE]);
+   fprintf(fp, "\tC:\t%.4f\t%.4f\n", prof->bg_model->spec[SP_C][SP_LOOP], prof->bg_model->spec[SP_C][SP_MOVE]);
+   fprintf(fp, "\tJ:\t%.4f\t%.4f\n", prof->bg_model->spec[SP_J][SP_LOOP], prof->bg_model->spec[SP_J][SP_MOVE]);
+
+   fprintf(fp, "//");
+
+   fclose(fp);
+}
+
+/* display HMM_PROFILE to console */
 void hmmprofile_Display(HMM_PROFILE *prof)
 {
    int i,j;
@@ -403,63 +545,18 @@ void hmmprofile_Display(HMM_PROFILE *prof)
    printf("\n======================================================\n\n");
 }
 
-void hmmprofile_Display_ALT(HMM_PROFILE *target)
-{
-   int i,j,k;
-
-   printf(">>>\n");
-   printf("=== TRANSITION PROBS ===\n");
-   for (i = 0; i < target->leng+1; i++)
-   {
-      printf("%d\t", i);
-      for (k = 0; k < NUM_TRANS_STATES; k++)
-      {
-         printf("%.3f\t", target->hmm_model[i].trans[k] );
-      }
-      printf("\n");
-   }
-
-   printf("=== MATCH EMISSION PROBS ===\n");
-   for (i = 0; i < target->leng+1; i++)
-   {
-      printf("%d\t", i);
-      for (k = 0; k < NUM_AMINO; k++)
-      {
-         printf("%.3f\t", target->hmm_model[i].match[k] );
-      }
-      printf("\n");
-   }
-
-   printf("=== INSERT EMISSION PROBS ===\n");
-   for (i = 0; i < target->leng+1; i++)
-   {
-       printf("%d\t", i);
-       for (k = 0; k < NUM_AMINO; k++)
-       {
-         printf("%.3f\t", target->hmm_model[i].insert[k] );
-       }
-       printf("\n");
-   }
-
-   printf("=== SPECIAL PROBS (E,N,J,C) ===\n");
-   printf("E:\t%.5f\t%.5f\n", target->bg_model->spec[SP_E][SP_LOOP], target->bg_model->spec[SP_E][SP_MOVE]);
-   printf("N:\t%.5f\t%.5f\n", target->bg_model->spec[SP_N][SP_LOOP], target->bg_model->spec[SP_N][SP_MOVE]);
-   printf("J:\t%.5f\t%.5f\n", target->bg_model->spec[SP_J][SP_LOOP], target->bg_model->spec[SP_J][SP_MOVE]);
-   printf("C:\t%.5f\t%.5f\n", target->bg_model->spec[SP_C][SP_LOOP], target->bg_model->spec[SP_C][SP_MOVE]);
-   printf("<<<\n\n");
-}
-
 /* configures HMM_PROFILE to account for background model */
 /* modeled after HMMER p7_ProfileConfig() */
 void hmmprofile_Config(HMM_PROFILE *prof)
 {
    int k, x;
+   bool IS_LOCAL, IS_MULTIHIT;
    float Z = 0.0;
-   float *occ = malloc( sizeof(float) * prof->leng );
+   float *occ = malloc( sizeof(float) * (prof->leng + 1) );
    hmmprofile_CalcOccupancy(prof, occ);
 
-   bool IS_LOCAL = true;
-   bool IS_MULTIHIT = true;
+   prof->isLocal = IS_LOCAL = true;
+   prof->isMultihit = IS_MULTIHIT = true;
 
    /* set first node to zero */
    for (k = 0; k < NUM_AMINO; k++)
@@ -473,17 +570,18 @@ void hmmprofile_Config(HMM_PROFILE *prof)
       prof->hmm_model[0].trans[k] = -INF;
    }
 
-   /*  */
+   printf("test..\n");
+   printf("length=%d\n", prof->leng);
+
+   /* Entry Scores... */
    // printf("B2M:\t");
-   if (IS_LOCAL)
+   if (prof->isLocal)
    {
       /* set B-to-M transition probs (local entry mode) */
-      for (k = 0; k <= prof->leng; k++)
-      {
+      for (k = 1; k <= prof->leng; k++) {
          Z += occ[k] * (float) (prof->leng - k + 1);
       }
-      for (k = 0; k <= prof->leng; k++)
-      {
+      for (k = 1; k <= prof->leng; k++) {
          prof->hmm_model[k-1].trans[B2M] = log( occ[k] / Z );
          // printf("%.3f\t", prof->hmm_model[k-1].trans[B2M]);
       }
@@ -502,10 +600,11 @@ void hmmprofile_Config(HMM_PROFILE *prof)
          // printf("%.3f\t", prof->hmm_model[0].trans[B2M]);
       }
    }
-   // printf("\n\n");
 
-   /* Set E state loop/move probabilities  */
-   if (IS_MULTIHIT)
+   /* E state loop/move probabilities: nonzero for MOVE allows loops/multihits
+    * N,C,J transitions are set later by length config
+    */
+   if (prof->isMultihit)
    {
       prof->bg_model->spec[SP_E][SP_MOVE] = -CONST_LOG2;
       prof->bg_model->spec[SP_E][SP_LOOP] = -CONST_LOG2;
@@ -514,19 +613,20 @@ void hmmprofile_Config(HMM_PROFILE *prof)
    else 
    {
       prof->bg_model->spec[SP_E][SP_MOVE] = 0.0f;
-      prof->bg_model->spec[SP_E][SP_LOOP] = -CONST_LOG2;
+      prof->bg_model->spec[SP_E][SP_LOOP] = -INF;
       prof->bg_model->num_J = 0.0f;
    }
 
-   /* Transition scores */
-   for (x = 0; x < NUM_TRANS_STATES; x++)
+   /* Initialize Transition scores */
+   for (x = 0; x < NUM_TRANS_STATES; x++) 
    {
-      // prof->hmm_model[0].trans[x] = -INF;
       prof->hmm_model[prof->leng].trans[x] = -INF;
    }
-   for (k = 1; k < prof->leng; k++)
+
+   /* Transition scores */
+   for (k = 1; k < prof->leng; k++) 
    {
-      for (x = 0; x < NUM_TRANS_STATES-1; x++)
+      for (x = 0; x < NUM_TRANS_STATES-1; x++) 
       {
          prof->hmm_model[k].trans[x] = log( prof->hmm_model[k].trans[x] );
       }
@@ -556,7 +656,8 @@ void hmmprofile_Config(HMM_PROFILE *prof)
    for (x = 0; x < prof->alph_leng; x++)
    {
       prof->hmm_model[0].insert[x] = -INF; /* initial I-to-M impossible */
-      for (k = 1; k < prof->leng; k++){
+      for (k = 1; k < prof->leng; k++)
+      {
          prof->hmm_model[k].insert[x] = 0.0f;
       }
       prof->hmm_model[prof->leng].insert[x] = -INF; /* initial I-to-M impossible */
@@ -584,27 +685,27 @@ void hmmprofile_CalcOccupancy(HMM_PROFILE *prof, float *occ)
 void hmmprofile_ReconfigLength(HMM_PROFILE *prof, int L)
 {
    float ploop, pmove;
+   float nj = (float) prof->bg_model->num_J;
 
    /* Configure N,J,C transitions so they bear L/(2+nj) of the total unannotated sequence length L. */
-   pmove = (2.0f + (float) prof->bg_model->num_J) / ((float) L + (float) prof->bg_model->num_J);  /* 2/(L+2) for sw; 3/(L+3) for fs */
+   pmove = (2.0f + nj) / ((float) L + 2.0f + nj);  /* 2/(L+2) for sw; 3/(L+3) for fs */
    ploop = 1.0f - pmove;
-   pmove = log( pmove );
-   ploop = log( ploop );
 
    /* hardwire numbers from p7_ReconfigLength() */
-   ploop = -0.02956; 
-   pmove = -3.53612;
+   // ploop = -0.02956; 
+   // pmove = -3.53612;
 
+   prof->bg_model->spec[SP_N][SP_LOOP] = log( ploop );
+   prof->bg_model->spec[SP_C][SP_LOOP] = log( ploop );
+   prof->bg_model->spec[SP_J][SP_LOOP] = log( ploop );
 
-   // printf("nj = %d, pmove = %.3f %.3f, ploop = %.3f %.3f\n", prof->bg_model->num_J, pmove, log(pmove), ploop, log(ploop));
+   prof->bg_model->spec[SP_N][SP_MOVE] = log( pmove );
+   prof->bg_model->spec[SP_C][SP_MOVE] = log( pmove );
+   prof->bg_model->spec[SP_J][SP_MOVE] = log( pmove );
 
-   prof->bg_model->spec[SP_N][SP_LOOP] = ploop;
-   prof->bg_model->spec[SP_C][SP_LOOP] = ploop;
-   prof->bg_model->spec[SP_J][SP_LOOP] = ploop;
-
-   prof->bg_model->spec[SP_N][SP_MOVE] = pmove;
-   prof->bg_model->spec[SP_C][SP_MOVE] = pmove;
-   prof->bg_model->spec[SP_J][SP_MOVE] = pmove;
+   /* DAVID RICH EDIT */
+   printf("=== RECONFIG LENGTH (%d) ===\n", L);
+   printf("nj = %.3f, pmove = %.3f %.3f, ploop = %.3f %.3f\n", nj, pmove, log(pmove), ploop, log(ploop));
 }
 
 /* parse .fasta file and build SEQ object */

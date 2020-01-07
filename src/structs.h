@@ -284,4 +284,5 @@ typedef struct {
    BOUND *bounds;               
 } EDGEBOUNDS;
 
+
 #endif /* _STRUCTS_H */
