@@ -10,7 +10,7 @@
 #define _HMM_PARSER_H
 
 void hmmprofile_Create(HMM_PROFILE *prof, char *_filename_);
-void hmmprofile_Config(HMM_PROFILE *prof);
+void hmmprofile_Config(HMM_PROFILE *prof, bool is_local, bool is_multihit);
 void hmmprofile_CalcOccupancy(HMM_PROFILE *prof, float *occ);
 void hmmprofile_ReconfigLength(HMM_PROFILE *prof, int L);
 void hmmprofile_Display(HMM_PROFILE *prof);

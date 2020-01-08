@@ -23,6 +23,7 @@
 #include "viterbi.h"
 #include "forward_backward.h"
 #include "cloud_search.h"
+#include "testing.h"
 
 // macros
 #define getName(var) #var
@@ -137,8 +138,8 @@ void edgebounds_Print(EDGEBOUNDS *edg)
  *
  *  PURPOSE:
  *
- *  ARGS:      <edg_fwd>      Forward Edgebounds,
- *             <edg_bck>      Backward Edgebounds,
+ *  ARGS:      <edg_fwd>      Forward Edgebounds (sorted by diag ascending),
+ *             <edg_bck>      Backward Edgebounds (sorted by diag ascending),
  *             <edg_res>      Result Edgebounds
  *
  *  RETURN:
@@ -196,7 +197,7 @@ void edgebounds_Merge(EDGEBOUNDS *edg_fwd,
          not_merged = true;
          for (x = 0; x < k; ++x)
          {
-            /* if bounds overlap, merge it into */
+            /* if bounds overlap, merge it into and break from loop */
             if ( !(bound_cur.rb - edg_tmp->bounds[x].lb <= tol || bound_cur.lb - edg_tmp->bounds[x].rb >= tol ) )
             {
                printf("merge fwd (%d)...\n", i);

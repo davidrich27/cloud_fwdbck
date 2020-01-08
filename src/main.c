@@ -125,7 +125,9 @@ void test(char *hmm_file, char *fasta_file)
    hmmprofile_Save(target_prof, "output/myversion.pre-profile.tsv");
 
    printf("configuring...\n");
-   hmmprofile_Config(target_prof);
+   bool is_local, is_multihit;
+   is_local = true; is_multihit = true;
+   hmmprofile_Config(target_prof, is_local, is_multihit);
    // hmmprofile_Display(target_prof);
    hmmprofile_Save(target_prof, "output/myversion.post-profile.tsv");
    int T = target_prof->leng;
@@ -172,14 +174,14 @@ void test(char *hmm_file, char *fasta_file)
    dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.viterbi.tsv");
    printf("=== VITERBI -> END ===\n");
 
-   // /* run traceback of viterbi */
-   // printf("=== TRACEBACK -> START ===\n");
-   // traceback_Build(query_seq, target_prof, Q, T, st_MX, sp_MX, tr);
-   // // traceback_Print(tr);
-   // traceback_Show(Q, T, st_MX, sp_MX, tr);
-   // // dp_matrix_Print(Q, T, st_MX, sp_MX);
-   // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.traceback.tsv");
-   // printf("=== TRACEBACK -> END ===\n");
+   /* run traceback of viterbi */
+   printf("=== TRACEBACK -> START ===\n");
+   traceback_Build(query_seq, target_prof, Q, T, st_MX, sp_MX, tr);
+   // traceback_Print(tr);
+   traceback_Show(Q, T, st_MX, sp_MX, tr);
+   // dp_matrix_Print(Q, T, st_MX, sp_MX);
+   dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.traceback.tsv");
+   printf("=== TRACEBACK -> END ===\n");
 
    /* run forward/backward algorithms */
    printf("=== FORWARD -> START ===\n");

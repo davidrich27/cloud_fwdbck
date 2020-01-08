@@ -306,7 +306,7 @@ void traceback_Build (const SEQ* query,
                exit(1);
             }
 
-            if ( CMP_TOL( MMX(i, j), XMX(SP_B, j - 1) + TSC(j - 1, B2M) + MSC(j, A) ) )
+            if ( CMP_TOL( MMX(i, j), XMX(SP_B, i - 1) + TSC(j - 1, B2M) + MSC(j, A) ) )
                st_cur = B_ST;
             else if ( CMP_TOL( MMX(i, j), MMX(i - 1, j - 1) + TSC(j - 1, M2M) + MSC(j, A) ) )
                st_cur = M_ST;
@@ -316,6 +316,7 @@ void traceback_Build (const SEQ* query,
                st_cur = D_ST;
             else {
                printf("ERROR: Failed to trace from M_ST at (%d,%d)\n", i, j);
+               printf("TOL: %f vs %f\n", MMX(i, j), MMX(i - 1, j - 1) + TSC(j - 1, M2M) + MSC(j, A) );
                exit(1);
             }
             j--; i--;
@@ -402,7 +403,28 @@ void traceback_Build (const SEQ* query,
       }
 
       /* Add new state and (i,j) to trace */
+      int state_num[] = {0, 1, 2, 0, 1, 2, 3, 4};
+      static char * states[] = {"ST_M",
+                                "ST_I",
+                                "ST_D",
+                                "ST_E",
+                                "ST_N",
+                                "ST_J",
+                                "ST_C",
+                                "ST_B",
+                                "ST_S",
+                                "ST_T",
+                                "ST_X" };
       traceback_Append(tr, st_cur, i, j);
+      if (st_cur < 3) {
+         printf("%s (%d,%d) %f\n", states[st_cur], i, j, ST_MX(st_MX, state_num[st_cur], i, j) );
+      } 
+      else if (st_cur > 3 && st_cur < 9) {
+         printf("%s (%d,%d) \t%f\n", states[st_cur], i, j, ST_MX(sp_MX, state_num[st_cur], i, j) );
+      }
+      else {
+         printf("%s (%d,%d)\n", states[st_cur], i, j );
+      }
 
       /* Update previous state */
       st_prev = st_cur;
