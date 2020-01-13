@@ -55,8 +55,8 @@ float viterbi_Run (const SEQ* query,
    float  sc1, sc2, sc3, sc4;
 
    /* local or global (multiple alignments) */
-   bool   is_local = true;
-   float  sc_E = (is_local) ? 0 : -INF;
+   bool   isLocal = target->isLocal;
+   float  sc_E = (isLocal) ? 0 : -INF;
 
    /* initialize special states (?) */
    XMX(SP_N, 0) = 0;                                        /* S->N, p=1             */
@@ -222,7 +222,7 @@ void traceback_Build (const SEQ* query,
    printf("L=%d, M=%d\n", Q, T);
 
    /* local or global? */
-   const bool is_local = true;
+   bool is_local = target->isLocal;
 
    /* allocate memory for trace */
    const int min_size = 256;
@@ -403,7 +403,7 @@ void traceback_Build (const SEQ* query,
       }
 
       /* Add new state and (i,j) to trace */
-      int state_num[] = {0, 1, 2, 0, 1, 2, 3, 4};
+      int state_num[] = {MAT_ST, INS_ST, DEL_ST, SP_E, SP_N, SP_J, SP_C, SP_B, -1, -1};
       static char * states[] = {"ST_M",
                                 "ST_I",
                                 "ST_D",
@@ -417,10 +417,10 @@ void traceback_Build (const SEQ* query,
                                 "ST_X" };
       traceback_Append(tr, st_cur, i, j);
       if (st_cur < 3) {
-         printf("%s (%d,%d) %f\n", states[st_cur], i, j, ST_MX(st_MX, state_num[st_cur], i, j) );
+         printf("%s (%d,%d) \t%f\n", states[st_cur], i, j, ST_MX(st_MX, state_num[st_cur], i, j) );
       } 
-      else if (st_cur > 3 && st_cur < 9) {
-         printf("%s (%d,%d) \t%f\n", states[st_cur], i, j, ST_MX(sp_MX, state_num[st_cur], i, j) );
+      else if (st_cur >= 3 && st_cur < 9) {
+         printf("%s (%d,%d) \t%f\n", states[st_cur], i, j, SP_MX(sp_MX, state_num[st_cur], i) );
       }
       else {
          printf("%s (%d,%d)\n", states[st_cur], i, j );

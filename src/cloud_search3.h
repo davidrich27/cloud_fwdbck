@@ -11,29 +11,29 @@
 #define _CLOUD_SEARCH_H
 
 void cloud_forward_Run3(const SEQ* query, 
-                     const HMM_PROFILE* target,
-                     int Q, int T, 
-                     float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
-                     float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ], 
-                     RESULTS* res,
-                     TRACEBACK* tr,
-                     EDGEBOUNDS* edg,
-                     float alpha, int beta );
+                        const HMM_PROFILE* target,
+                        int Q, int T,
+                        float st_MX[ NUM_NORMAL_STATES * (Q+1) * (3) ], 
+                        float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ], 
+                        RESULTS* res,
+                        TRACEBACK* tr,
+                        EDGEBOUNDS* edg,
+                        float alpha, int beta );
 
 void cloud_backward_Run3(const SEQ* query, 
-                     const HMM_PROFILE* target,
-                     int Q, int T, 
-                     float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
-                     float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ], 
-                     RESULTS* res,
-                     TRACEBACK* tr,
-                     EDGEBOUNDS* edg,
-                     float alpha, int beta );
+                        const HMM_PROFILE* target,
+                        int Q, int T, 
+                        float st_MX[ NUM_NORMAL_STATES * (Q+1) * (3) ], 
+                        float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ], 
+                        RESULTS* res,
+                        TRACEBACK* tr,
+                        EDGEBOUNDS* edg,
+                        float alpha, int beta );
 
 void forward_bounded_Run3(const SEQ* query, 
                         const HMM_PROFILE* target,
                         int Q, int T, 
-                        float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
+                        float st_MX[ NUM_NORMAL_STATES * (Q+1) * (3) ], 
                         float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ], 
                         RESULTS* res,
                         EDGEBOUNDS* edg);
@@ -41,7 +41,7 @@ void forward_bounded_Run3(const SEQ* query,
 void backward_bounded_Run3(const SEQ* query, 
                         const HMM_PROFILE* target,
                         int Q, int T, 
-                        float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
+                        float st_MX[ NUM_NORMAL_STATES * (Q+1) * (3) ], 
                         float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ], 
                         RESULTS* res,
                         EDGEBOUNDS* edg);

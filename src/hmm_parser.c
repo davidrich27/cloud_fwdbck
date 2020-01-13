@@ -547,16 +547,15 @@ void hmmprofile_Display(HMM_PROFILE *prof)
 
 /* configures HMM_PROFILE to account for background model */
 /* modeled after HMMER p7_ProfileConfig() */
-void hmmprofile_Config(HMM_PROFILE *prof, bool is_local, bool is_multihit)
+void hmmprofile_Config(HMM_PROFILE *prof, int mode)
 {
    int k, x;
-   bool IS_LOCAL, IS_MULTIHIT;
    float Z = 0.0;
    float *occ = malloc( sizeof(float) * (prof->leng + 1) );
    hmmprofile_CalcOccupancy(prof, occ);
 
-   prof->isLocal = is_local;
-   prof->isMultihit = is_multihit;
+   prof->isLocal = Test_IsLocal(mode);
+   prof->isMultihit = Test_IsMulti(mode);
 
    /* set first node to zero */
    for (k = 0; k < NUM_AMINO; k++)

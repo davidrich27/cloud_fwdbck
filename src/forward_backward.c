@@ -40,8 +40,9 @@ void fwdbck_Run (const SEQ* query,
                   float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ], 
                   RESULTS* res)
 {
+   printf("FWD START >>>\n");
+
    init_Logsum();
-   // print_Logsum();
 
    /* allocate DP matrix */
 
@@ -110,6 +111,8 @@ float forward_Run (const SEQ* query,
                    float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ], 
                    RESULTS* res)
 {
+   init_Logsum();
+
    char   a;           /* store current character in sequence */
    int    A;           /* store int value of character */
    int    i,j,k = 0;   /* row, column indices */
@@ -122,10 +125,8 @@ float forward_Run (const SEQ* query,
    COORDS tr_end; /* ending match state of optimal alignment (for traceback) */
 
    /* local or global (multiple alignments) */
-   bool   is_local = true;
+   bool   is_local = target->isLocal;
    float  sc_E = (is_local) ? 0 : -INF;
-
-   printf("FWD START >>>\n");
 
    /* clear matrix */
    for (i = 0; i <= Q; i++) {
@@ -294,6 +295,8 @@ float backward_Run (const SEQ* query,
                     float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ], 
                     RESULTS* res)
 {
+   init_Logsum();
+
    char   a;           /* store current character in sequence */
    int    A;           /* store int value of character */
    int    i,j,k = 0;   /* row, column indices */
@@ -305,7 +308,7 @@ float backward_Run (const SEQ* query,
    float  sc1, sc2, sc3, sc4;
 
    /* local or global (multiple alignments) */
-   bool   is_local = true;
+   bool   is_local = target->isLocal;
    float  sc_E = (is_local) ? 0 : -INF;
 
    // printf("=== i D2M D2D ===\n");
@@ -313,8 +316,6 @@ float backward_Run (const SEQ* query,
    //    printf("%d \t%.5f \t%.5f \n", i, TSC(i,D2M), TSC(i,D2D));
    // }
    // exit(0);
-
-   printf("BCK START >>>\n");
 
    /* Initialize the Q row. */
    XMX(SP_J,Q) = XMX(SP_B,Q) = XMX(SP_N,Q) = -INF;
@@ -334,16 +335,16 @@ float backward_Run (const SEQ* query,
       MMX(Q,j) = calc_Logsum( XMX(SP_E,Q) + sc_E, 
                               DMX(Q,j+1)  + TSC(j,M2D) );
 
-      printf("M (%d, %d)  \tMB: %.5f\t MD: %.5f\t M2D: %.5f\t MMX: %.5f\n", 
-         Q, j, sc1, sc2, TSC(j,M2D), MMX(Q,j) );
+      // printf("M (%d, %d)  \tMB: %.5f\t MD: %.5f\t M2D: %.5f\t MMX: %.5f\n", 
+      //    Q, j, sc1, sc2, TSC(j,M2D), MMX(Q,j) );
 
       sc1 = XMX(SP_E,Q) + sc_E;
       sc2 = DMX(Q,j+1)  + TSC(j,D2D);
       DMX(Q,j) = calc_Logsum( XMX(SP_E,Q) + sc_E,
                               DMX(Q,j+1)  + TSC(j,D2D) );
 
-      printf("D (%d, %d)  \tDB: %.5f\t DD: %.5f\t D2D: %.5f\t DMX: %.5f\n", 
-         Q, j, sc1, sc2, TSC(j,D2D), DMX(Q,j) );
+      // printf("D (%d, %d)  \tDB: %.5f\t DD: %.5f\t D2D: %.5f\t DMX: %.5f\n", 
+      //    Q, j, sc1, sc2, TSC(j,D2D), DMX(Q,j) );
 
       IMX(Q,j) = -INF;
    }
@@ -360,12 +361,12 @@ float backward_Run (const SEQ* query,
       XMX(SP_B,i) = MMX(i+1,1) + TSC(0,B2M) + MSC(1,A);
 
 
-      printf("B (%d,%d)  \t%.5f  \t%.5f  \t%.5f  \t%.5f  \n", i, 1, XMX(SP_B,i), MMX(i+1,1), TSC(0,B2M), MSC(1,A));
+      // printf("B (%d,%d)  \t%.5f  \t%.5f  \t%.5f  \t%.5f  \n", i, 1, XMX(SP_B,i), MMX(i+1,1), TSC(0,B2M), MSC(1,A));
 
       /* B -> MATCH */
       for (j = 2; j <= T; j++)
       {
-         printf("B (%d,%d)  \t%.5f  \t%.5f  \t%.5f  \t%.5f  \n", i, j, XMX(SP_B,i), MMX(i+1,j), TSC(j-1,B2M), MSC(j,A));
+         // printf("B (%d,%d)  \t%.5f  \t%.5f  \t%.5f  \t%.5f  \n", i, j, XMX(SP_B,i), MMX(i+1,j), TSC(j-1,B2M), MSC(j,A));
 
          XMX(SP_B,i) = calc_Logsum( XMX(SP_B,i),
                                     MMX(i+1,j) + TSC(j-1,B2M) + MSC(j,A) );
@@ -385,9 +386,9 @@ float backward_Run (const SEQ* query,
       MMX(i,T) = DMX(i,T) = XMX(SP_E,i);
       IMX(i,T) = -INF;
 
-      printf("J: %.8f\t C: %.8f\t E: %.8f\t N: %.8f\n", XMX(SP_J,i), XMX(SP_C,i), XMX(SP_E,i), XMX(SP_N,i) );
+      // printf("J: %.8f\t C: %.8f\t E: %.8f\t N: %.8f\n", XMX(SP_J,i), XMX(SP_C,i), XMX(SP_E,i), XMX(SP_N,i) );
 
-      printf("M (%d,%d)  \tMMX: %.8f \tDMX: %.8f\n", i, T, MMX(i,T), DMX(i,T) );
+      // printf("M (%d,%d)  \tMMX: %.8f \tDMX: %.8f\n", i, T, MMX(i,T), DMX(i,T) );
 
       /* FOR every position in TARGET profile */
       for (j = T-1; j >= 1; j--)
@@ -407,8 +408,8 @@ float backward_Run (const SEQ* query,
                      );
          MMX(i,j) = prev_sum;
 
-         printf("M (%d,%d)  \tMM: %.5f\t IM: %.5f\t DM: %.5f\t BM: %.5f\t MSC: %.5f\t ISC: %.5f\t M2M: %.5f\t M2I: %.5f\t M2D: %.5f\t DMX: %.5f\n", 
-            i, j, sc1, sc2, sc3, sc4, sc_M, sc_I, TSC(j,M2M), TSC(j,M2I), TSC(j,M2D), DMX(i,j+1) );
+         // printf("M (%d,%d)  \tMM: %.5f\t IM: %.5f\t DM: %.5f\t BM: %.5f\t MSC: %.5f\t ISC: %.5f\t M2M: %.5f\t M2I: %.5f\t M2D: %.5f\t DMX: %.5f\n", 
+         //    i, j, sc1, sc2, sc3, sc4, sc_M, sc_I, TSC(j,M2M), TSC(j,M2I), TSC(j,M2D), DMX(i,j+1) );
 
          /* FIND SUM OF PATHS FROM MATCH OR INSERT STATE (TO PREVIOUS INSERT) */
          sc1 = prev_mat = MMX(i+1,j+1) + TSC(j,I2M) + sc_M;
@@ -417,8 +418,8 @@ float backward_Run (const SEQ* query,
          prev_sum = calc_Logsum( prev_mat, prev_ins );
          IMX(i,j) = prev_sum;
 
-         printf("I (%d,%d)  \tIM: %.5f\t II: %.5f\t I2M: %.5f\t I2I: %.5f\n", 
-            i, j, sc1, sc2, TSC(j,I2M), TSC(j,I2I) );
+         // printf("I (%d,%d)  \tIM: %.5f\t II: %.5f\t I2M: %.5f\t I2I: %.5f\n", 
+            // i, j, sc1, sc2, TSC(j,I2M), TSC(j,I2I) );
 
          /* FIND SUM OF PATHS FROM MATCH OR DELETE STATE (FROM PREVIOUS DELETE) */
          sc1 = prev_mat = MMX(i+1,j+1) + TSC(j,D2M) + sc_M;
@@ -431,8 +432,8 @@ float backward_Run (const SEQ* query,
                      );
          DMX(i,j) = prev_sum;
 
-         printf("D (%d,%d)  \tDM: %.5f\t DD: %.5f\t DB: %.5f\t D2M: %.5f\t D2D: %.5f\t DMX: %.5f\t %.5f\n", 
-            i, j, sc1, sc2, sc3, TSC(j,D2M), TSC(j,D2D), DMX(i,j+1), DMX(i,j) );
+         // printf("D (%d,%d)  \tDM: %.5f\t DD: %.5f\t DB: %.5f\t D2M: %.5f\t D2D: %.5f\t DMX: %.5f\t %.5f\n", 
+            // i, j, sc1, sc2, sc3, TSC(j,D2M), TSC(j,D2D), DMX(i,j+1), DMX(i,j) );
       }
    }
 
@@ -460,10 +461,10 @@ float backward_Run (const SEQ* query,
       MMX(i,j) = IMX(i,j) = DMX(i,j) = -INF;
    }
 
-   printf("i\tN\tJ\tC\tE\tB\n");
-   for (i = 0; i < Q; ++i) {
-      printf("%d\t %.5f\t %.5f\t %.5f\t %.5f\t %.5f\n", i, XMX(SP_N,i), XMX(SP_J,i), XMX(SP_C,i), XMX(SP_E,i), XMX(SP_B,i));
-   }
+   // printf("i\tN\tJ\tC\tE\tB\n");
+   // for (i = 0; i < Q; ++i) {
+   //    printf("%d\t %.5f\t %.5f\t %.5f\t %.5f\t %.5f\n", i, XMX(SP_N,i), XMX(SP_J,i), XMX(SP_C,i), XMX(SP_E,i), XMX(SP_B,i));
+   // }
 
    sc_best = XMX(SP_N,0);
 
