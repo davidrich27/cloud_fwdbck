@@ -6,7 +6,7 @@
  *  @bug Lots.
  *******************************************************************************/
 
-// imports
+/* imports */
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -17,21 +17,21 @@
 
 /* local imports (after struct declarations) */
 
-// data structures and file parsers
+/* data structures and file parsers */
 #include "structs.h"
 #include "misc.h"
 #include "hmm_parser.h"
 #include "edgebounds_obj.h"
 
-// quadratic space algs
+/* quadratic space algs */
 #include "viterbi.h"
 #include "forward_backward.h"
 #include "cloud_search.h"
 
-// linear space algs
+/* linear space algs */
 // #include "viterbi3.h"
 // #include "forward_backward3.h"
-// #include "cloud_search3.h"
+#include "cloud_search3.h"
 
 #include "testing.h"
 
@@ -259,7 +259,7 @@ void test(char *hmm_file, char *fasta_file)
 
       /* bounded forward */
       printf("=== BOUNDED FORWARD -> START ===\n");
-      dp_matrix_Clear_X(Q, T, st_MX, sp_MX, 0);
+      dp_matrix_Clear_X(Q, T, st_MX, sp_MX, -INF);
       sc = forward_bounded_Run3(query_seq, target_prof, Q, T, st_MX3, sp_MX, res, edg);
       printf("Bounded Forward Score: %.5f\n", sc);
       // dp_matrix_Print(Q, T, st_MX, sp_MX);
@@ -268,7 +268,7 @@ void test(char *hmm_file, char *fasta_file)
 
       /* bounded backward */
       printf("=== BOUNDED BACKWARD -> START ===\n");
-      dp_matrix_Clear_X(Q, T, st_MX, sp_MX, 0);
+      dp_matrix_Clear_X(Q, T, st_MX, sp_MX, -INF);
       // sc = backward_bounded_Run3(query_seq, target_prof, Q, T, st_MX3, sp_MX, res, edg);
       printf("Bounded Backward Score: %.5f\n", sc);
       // dp_matrix_Print(Q, T, st_MX, sp_MX);
@@ -341,8 +341,6 @@ void test(char *hmm_file, char *fasta_file)
       // /* display results */
       // results_Display(results1);
    }
-
-   
 
    printf("...test finished. \n");
 }

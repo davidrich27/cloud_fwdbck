@@ -104,6 +104,8 @@ void cloud_forward_Run3 (const SEQ* query,
    edg->size = min_size;
    edg->bounds = (BOUND *)malloc( min_size * sizeof(BOUND) );
 
+   /* --------------------------------------------------------------------------------- */
+
    // dp_matrix_Clear(Q, T, st_MX, sp_MX);
 
    /* INIT ANTI-DIAGS */
@@ -393,6 +395,7 @@ void cloud_backward_Run3 (const SEQ* query,
    int dim_T, dim_Q;             /* dimensions of submatrix being searched */
    int total_cnt;                /* number of cells computed */
    COORDS start, end;            /* start and end point of alignment */
+   BOUND old_b, new_b;           /* bounds for clearing old data */
 
    /* vars for computing cells */
    char   a;                     /* store current character in sequence */
@@ -417,6 +420,8 @@ void cloud_backward_Run3 (const SEQ* query,
    int min_size = 128;
    edg->size = min_size;
    edg->bounds = (BOUND *)malloc( min_size * sizeof(BOUND) );
+
+   /* --------------------------------------------------------------------------------- */
 
    // dp_matrix_Clear(Q, T, st_MX, sp_MX);
 
@@ -688,23 +693,23 @@ void cloud_backward_Run3 (const SEQ* query,
          prev_sum = calc_Logsum(
                        calc_Logsum( prev_mat, prev_ins ),
                        calc_Logsum( prev_del, prev_end ) );
-         MMX(i, j) = prev_sum;
+         MMX3(i, j) = prev_sum;
 
          /* FIND SUM OF PATHS FROM MATCH OR INSERT STATE (TO PREVIOUS INSERT) */
          prev_mat = MMX3(i + 1, j + 1) + TSC(j, I2M) + sc_M;
          prev_ins = IMX3(i + 1, j)   + TSC(j, I2I) + sc_I;
          /* best-to-insert */
          prev_sum = calc_Logsum( prev_mat, prev_ins );
-         IMX(i, j) = prev_sum;
+         IMX3(i, j) = prev_sum;
 
          /* FIND SUM OF PATHS FROM MATCH OR DELETE STATE (FROM PREVIOUS DELETE) */
          prev_mat = MMX3(i + 1, j + 1) + TSC(j, D2M) + sc_M;
          prev_del = DMX3(i, j + 1)   + TSC(j, D2D);
-         prev_end = XMX3(SP_E, i)  + sc_E;
+         prev_end = XMX(SP_E, i)  + sc_E;
          /* best-to-delete */
          prev_sum = calc_Logsum( prev_mat, prev_del );
          prev_sum = calc_Logsum( prev_sum, prev_end );
-         DMX(i, j) = prev_sum;
+         DMX3(i, j) = prev_sum;
 
          // printf("CALC %d=>(%d,%d): %.1f %.1f %.1f \n", d, i, j, MMX(i,j),IMX(i,j),DMX(i,j));
       }
@@ -747,49 +752,57 @@ float forward_bounded_Run3(const SEQ* query,
                            RESULTS* res,
                            EDGEBOUNDS* edg)
 {
-   char   a;           /* store current character in sequence */
-   int    A;           /* store int value of character */
-   int    i, j, k = 0; /* row, column indices */
-   char   *seq = query->seq; /* alias for getting seq */
-   int    N = edg->N;
+   char   a;                              /* store current character in sequence */
+   int    A;                              /* store int value of character */
+   int    i,j,k = 0;                      /* row, column indices */
+   char   *seq = query->seq;              /* alias for getting seq */
+   int    N = edg->N;                     /* length of edgebound list */
 
-   int    x, y1, y2;
-   int    row_cur, row_prev;
-   int    r_0b, r_0e, r_1b, r_1e;
-   int    r_0, r_1;
+   int    x, y1, y2;                      /* row, leftcol and rightcol bounds in row */
+   int    x_0, row_cur, x_1, row_prv;     /* real index of current and previous rows */
+   int    r_0, r_1;                       /* row offset -> r_0: row_cur % 2, r_1: row_prv % 2 */
+   int    r_0b, r_0e, r_1b, r_1e;         /* begin and end indices for row in edgebound list */
 
-   float  prev_mat, prev_del, prev_ins, prev_beg, prev_sum;
-   float  sc, sc_1, sc_2;
-   float  sc_max, sc_best;
+   float  prev_mat, prev_del, prev_ins;   /* temp placeholder sums */
+   float  prev_beg, prev_end, prev_sum;   /* temp placeholder sums */
+   float  sc, sc1, sc2, sc3, sc4;         /* temp placeholder sums (testing) */
+   float  sc_best;                        /* alignment score (return value) */
+   float  sc_M, sc_I, sc_D;
 
-   /* local or global (multiple alignments) */
+   /* local or global? (multiple alignments) */
    bool   is_local = target->isLocal;
    float  sc_E = (is_local) ? 0 : -INF;
+
+   /* --------------------------------------------------------------------------------- */
 
    /* initialize special states (?) */
    XMX(SP_N, 0) = 0;                                        /* S->N, p=1             */
    XMX(SP_B, 0) = XSC(SP_N, SP_MOVE);                       /* S->N->B, no N-tail    */
    XMX(SP_E, 0) = XMX(SP_C, 0) = XMX(SP_J, 0) = -INF;       /* need seq to get here (?)  */
 
-   /* initialize zero row */
+   /* initialize zero row / clear all pre-existing data from matrix */
    for (j = 0; j <= 3; j++)
       for (i = 0; i <= Q; i++)
          MMX3(i, j) = IMX3(i, j) = DMX3(i, j) = -INF;
 
    /* set initial r_0 and r_1 */
-   row_cur = edg->bounds[0].diag;
-   r_0 = row_cur % 2;
+   row_cur = x_0 = edg->bounds[0].diag;
+   r_0 = row_cur % 2;  
+   row_prv = x_1 = row_cur-1;       
    r_1 = (row_cur-1) % 2;
+   r_1b = -1;
+   r_1e = -1;
 
    /* MAIN RECURSION */
    /* FOR every BOUND in EDGEBOUND */
    for (k = 0; k < N;)
    {
-      /* get start of current row */
-      row_cur = edg->bounds[k].diag;
-      r_0 = row_cur % 2;
+      /* get start/end range of current row */
+      row_cur = x_0 = edg->bounds[k].diag;
+      r_0 = x_0 % 2;        /* r_0: current row */
+      r_1 = (x_0-1) % 2;    /* r_1: back one row */
       r_0b = k;
-      /* add every edgebound of current row */
+      /* add every edgebound from current row */
       while (true) 
       {
          k++;
@@ -803,17 +816,17 @@ float forward_bounded_Run3(const SEQ* query,
       for (i = r_0b; i < r_0e; i++)
       {
          /* in this context, "diag" represents the "row" */
-         x  = edg->bounds[i].diag;
+         // x_0  = edg->bounds[i].diag;  /* NOTE: this is always the same as cur_row */
          y1 = edg->bounds[i].lb;
          y2 = edg->bounds[i].rb;
 
          /* Get next sequence character */
-         a = seq[i - 1];
+         a = seq[x_1];
          A = AA_REV[a];
 
          /* Initialize zero column (left-edge) */
-         MMX3(i, 0) = IMX3(i, 0) = DMX3(i, 0) = -INF;
-         // XMX(SP_E,i) = -INF;
+         MMX3(r_0, 0) = IMX3(r_0, 0) = DMX3(r_0, 0) = -INF;
+         // XMX(SP_E,x) = -INF;
 
          /* MAIN RECURSION */
          /* FOR every position in TARGET profile */
@@ -851,11 +864,9 @@ float forward_bounded_Run3(const SEQ* query,
 
             /* UPDATE E STATE */
             prev_mat = MMX3(r_0, j) + sc_E;
-            prev_del = DMX3(r_0, j) + sc_E
-                       XMX(SP_E, i) = calc_Logsum(
-                                         calc_Logsum( prev_mat, prev_del ),
-                                         XMX(SP_E, i)
-                                      );
+            prev_del = DMX3(r_0, j) + sc_E;
+            XMX(SP_E, x_0) = calc_Logsum( XMX(SP_E, x_0),
+                                 calc_Logsum( prev_mat, prev_del ) );
          }
 
          /* UNROLLED FINAL LOOP ITERATION */
@@ -866,7 +877,7 @@ float forward_bounded_Run3(const SEQ* query,
          prev_mat = MMX3(r_1, j - 1)  + TSC(j - 1, M2M);
          prev_ins = IMX3(r_1, j - 1)  + TSC(j - 1, I2M);
          prev_del = DMX3(r_1, j - 1)  + TSC(j - 1, D2M);
-         prev_beg = XMX(SP_B, i - 1) + TSC(j - 1, B2M); /* from begin match state (new alignment) */
+         prev_beg = XMX(SP_B, x_1) + TSC(j - 1, B2M); /* from begin match state (new alignment) */
          /* best-to-match */
          prev_sum = calc_Logsum(
                        calc_Logsum( prev_mat, prev_ins ),
@@ -886,37 +897,39 @@ float forward_bounded_Run3(const SEQ* query,
          DMX3(r_0, j) = prev_sum;
 
          /* UPDATE E STATE */
-         XMX(SP_E, i) = calc_Logsum( XMX(SP_E, i), MMX(i, j) );
-         XMX(SP_E, i) = calc_Logsum( XMX(SP_E, i), DMX(i, j) );
+            prev_mat = MMX3(r_0, j);
+            prev_del = DMX3(r_0, j);
+            XMX(SP_E, x_0) = calc_Logsum( XMX(SP_E, x_0),
+                                 calc_Logsum( prev_mat, prev_del ) );
       }
 
       /* ONCE ROW IS COMPLETED, UPDATE SPECIAL STATES */
       {
          /* SPECIAL STATES */
          /* J state */
-         sc_1 = XMX(SP_J, i - 1) + XSC(SP_J, SP_LOOP);   /* J->J */
-         sc_2 = XMX(SP_E, i)     + XSC(SP_E, SP_LOOP);   /* E->J is E's "loop" */
-         XMX(SP_J, i) = calc_Logsum( sc_1, sc_2 );
+         sc1 = XMX(SP_J, x_1) + XSC(SP_J, SP_LOOP);   /* J->J */
+         sc2 = XMX(SP_E, x_0) + XSC(SP_E, SP_LOOP);   /* E->J is E's "loop" */
+         XMX(SP_J, x_0) = calc_Logsum( sc1, sc2 );
 
          /* C state */
-         sc_1 = XMX(SP_C, i - 1) + XSC(SP_C, SP_LOOP);
-         sc_2 = XMX(SP_E, i)     + XSC(SP_E, SP_MOVE);
-         XMX(SP_C, i) = calc_Logsum( sc_1, sc_2 );
+         sc1 = XMX(SP_C, x_1) + XSC(SP_C, SP_LOOP);
+         sc2 = XMX(SP_E, x_0) + XSC(SP_E, SP_MOVE);
+         XMX(SP_C, x_0) = calc_Logsum( sc1, sc2 );
 
          /* N state */
-         XMX(SP_N, i) = XMX(SP_N, i - 1) + XSC(SP_N, SP_LOOP);
+         XMX(SP_N, x_0) = XMX(SP_N, x_1) + XSC(SP_N, SP_LOOP);
 
          /* B state */
-         sc_1 = XMX(SP_N, i) + XSC(SP_N, SP_MOVE);       /* N->B is N's move */
-         sc_2 = XMX(SP_J, i) + XSC(SP_J, SP_MOVE);       /* J->B is J's move */
-         XMX(SP_B, i) = calc_Logsum( sc_1, sc_2 );
+         sc1 = XMX(SP_N, x_0) + XSC(SP_N, SP_MOVE);       /* N->B is N's move */
+         sc2 = XMX(SP_J, x_0) + XSC(SP_J, SP_MOVE);       /* J->B is J's move */
+         XMX(SP_B, x_0) = calc_Logsum( sc1, sc2 );
       }
       
       /* SCRUB PREVIOUS ROW VALUES */
       for (i = r_1b; i < r_1e; i++) 
       {
          /* in this context, "diag" represents the "row" */
-         x  = edg->bounds[i].diag;
+         // x  = edg->bounds[i].diag;
          y1 = edg->bounds[i].lb;
          y2 = edg->bounds[i].rb;
 
@@ -927,6 +940,7 @@ float forward_bounded_Run3(const SEQ* query,
       }
 
       /* SET CURRENT ROW TO PREVIOUS ROW */
+      row_prv = x_1 = row_cur;
       r_1 = r_0;
       r_1b = r_0b;
       r_1e = r_0e;
@@ -964,143 +978,204 @@ float backward_bounded_Run3(const SEQ* query,
                             RESULTS* res,
                             EDGEBOUNDS* edg)
 {
-   char   a;           /* store current character in sequence */
-   int    A;           /* store int value of character */
-   int    i, j, k = 0; /* row, column indices */
-   char   *seq = query->seq; /* alias for getting seq */
-   int    N = edg->N;
+   char   a;                              /* store current character in sequence */
+   int    A;                              /* store int value of character */
+   int    i,j,k = 0;                      /* row, column indices */
+   char   *seq = query->seq;              /* alias for getting seq */
+   int    N = edg->N;                     /* length of edgebound list */
 
-   int    x, y1, y2;
-   int    row_cur, row_prev;
-   int    r_0b, r_0e, r_1b, r_1e;
-   int    r_0, r_1;
+   int    x, y1, y2;                      /* row, leftcol and rightcol bounds in row */
+   int    x_0, row_cur, x_1, row_prv;     /* real index of current and previous rows */
+   int    r_0, r_1;                       /* row offset -> r_0: row_cur % 2, r_1: row_prv % 2 */
+   int    r_0b, r_0e, r_1b, r_1e;         /* begin and end indices for row in edgebound list */
 
-   float  prev_mat, prev_del, prev_ins, prev_end, prev_sum;
-   float  sc, sc_1, sc_2, sc_M, sc_I;
-   float  sc_max, sc_best;
-   COORDS tr_end; /* ending match state of optimal alignment (for traceback) */
+   float  prev_mat, prev_del, prev_ins;   /* temp placeholder sums */
+   float  prev_beg, prev_end, prev_sum;   /* temp placeholder sums */
+   float  sc, sc1, sc2, sc3, sc4;         /* temp placeholder sums (testing) */
+   float  sc_best;                        /* alignment score (return value) */
+   float  sc_M, sc_I, sc_D;
 
-   /* local or global (multiple alignments) */
+   /* local or global? (multiple alignments) */
    bool   is_local = target->isLocal;
    float  sc_E = (is_local) ? 0 : -INF;
 
-   /* initialize special states (?) */
-   XMX(SP_N, 0) = 0;                                        /* S->N, p=1             */
-   XMX(SP_B, 0) = XSC(SP_N, SP_MOVE);                       /* S->N->B, no N-tail    */
-   XMX(SP_E, 0) = XMX(SP_C, 0) = XMX(SP_J, 0) = -INF;       /* need seq to get here (?)  */
+   /* --------------------------------------------------------------------------------- */
 
-   /* initialize zero row */
-   for (j = 0; j <= 3; j++)
-      for (i = 0; i <= Q; i++)
-         MMX3(i, j) = IMX3(i, j) = DMX3(i, j) = -INF;
+   /* Initialize the Q row. */
+   r_0 = Q; r_0b = 0; r_0e = T;
 
+   XMX(SP_J,Q) = XMX(SP_B,Q) = XMX(SP_N,Q) = -INF;
+   XMX(SP_C,Q) = XSC(SP_C,SP_MOVE);
+   XMX(SP_E,Q) = XMX(SP_C,Q) + XSC(SP_E,SP_MOVE);
+
+   MMX3(r_0,T) = DMX3(r_0,T) = XMX(SP_E,Q);
+   IMX3(r_0,T) = -INF;
+
+   for (j = T-1; j >= 1; j--)
+   {
+      sc1 = XMX(SP_E,Q) + sc_E;
+      sc2 = DMX3(r_0,j+1)  + TSC(j,M2D);
+      MMX3(r_0,j) = calc_Logsum( XMX(SP_E,Q) + sc_E, 
+                              DMX3(r_0,j+1)  + TSC(j,M2D) );
+
+      sc1 = XMX(SP_E,Q) + sc_E;
+      sc2 = DMX3(r_0,j+1)  + TSC(j,D2D);
+      DMX3(r_0,j) = calc_Logsum( XMX(SP_E,Q) + sc_E,
+                              DMX3(r_0,j+1)  + TSC(j,D2D) );
+      
+      IMX3(r_0,j) = -INF;
+   }
 
    /* set initial r_0 and r_1 */
-   row_cur = edg->bounds[N-1].diag;
-   r_0 = row_cur % 2;
-   r_1 = (row_cur+1) % 2;
+   row_cur = x_0 = edg->bounds[N].diag;
+   r_0 = row_cur % 2; 
+   row_prv = x_1 = (row_cur+1) % 2;         
+   r_1 = row_cur;
+   r_1b = -1;
+   r_1e = -1;
 
    /* MAIN RECURSION */
    /* FOR every bound in EDGEBOUND */
-   for (k = N - 1; k >= 0; --k)
+   for (k = N - 1; k >= 0;)
    {
-      x = edg->bounds[k].diag;
-      y1 = max(1, edg->bounds[k].lb);
-      y2 = edg->bounds[k].rb;
+      /* get start/end range of current row */
+      row_cur = x_0 = edg->bounds[k].diag;
+      r_0 = row_cur % 2;
+      r_1 = (row_cur+1) % 2;    /* r_1: back one row */
+      r_0b = k;
 
-      if (x <= 0) {
-         continue;
+      /* add every edgebound of current row */
+      while (true) 
+      {
+         k--;
+         /* if at the end of bounds list OR next bound not in current row */
+         if (k < 0 || edg->bounds[k].diag != row_cur) {
+            r_0e = k;
+            break;
+         }
       }
 
-      /* Get next sequence character */
-      a = seq[i];
+      /* Get next sequence character from current row */
+      a = seq[x_0];
       A = AA_REV[a];
 
-      if (N > 0 && edg->bounds[N - 1].diag != x)
+      /* UPDATE SPECIAL STATES at the start of EACH ROW */
       {
          /* SPECIAL STATES */
-         XMX(SP_B, i) = MMX3(i + 1, 1) + TSC(0, B2M) + MSC(1, A);
+         XMX(SP_B, x_0) = MMX3(r_1, 1) + TSC(0, B2M) + MSC(1, A);
 
          /* B -> MATCH */
          for (j = 2; j <= T; j++)
          {
-            XMX(SP_B, i) = calc_Logsum( XMX(SP_B, i),
-                                        MMX(i + 1, j) + TSC(j - 1, B2M) + MSC(j, A) );
+            XMX(SP_B, x_0) = calc_Logsum( XMX(SP_B, x_0),
+                                        MMX3(r_1, j) + TSC(j - 1, B2M) + MSC(j, A) );
          }
 
-         XMX(SP_J, i) = calc_Logsum( XMX(SP_J, i + 1) + XSC(SP_J, SP_LOOP),
-                                     XMX(SP_B, i)   + XSC(SP_J, SP_MOVE) );
+         XMX(SP_J, x_0) = calc_Logsum( XMX(SP_J, x_1) + XSC(SP_J, SP_LOOP),
+                                       XMX(SP_B, x_0) + XSC(SP_J, SP_MOVE) );
 
-         XMX(SP_C, i) = XMX(SP_C, i + 1) + XSC(SP_C, SP_LOOP);
+         XMX(SP_C, x_0) = XMX(SP_C, x_1) + XSC(SP_C, SP_LOOP);
 
-         XMX(SP_E, i) = calc_Logsum( XMX(SP_J, i) + XSC(SP_E, SP_LOOP),
-                                     XMX(SP_C, i) + XSC(SP_E, SP_MOVE) );
+         XMX(SP_E, x_0) = calc_Logsum( XMX(SP_J, x_0) + XSC(SP_E, SP_LOOP),
+                                       XMX(SP_C, x_0) + XSC(SP_E, SP_MOVE) );
 
-         XMX(SP_N, i) = calc_Logsum( XMX(SP_N, i + 1) + XSC(SP_N, SP_LOOP),
-                                     XMX(SP_B, i)   + XSC(SP_N, SP_MOVE) );
+         XMX(SP_N, x_0) = calc_Logsum( XMX(SP_N, x_1) + XSC(SP_N, SP_LOOP),
+                                       XMX(SP_B, x_0) + XSC(SP_N, SP_MOVE) );
 
-         MMX3(i, T) = DMX3(i, T) = XMX(SP_E, i);
-         IMX3(i, T) = -INF;
+         MMX3(r_0, T) = DMX3(r_0, T) = XMX(SP_E, x_0);
+         IMX3(r_0, T) = -INF;
       }
 
-      /* FOR every position in TARGET profile */
-      for (j = y2 - 1; j >= y1; --j)
+      /* FOR every EDGEBOUND in current ROW */
+      for (i = r_0b; i < r_0e; i++)
       {
-         sc_M = MSC(j + 1, A);
-         sc_I = ISC(j + 1, A);
+         /* in this context, "diag" represents the "row" */
+         // x_0  = edg->bounds[i].diag;
+         y1 = edg->bounds[i].lb;
+         y2 = edg->bounds[i].rb;
 
-         /* FIND SUM OF PATHS FROM MATCH, INSERT, DELETE, OR END STATE (TO PREVIOUS MATCH) */
-         prev_mat = MMX3(i + 1, j + 1) + TSC(j, M2M) + sc_M;
-         prev_ins = IMX3(i + 1, j)   + TSC(j, M2I) + sc_I;
-         prev_del = DMX3(i, j + 1)   + TSC(j, M2D);
-         prev_end = XMX(SP_E, i)  + sc_E;    /* from end match state (new alignment) */
-         /* best-to-match */
-         prev_sum = calc_Logsum(
-                       calc_Logsum( prev_mat, prev_ins ),
-                       calc_Logsum( prev_del, prev_end )
-                    );
-         MMX3(i, j) = prev_sum;
+         /* FOR every position in TARGET profile */
+         for (j = y2 - 1; j >= y1; --j)
+         {
+            sc_M = MSC(j + 1, A);
+            sc_I = ISC(j + 1, A);
 
-         /* FIND SUM OF PATHS FROM MATCH OR INSERT STATE (TO PREVIOUS INSERT) */
-         prev_mat = MMX3(i + 1, j + 1) + TSC(j, I2M) + sc_M;
-         prev_ins = IMX3(i + 1, j)   + TSC(j, I2I) + sc_I;
-         /* best-to-insert */
-         prev_sum = calc_Logsum( prev_mat, prev_ins );
-         IMX3(i, j) = prev_sum;
+            /* FIND SUM OF PATHS FROM MATCH, INSERT, DELETE, OR END STATE (TO PREVIOUS MATCH) */
+            prev_mat = MMX3(r_1, j+1) + TSC(j, M2M) + sc_M;
+            prev_ins = IMX3(r_1, j)   + TSC(j, M2I) + sc_I;
+            prev_del = DMX3(r_0, j+1) + TSC(j, M2D);
+            prev_end = XMX(SP_E, r_0) + sc_E;    /* from end match state (new alignment) */
+            /* best-to-match */
+            prev_sum = calc_Logsum(
+                          calc_Logsum( prev_mat, prev_ins ),
+                          calc_Logsum( prev_del, prev_end )
+                       );
+            MMX3(r_0, j) = prev_sum;
 
-         /* FIND SUM OF PATHS FROM MATCH OR DELETE STATE (FROM PREVIOUS DELETE) */
-         prev_mat = MMX3(i + 1, j + 1) + TSC(j, D2M) + sc_M;
-         prev_del = DMX3(i, j + 1)   + TSC(j, D2D);
-         prev_end = XMX3(SP_E, i)  + sc_E;
-         /* best-to-delete */
-         prev_sum = calc_Logsum( prev_mat, prev_del );
-         prev_sum = calc_Logsum( prev_sum, prev_end );
-         DMX3(i, j) = prev_sum;
+            /* FIND SUM OF PATHS FROM MATCH OR INSERT STATE (TO PREVIOUS INSERT) */
+            prev_mat = MMX3(r_1, j + 1) + TSC(j, I2M) + sc_M;
+            prev_ins = IMX3(r_1, j)     + TSC(j, I2I) + sc_I;
+            /* best-to-insert */
+            prev_sum = calc_Logsum( prev_mat, prev_ins );
+            IMX3(r_0, j) = prev_sum;
+
+            /* FIND SUM OF PATHS FROM MATCH OR DELETE STATE (FROM PREVIOUS DELETE) */
+            prev_mat = MMX3(r_1, j + 1) + TSC(j, D2M) + sc_M;
+            prev_del = DMX3(r_0, j + 1) + TSC(j, D2D);
+            prev_end = XMX(SP_E, x_0)  + sc_E;
+            /* best-to-delete */
+            prev_sum = calc_Logsum( prev_end,
+                           calc_Logsum( prev_mat, prev_del ) );
+            DMX3(r_0, j) = prev_sum;
+         }
       }
+
+      /* SCRUB PREVIOUS ROW VALUES */
+      for (i = r_1b; i < r_1e; i++) 
+      {
+         /* in this context, "diag" represents the "row" */
+         // x  = edg->bounds[i].diag;
+         y1 = edg->bounds[i].lb;
+         y2 = edg->bounds[i].rb;
+
+         for (j = y1; j < y2; j++) 
+         {
+            MMX3(r_1, j) = IMX3(r_1, j) = DMX3(r_1, j) = -INF;
+         }
+      }
+
+      /* SET CURRENT ROW TO PREVIOUS ROW */
+      row_prv = x_1 = row_cur;
+      r_1 = r_0;
+      r_1b = r_0b;
+      r_1e = r_0e;
    }
 
+   /* FINAL ROW */
+   row_cur = x_0 = 1;
+   r_0 = row_cur % 2;
    /* FINAL i = 0 row */
-   a = seq[1];
+   a = seq[x_0];
    A = AA_REV[a];
 
-   XMX(SP_B, 0) = MMX(1, 1) + TSC(0, B2M) + MSC(1, A);
+   XMX(SP_B, 0) = MMX3(r_0, 1) + TSC(0, B2M) + MSC(1, A);
 
    for (j = 2; j >= T; j++)
    {
       XMX(SP_B, 0) = calc_Logsum( XMX(SP_B, 0),
-                                  MMX3(1, j) + TSC(j - 1, B2M) + MSC(j, A) );
+                                  MMX3(r_0, j) + TSC(j - 1, B2M) + MSC(j, A) );
    }
 
-   XMX(SP_J, i) = -INF;
-   XMX(SP_C, i) = -INF;
-   XMX(SP_E, i) = -INF;
+   XMX(SP_J, x_0) = -INF;
+   XMX(SP_C, x_0) = -INF;
+   XMX(SP_E, x_0) = -INF;
 
-   XMX(SP_N, i) = calc_Logsum( XMX(SP_N, 1) + XSC(SP_N, SP_LOOP),
-                               XMX(SP_B, 0) + XSC(SP_N, SP_MOVE) );
+   XMX(SP_N, x_0) = calc_Logsum( XMX(SP_N, 1) + XSC(SP_N, SP_LOOP),
+                                 XMX(SP_B, 0) + XSC(SP_N, SP_MOVE) );
 
    for (j = T; j >= 1; j--)
    {
-      MMX3(i, j) = IMX3(i, j) = DMX3(i, j) = -INF;
+      MMX3(r_0, j) = IMX3(r_0, j) = DMX3(r_0, j) = -INF;
    }
 
    sc_best = XMX(SP_N, 0);
