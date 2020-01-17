@@ -66,17 +66,17 @@ void hmmprofile_Create(HMM_PROFILE *prof, char *_filename_)
       /* header - field */
       if ( strcmp( header, "NAME" ) == 0 ) {
          field = strtok( NULL, " \n" );
-         prof->name = malloc( sizeof (char) * 128 );
+         prof->name = malloc( sizeof (char) * 256 );
          strcpy( prof->name, field );
       }
       else if ( strcmp( header, "ACC" ) == 0 ) {
          field = strtok( NULL, " \n" );
-         prof->acc = malloc( sizeof (char) * 128 );
+         prof->acc = malloc( sizeof (char) * 256 );
          strcpy( prof->acc, field );
       }
       else if ( strcmp( header, "DESC" ) == 0 ) {
          field = strtok( NULL, " \n");
-         prof->desc = malloc( sizeof (char) * 128 );
+         prof->desc = malloc( sizeof (char) * 256 );
          strcpy( prof->desc, field );
       }
       else if ( strcmp( header, "LENG" ) == 0 ) {
@@ -89,7 +89,7 @@ void hmmprofile_Create(HMM_PROFILE *prof, char *_filename_)
       }
       else if ( strcmp( header, "ALPH" ) == 0 ) {
          field = strtok( NULL, " \n" );
-         prof->alph = malloc( sizeof (char) * 128 );
+         prof->alph = malloc( sizeof (char) * 256 );
          strcpy( prof->alph, field );
 
          int i = 0;
