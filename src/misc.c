@@ -113,6 +113,17 @@ void print_Logsum()
    printf("\n\n");
 }
 
+/* Get the number of characters in a string (including \0) */
+int get_str_len(char* str) 
+{
+   int i;
+   while (str[i] != '\0') {
+      i++;
+   } 
+   i++;
+   return i;
+}
+
 /*
  *  FUNCTION:  dp_matrix_Print()
  *  SYNOPSIS:  Print out dynamic programming matrix to screen.
@@ -230,30 +241,20 @@ void test_matrix_Print (const int Q, const int T,
    printf("==== TEST MATRIX END ==== \n\n");
 }
 
-/*
- *  FUNCTION:  dp_matrix_Clear()
- *  SYNOPSIS:  Clear all matrix values to -INF. (for testing)
- *
- *  PURPOSE:
- *
- *  ARGS:      <Q>         query length,
- *             <T>         target length,
- *             <st_MX>     Normal State (Match, Insert, Delete) Matrix,
- *             <sp_MX>     Special State (J,N,B,C,E) Matrix
- *
- *  RETURN:
- */
+/* Clear all matrix values to -INF. (for testing) */
 void dp_matrix_Clear (const int Q, const int T,
                       float st_MX[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
                       float sp_MX[ NUM_SPECIAL_STATES * (Q + 1) ])
 {
    for (int i = 0; i <= Q; i++)
    {
-      for (int j = 0; j <= T; j++)
+      for (int j = 0; j <= T; j++) {
          MMX(i, j) = IMX(i, j) = DMX(i, j) = -INF;
+      }
 
-      for (int j = 0; j < NUM_SPECIAL_STATES; j++)
+      for (int j = 0; j < NUM_SPECIAL_STATES; j++) {
          XMX(j, i) = -INF;
+      }
    }
 }
 
@@ -265,11 +266,78 @@ void dp_matrix_Clear_X (const int Q, const int T,
 {
    for (int i = 0; i <= Q; i++)
    {
-      for (int j = 0; j <= T; j++)
+      for (int j = 0; j <= T; j++) {
          MMX(i, j) = IMX(i, j) = DMX(i, j) = val;
+      }
 
-      for (int j = 0; j < NUM_SPECIAL_STATES; j++)
+      for (int j = 0; j < NUM_SPECIAL_STATES; j++) {
          XMX(j, i) = val;
+      }
+   }
+}
+
+
+/* Set all matrix values to val */
+int dp_matrix_Compare (const int Q, const int T,
+                        float st_MX_1[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
+                        float sp_MX_1[ NUM_SPECIAL_STATES * (Q + 1) ],
+                        float st_MX_2[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
+                        float sp_MX_2[ NUM_SPECIAL_STATES * (Q + 1) ] )
+{
+   int i, j, st;
+
+   for (i = 0; i <= Q; i++)
+   {
+      for (j = 0; j <= T; j++) 
+      {
+         for (st = 0; st < NUM_NORMAL_STATES; st++) 
+         {
+            if ( ST_MX(st_MX_1, st, i, j) != ST_MX(st_MX_1, st, i, j) ) 
+            {
+               return false;
+            } 
+         }
+      }
+
+      for (st = 0; st < NUM_SPECIAL_STATES; st++) 
+      {
+         if ( SP_MX(sp_MX_1, st, i) != SP_MX(sp_MX_2, st, i) ) 
+         {
+            return false;
+         }
+      }
+   }
+   return true;
+}
+
+/* Copy source matrix into destination matrix */
+void dp_matrix_Copy (const int Q, const int T,
+                     float st_MX_src[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
+                     float sp_MX_src[ NUM_SPECIAL_STATES * (Q + 1) ],
+                     float st_MX_dst[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
+                     float sp_MX_dst[ NUM_SPECIAL_STATES * (Q + 1) ] )
+{
+   int i, j, st;
+
+   for (i = 0; i <= Q; i++)
+   {
+      for (j = 0; j <= T; j++) 
+      {
+         for (st = 0; st < NUM_NORMAL_STATES; st++) 
+         {
+            // printf("(%d, %d, %d)\n", i, j, st);
+            // printf("(%f)\n", st_MX_src[0]);
+            // printf("(%f)\n", st_MX_dst[0]);
+
+            ST_MX(st_MX_dst, st, i, j) = ST_MX(st_MX_src, st, i, j);
+         }
+      }
+
+      for (st = 0; st < NUM_SPECIAL_STATES; st++) 
+      {
+         // printf("(%d, %d)\n", i, st);
+         SP_MX(sp_MX_dst, st, i) = SP_MX(sp_MX_src, st, i);
+      }
    }
 }
 

@@ -38,4 +38,7 @@ void traceback_Show (const int Q, const int T,
 
 void traceback_Print (TRACEBACK *tr);
 
+void traceback_Save(TRACEBACK *tr,
+                    const char *_filename_);
+
 #endif /* _VITERBI_H */

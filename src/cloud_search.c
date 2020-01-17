@@ -25,8 +25,8 @@
 #include "cloud_search.h"
 
 // macros
-#define getName(var) #var
-#define SCALE_FACTOR 1000
+// #define getName(var) #var
+// #define SCALE_FACTOR 1000
 
 // macro functions
 // NOTE: wrap all macro vars in parens!!
@@ -264,6 +264,7 @@ void cloud_forward_Run(const SEQ* query,
 
       /* resize if needed */
       if (edg->N >= edg->size) {
+         printf("realloc...\n");
          edg->size *= 2;
          edg->bounds = realloc(edg->bounds, edg->size * sizeof(BOUND) );
       }
@@ -747,7 +748,8 @@ float forward_bounded_Run(const SEQ* query,
    /* --------------------------------------------------------------------------------- */
 
    /* clear all pre-existing data from matrix */
-   dp_matrix_Clear_X(Q, T, st_MX, sp_MX, -INF);
+   dp_matrix_Clear(Q, T, st_MX, sp_MX);
+   dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.bounded_fwd_test.tsv");
 
    /* initialize special states (?) */
    XMX(SP_N,0) = 0;                                         /* S->N, p=1             */
@@ -758,54 +760,70 @@ float forward_bounded_Run(const SEQ* query,
    // for (j = 0; j < T; j++)
    //    { MMX(0,j) = IMX(0,j) = DMX(0,j) = -INF; }       /* need seq to get here (?)  */
 
-   /* set initial r_0 and r_1 */
-   row_cur = x_0 = edg->bounds[0].diag;
-   r_0 = row_cur; 
-   /* since all data is empty, look at current row to prevent out-of-bounds */
-   row_prv = x_1 = row_cur;         
-   r_1 = row_cur;
-   r_1b = -1;
-   r_1e = -1;
+   /* pass over top-row edgebounds from list */
+   row_cur = r_0 = 0;   /* current row in matrix */
+   k = 0;               /* current index in edgebounds */
+   r_0b = 0;
+   while ( k < N && edg->bounds[k].diag == row_cur ) {
+      k++;
+   }
+   r_0e = k;
+   // printf("ZER0-ROW: [%d-%d]\n", r_0b, r_0e);
+   // printf("Q=%d, T=%d\n", Q, T);
+
+   /* init look back 1 (r_1) */
+   r_1 = r_0;
+   r_1b = r_0b;
+   r_1e = r_0e;
 
    /* MAIN RECURSION */
-   /* FOR every bound in EDGEBOUND */
-   for (k = 0; k < N;)
+   /* FOR every position in QUERY sequence (row in matrix) */
+   for (x_0 = 1; x_0 <= Q; x_0++)
    {
-      /* get start/end range of current row */
-      row_cur = x_0 = edg->bounds[k].diag;
-      r_0 = row_cur;        /* r_0: current row */
-      r_1 = (row_cur-1);    /* r_1: back one row */
-      r_0b = k;
+      /* convert quadratic space row index to linear space row index (ex % 2) */
+      row_cur = x_0;
+      r_0 = x_0;        /* use mod for linear space */
+      r_1 = x_0 - 1;    /* use mod for linear space */
+
       /* add every edgebound from current row */
-      while (true) 
-      {
+      r_0b = k;
+      // printf("k: %d => row_cur: %d, k.diag: %d\n", k, row_cur, edg->bounds[k].diag);
+      while ( k < N && edg->bounds[k].diag == row_cur ) {
          k++;
-         if (k >= N || edg->bounds[k].diag != row_cur) {
-            r_0e = k;
-            break;
-         }
       }
+      r_0e = k;
+
+      /* Get next sequence character */
+      a = seq[x_1];  /* off-by-one */
+      A = AA_REV[a];
+
+      printf("cur_row: %d, edg_range (%d,%d)\n", r_0, r_0b, r_0e );
+
+      // if (k == 264) {
+      //    return 0.f;
+      // }
 
       /* FOR every EDGEBOUND in current ROW */
       for (i = r_0b; i < r_0e; i++)
       {
          /* in this context, "diag" represents the "row" */
-         // x_0  = edg->bounds[i].diag;  /* NOTE: this is always the same as cur_row */
-         y1 = edg->bounds[k].lb;
-         y2 = edg->bounds[k].rb;
-
-         /* Get next sequence character */
-         a = seq[x-1];
-         A = AA_REV[a];
+         x = edg->bounds[i].diag;       /* NOTE: this is always the same as cur_row, x_0 */
+         y1 = max(1, edg->bounds[i].lb); /* can't overflow the left edge */
+         y2 = min(edg->bounds[i].rb, T-1); /* can't overflow the right edge */
+         // printf("row: %d = %d, range: (%d,%d)\n", x_0, r_0, y1, y2);
 
          /* Initialize zero column (left-edge) */
-         MMX(r_0,0) = IMX(r_0,0) = DMX(r_0,0) = -INF;
-         // XMX(SP_E,x) = -INF;
+         MMX(r_0, 0) = IMX(r_0, 0) = DMX(r_0, 0) = -INF;
+         XMX(SP_E, x_0) = -INF;
 
+         // printf("begin...");
+         // fflush(stdout);
          /* MAIN RECURSION */
          /* FOR every position in TARGET profile */
-         for (j = y1; j < y2-1; j++)
+         for (j = y1; j < y2; j++)
          {
+            // printf("j=%d...", j);
+            // fflush(stdout);
             /* FIND SUM OF PATHS TO MATCH STATE (FROM MATCH, INSERT, DELETE, OR BEGIN) */
             /* best previous state transition (match takes the diag element of each prev state) */
             prev_mat = MMX(r_1,j-1)  + TSC(j-1,M2M);
@@ -842,6 +860,8 @@ float forward_bounded_Run(const SEQ* query,
             XMX(SP_E, x_0) = calc_Logsum( XMX(SP_E, x_0),
                                  calc_Logsum( prev_mat, prev_del ) );
          }
+         // printf("end.");
+         // fflush(stdout);
 
          /* UNROLLED FINAL LOOP ITERATION */
          j = y2; 
@@ -859,6 +879,9 @@ float forward_bounded_Run(const SEQ* query,
                      );
          MMX(r_0,j) = prev_sum + MSC(j,A);
 
+         // printf("end.");
+         fflush(stdout);
+
          /* FIND SUM OF PATHS TO INSERT STATE */
          IMX(r_0,j) = -INF;
 
@@ -870,11 +893,17 @@ float forward_bounded_Run(const SEQ* query,
          prev_sum = calc_Logsum( prev_mat, prev_del );
          DMX(r_0,j) = prev_sum;
 
+         // printf("end.");
+         // fflush(stdout);
+
          /* UPDATE E STATE */
          prev_mat = MMX(r_0, j);
          prev_del = DMX(r_0, j);
          XMX(SP_E, x_0) = calc_Logsum( XMX(SP_E, x_0),
                               calc_Logsum( prev_mat, prev_del ) );
+
+         // printf("...unrolled.\n");
+         // fflush(stdout);
       }
 
       /* ONCE ROW IS COMPLETED, UPDATE SPECIAL STATES */
@@ -898,6 +927,8 @@ float forward_bounded_Run(const SEQ* query,
          sc2 = XMX(SP_J, x_0) + XSC(SP_J, SP_MOVE);       /* J->B is J's move */
          XMX(SP_B, x_0) = calc_Logsum( sc1, sc2 );
       }
+      // printf("...special states.\n");
+      // fflush(stdout);
 
       /* SET CURRENT ROW TO PREVIOUS ROW */
       row_prv = x_1 = row_cur;
@@ -984,34 +1015,26 @@ float backward_bounded_Run(const SEQ* query,
       IMX(Q,j) = -INF;
    }
 
-   /* set initial r_0 and r_1 */
-   row_cur = x_0 = edg->bounds[N].diag;
-   r_0 = row_cur % 2; 
-   row_prv = x_1 = (row_cur+1) % 2;         
-   r_1 = row_cur;
-   r_1b = -1;
-   r_1e = -1;
+   /* pass over (Q) bottom-row edgebounds from list */
+   row_cur = r_0 = Q;
+   k = N;
+   r_0b = N;
+   while ( k > 0 && edg->bounds[k].diag != row_cur ) {
+      k--;
+   }
+   r_0e = k;
 
    /* MAIN RECURSION */
    /* FOR every bound in EDGEBOUND */
-   for (k = N-1; k >= 0; --k)
+   for (r_0 = Q-1; r_0 > 0; --r_0)
    {
-      /* get start/end range of current row */
-      row_cur = x_0 = edg->bounds[k].diag;
-      r_0 = row_cur;
-      r_1 = (row_cur+1);    /* r_1: back one row */
+      row_cur = r_0;
+      /* add every edgebound from current row */
       r_0b = k;
-
-      /* add every edgebound of current row */
-      while (true) 
-      {
-         k--;
-         /* if at the end of bounds list OR next bound not in current row */
-         if (k < 0 || edg->bounds[k].diag != row_cur) {
-            r_0e = k;
-            break;
-         }
+      while ( k < N && edg->bounds[k].diag != row_cur ) {
+         k++;
       }
+      r_0e = k;
 
       /* Get next sequence character */
       a = seq[x_0];

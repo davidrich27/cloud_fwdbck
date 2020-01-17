@@ -20,10 +20,15 @@ void rev_test_cycle(int Q, int T,
                     float sp_MX[ NUM_NORMAL_STATES * (Q + 1) ],
                     TRACEBACK *tr);
 
-void test_cloud(int Q, int T,
+int cloud_Fill(int Q, int T,
                 float st_MX[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
                 float sp_MX[ NUM_NORMAL_STATES * (Q + 1) ],
                 EDGEBOUNDS* edg,
-                float val);
+                float val, 
+                int mode);
+
+int cloud_Cell_Count(int Q, int T,
+                   float st_MX[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
+                   float sp_MX[ NUM_NORMAL_STATES * (Q + 1) ]);
 
 #endif /* _TESTING_H */

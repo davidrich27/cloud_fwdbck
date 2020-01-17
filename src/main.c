@@ -36,8 +36,8 @@
 #include "testing.h"
 
 
-void parse_args(int argc, char *argv, ARGS *args);
-void test(char *hmm_file, char *fasta_file);
+void parse_args(int argc, char *argv[], ARGS *args);
+void test(char *hmm_file, char *fasta_file, float alpha, int beta);
 
 /* MAIN */
 int main (int argc, char *argv[])
@@ -45,81 +45,84 @@ int main (int argc, char *argv[])
    ARGS *args = (ARGS *)malloc( sizeof(ARGS) );
 
    char *hmm_file, *fasta_file;
+   char *arg;
+   int  i, j;
 
-   if (argc == 3)
-   {
-      hmm_file = argv[1];
-      fasta_file = argv[2];
-   }
-   else
-   {
-      /* TEST 1 */
-      char *hmm_file = "../data/test1_2.hmm";
-      char *fasta_file = "../data/test1_1.fa";
+   /* DEFAULTS */
+   args->target_hmm_file = "data/test1_2.hmm";
+   args->query_fasta_file = "data/test1_1.fa";
+   args->alpha = 100.0f;
+   args->beta = 5;
 
-      printf("Usage: <target_hmm> <query_fa>\n");
-      exit(0);
-   }
+   parse_args(argc, argv, args);
 
-   test(hmm_file, fasta_file);
+   test(args->target_hmm_file, args->query_fasta_file, args->alpha, args->beta);
 }
 
 /* Parses Arguments from the command line */
-void parse_args (int argc, char *argv, ARGS *args)
+void parse_args (int argc, char *argv[], ARGS *args)
 {
-   /* flagged args */
-   int opt;
-   while ((opt = getopt(argc, &argv, ":if:hoqt")) != -1)
+   int i, len;
+   int num_main_args, max_main_args;
+   
+   num_main_args = 0;
+   max_main_args = 2;
+
+   for (i = 1; i < argc; ++i)
    {
-      switch(opt)
+      if ( argv[i][0] == '-' )
       {
-         case 'h':
-            printf("This is the help dialogue.\n");
-            exit(EXIT_SUCCESS);
-         case 'o':
-            args->outfile = optarg;
-            printf("Sending output to file: %s\n", optarg);
-            break;
+         switch (argv[i][1]) {
+            case 'a':
+               i++;
+               if (i < argc) {
+                  args->alpha = atof(argv[i]);
+                  break;
+               } else {
+                  fprintf(stderr, "Error: -a flag requires argument.\n");
+               }
+            case 'b':
+               i++;
+               if (i < argc) {
+                  args->beta = atoi(argv[i]);
+               } else {
+                  fprintf(stderr, "Error: -b flag requires argument.\n");
+               }
+               break;
+            default:
+               fprintf(stderr, "Error: -%c is not a valid flag.\n", argv[i][1]);
+               exit(1);
+               break;
+         }
+      }
+      else
+      {
+         len = get_str_len(argv[i]);
+         if (num_main_args == 0)
+         {
+            args->target_hmm_file = argv[i];
+         }
+         else if (num_main_args == 1)
+         {
+            args->query_fasta_file = argv[i];
+         }
+         else
+         {
+            fprintf(stderr, "Error: Too many main arguments.\n");
+         }
+         num_main_args++;
       }
    }
-
-   /* if improper number of args */
-   int numArgs = optind - argc;
-   if (numArgs != 6)
-   {
-      printf("Usage: <query_file> <start end> <target_hmm> <start end> \n");
-      exit(0);
-   }
-
-   /* non-flagged args */
-   args->infile_query = &argv[optind];
-   optind++;
-   args->range_query->start = atoi(&argv[optind]);
-   optind++;
-   args->range_query->end = atoi(&argv[optind]);
-   optind++;
-   args->infile_target = &argv[optind];
-   optind++;
-   args->range_target->start = atoi(&argv[optind]);
-   optind++;
-   args->range_target->end = atoi(&argv[optind]);
-   return;
 }
 
 /* unit test */
-void test(char *hmm_file, char *fasta_file)
+void test(char *hmm_file, char *fasta_file, float alpha, int beta)
 {
-   //parse_args(argc, *argv, args);
-
-   /* load substitution matrix */
-   // char *submat_file = "../data/submat/blosum62.submat";
-   // SUBMAT *submat = (SUBMAT *)malloc( sizeof(SUBMAT) );
-   // submat_Create(submat, submat_file);
-   // submat_Display(submat);
-
-   #ifdef DEBUG
-   printf("This is a debugging...\n");
-   #endif
+   /* PRINT ARGS */
+   printf("HMM_FILENAME: %s\n", hmm_file);
+   printf("FASTA_FILENAME: %s\n", fasta_file);
+   printf("ALPHA: %f\n", alpha);
+   printf("BETA: %d\n\n", beta);
 
    printf("building hmm profile...\n");
    /* get target profile */
@@ -130,9 +133,11 @@ void test(char *hmm_file, char *fasta_file)
 
    printf("configuring...\n");
    /* mode choices: MODE_NONE, MODE_MULTILOCAL, MODE_MULTIGLOCAL, MODE_UNILOCAL, MODE_UNIGLOCAL */
-   int mode;
-   // mode = MODE_MULTILOCAL;
-   mode = MODE_UNILOCAL;
+   char* modes[] = { "None", "Multi-local", "Multi-glocal", "Uni-local", "Uni-glocal" }; 
+   int mode; 
+   // mode = MODE_MULTILOCAL;    /* HMMER standard mode (allows jumps) */
+   mode = MODE_UNILOCAL;   /* Cloud mode (prohibiits jumps) */
+   printf("MODE: %s\n", modes[mode]);
    hmmprofile_Config(target_prof, mode);
    // hmmprofile_Display(target_prof);
    hmmprofile_Save(target_prof, "output/myversion.post-profile.tsv");
@@ -141,13 +146,11 @@ void test(char *hmm_file, char *fasta_file)
    printf("building query sequence...\n");
    /* get query sequence */
    SEQ *query_seq = (SEQ *)malloc( sizeof(SEQ) );
-   printf("test...\n");
    seq_Create(query_seq, fasta_file);
    seq_Display(query_seq);
    int Q = query_seq->leng;
 
-   printf("I/O was successful!\n");
-
+   printf("I/O was successful!\n\n");
 
    /* allocate memory to store results */
    float sc, perc_cells;
@@ -164,182 +167,249 @@ void test(char *hmm_file, char *fasta_file)
    float st_MX3[ NUM_NORMAL_STATES * (Q+1) * 3 ];
    float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ];
 
+   /* alt memory for testing */
+   int cmp_mx; int test_cnt = 0;
 
-   // printf("=== TEST CYCLES ===\n");
-   // test_cycle(Q, T, st_MX, sp_MX, tr);
-   // dp_matrix_Print(Q, T, st_MX, sp_MX);
-   // rev_test_cycle(Q, T, st_MX, sp_MX, tr);
-   // dp_matrix_Print(Q, T, st_MX, sp_MX);
-   // exit(0);
+   printf("test\n");
+
+   // float st_MX_fwd_r[ NUM_NORMAL_STATES * (Q+1) * (T+1) ];
+   // float sp_MX_fwd_r[ NUM_SPECIAL_STATES * (Q+1) ];
+   // float st_MX_fwd_d[ NUM_NORMAL_STATES * (Q+1) * (T+1) ];
+   // float sp_MX_fwd_d[ NUM_SPECIAL_STATES * (Q+1) ];
+
+   printf("test\n");
+
+   // float st_MX_bck_r[ NUM_NORMAL_STATES * (Q+1) * (T+1) ];
+   // float sp_MX_bck_r[ NUM_SPECIAL_STATES * (Q+1) ];
+   // float st_MX_bck_d[ NUM_NORMAL_STATES * (Q+1) * (T+1) ];
+   // float sp_MX_bck_d[ NUM_SPECIAL_STATES * (Q+1) ];
+
+   printf("test\n");
+
+   float st_MX_cloud[ NUM_NORMAL_STATES * (Q+1) * (T+1) ];
+   float sp_MX_cloud[ NUM_SPECIAL_STATES * (Q+1) ];
+
+   printf("test\n");
 
    /* run viterbi algorithm */
    printf("=== VITERBI -> START ===\n");
    sc = viterbi_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, res, tr);
-   printf("Viterbi Score: %.9f\n", sc);
+   printf("Viterbi Score: %f\n", sc);
    // dp_matrix_Print(Q, T, st_MX, sp_MX);
    dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.viterbi.tsv");
-   printf("=== VITERBI -> END ===\n");
+   printf("=== VITERBI -> END ===\n\n");
 
    /* run traceback of viterbi */
    printf("=== TRACEBACK -> START ===\n");
    traceback_Build(query_seq, target_prof, Q, T, st_MX, sp_MX, tr);
-   traceback_Print(tr);
+   // traceback_Print(tr);
+   traceback_Save(tr, "output/myversion.traceback_list.tsv");
+   dp_matrix_Clear(Q, T, st_MX, sp_MX);
    traceback_Show(Q, T, st_MX, sp_MX, tr);
-   // dp_matrix_Print(Q, T, st_MX, sp_MX);
+   printf("START: (%d,%d) -> END: (%d,%d)\n", tr->first_m.i, tr->first_m.j, tr->last_m.i, tr->last_m.j);
    dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.traceback.tsv");
-   printf("=== TRACEBACK -> END ===\n");
+   printf("=== TRACEBACK -> END ===\n\n");
 
    /* run forward/backward algorithms */
-   printf("=== FORWARD -> START ===\n");
    init_Logsum();
+
+   printf("=== FORWARD -> START ===\n");
    dp_matrix_Clear(Q, T, st_MX, sp_MX);
    sc = forward_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, res);
-   printf("Forward Score: %.9f\n", sc);
+   printf("Forward Score: %f\n", sc);
    // dp_matrix_Print(Q, T, st_MX, sp_MX);
    dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.forward.tsv");
-   printf("=== FORWARD -> END ===\n");
+   printf("=== FORWARD -> END ===\n\n");
 
    printf("=== BACKWARD -> START ===\n");
    sc = backward_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, res);
-   printf("Backward Score: %.9f\n", sc);
+   printf("Backward Score: %f\n", sc);
    // dp_matrix_Print(Q, T, st_MX, sp_MX);
    dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.backward.tsv");
-   printf("=== BACKWARD -> END ===\n");
-   fflush(stdout);
+   printf("=== BACKWARD -> END ===\n\n");
 
+   /* FORWARD/BACKWARD MODE OPTIONS = {MODE_LINEAR, MODE_QUAD, MODE_NAIVE} */
+   int fwdbck_mode = MODE_NAIVE;
 
-   /* cloud search algorithm parameters */
-   float alpha = 20.0;
-   int beta = 5;
-
-   /* use linear or quadratic space version? */
-   bool is_linspace = false;
-
-   if (is_linspace) 
+   if (fwdbck_mode == MODE_LINEAR) 
    {
-      /* cloud forward */
-      printf("=== CLOUD FORWARD -> START ===\n");
-      cloud_forward_Run3(query_seq, target_prof, Q, T, st_MX3, sp_MX, res, tr, edg_fwd, alpha, beta);
-      // edgebounds_Print(edg_fwd);
-      // dp_matrix_Print(Q, T, st_MX, sp_MX);
-      // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.cloud_fwd.tsv");
-      printf("=== CLOUD FORWARD -> END ===\n");
+      // printf("Using linear space algs...\n");
 
-      /* cloud backward */
-      printf("=== CLOUD BACKWARD -> START ===\n");
-      cloud_backward_Run3(query_seq, target_prof, Q, T, st_MX3, sp_MX, res, tr, edg_bck, alpha, beta);
-      // edgebounds_Print(edg_bck);
-      // dp_matrix_Print(Q, T, st_MX, sp_MX);
-      // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.cloud_bck.tsv");
-      printf("=== CLOUD BACKWARD -> END ===\n");
-
-      // printf("=== MERGE CLOUD -> START ===\n");
-      // edgebounds_Merge(edg_bck, edg_fwd, edg);
-      // printf("=== MERGE CLOUD -> END ===\n");
-
-      // printf("=== REORIENT CLOUD -> START ===\n");
-      // edgebounds_Reorient(edg, edg_row);
-      // printf("=== REORIENT CLOUD -> END ===\n");
-
-      printf("=== REORIENT/MERGE CLOUD -> START ===\n");
-      num_cells = edgebounds_Merge_Reorient(edg_fwd, edg_bck, edg, Q, T, st_MX, sp_MX);
-      perc_cells = (float)num_cells/(float)tot_cells;
-      printf("Cells Computed = %d/%d = %.5f\n", num_cells, tot_cells, perc_cells);
-      // edgebounds_Print(edg);
-      printf("=== REORIENT/MERGE CLOUD -> END ===\n");
-
-      /* Data viz to see cloud */
-      // printf("=== TEST CLOUD -> START ===\n");
-      // dp_matrix_Clear_X(Q, T, st_MX, sp_MX, 0);
-      // test_cloud(Q, T, st_MX, sp_MX, edg_fwd, 1);
-      // test_cloud(Q, T, st_MX, sp_MX, edg_bck, -1);
+      // /* cloud forward */
+      // printf("=== CLOUD FORWARD -> START ===\n");
+      // cloud_forward_Run3(query_seq, target_prof, Q, T, st_MX3, sp_MX, res, tr, edg_fwd, alpha, beta);
+      // // edgebounds_Print(edg_fwd);
       // // dp_matrix_Print(Q, T, st_MX, sp_MX);
-      // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.cloud.tsv");
-      // printf("=== TEST CLOUD -> END ===\n");
+      // // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.cloud_fwd.3.tsv");
+      // printf("=== CLOUD FORWARD -> END ===\n\n");
 
-      /* bounded forward */
-      printf("=== BOUNDED FORWARD -> START ===\n");
-      dp_matrix_Clear_X(Q, T, st_MX, sp_MX, -INF);
-      sc = forward_bounded_Run3(query_seq, target_prof, Q, T, st_MX3, sp_MX, res, edg);
-      printf("Bounded Forward Score: %.5f\n", sc);
-      // dp_matrix_Print(Q, T, st_MX, sp_MX);
-      // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.bounded_fwd.tsv");
-      printf("=== BOUNDED FORWARD -> END ===\n");
+      // /* cloud backward */
+      // printf("=== CLOUD BACKWARD -> START ===\n");
+      // cloud_backward_Run3(query_seq, target_prof, Q, T, st_MX3, sp_MX, res, tr, edg_bck, alpha, beta);
+      // // edgebounds_Print(edg_bck);
+      // // dp_matrix_Print(Q, T, st_MX, sp_MX);
+      // // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.cloud_bck.3.tsv");
+      // printf("=== CLOUD BACKWARD -> END ===\n\n");
 
-      /* bounded backward */
-      printf("=== BOUNDED BACKWARD -> START ===\n");
-      dp_matrix_Clear_X(Q, T, st_MX, sp_MX, -INF);
+      // // printf("=== MERGE CLOUD -> START ===\n");
+      // // edgebounds_Merge(edg_bck, edg_fwd, edg);
+      // // printf("=== MERGE CLOUD -> END ===\n");
+
+      // // printf("=== REORIENT CLOUD -> START ===\n");
+      // // edgebounds_Reorient(edg, edg_row);
+      // // printf("=== REORIENT CLOUD -> END ===\n");
+
+      // printf("=== REORIENT/MERGE CLOUD -> START ===\n");
+      // num_cells = edgebounds_Merge_Reorient_Cloud(edg_fwd, edg_bck, edg, Q, T, st_MX, sp_MX);
+      // perc_cells = (float)num_cells/(float)tot_cells;
+      // printf("Cells Computed = %d/%d = %.5f\n", num_cells, tot_cells, perc_cells);
+      // // edgebounds_Print(edg);
+      // printf("=== REORIENT/MERGE CLOUD -> END ===\n\n");
+
+      // /* Data viz to see cloud */
+      // // printf("=== TEST CLOUD -> START ===\n");
+      // // dp_matrix_Clear_X(Q, T, st_MX, sp_MX, 0);
+      // // cloud_Fill(Q, T, st_MX, sp_MX, edg_fwd, 1, MODE_DIAG);
+      // // cloud_Fill(Q, T, st_MX, sp_MX, edg_bck, -1, MODE_DIAG);
+      // // // dp_matrix_Print(Q, T, st_MX, sp_MX);
+      // // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.cloud.3.tsv");
+      // // printf("=== TEST CLOUD -> END ===\n");
+
+      // /* bounded forward */
+      // printf("=== BOUNDED FORWARD -> START ===\n");
+      // dp_matrix_Clear_X(Q, T, st_MX, sp_MX, -INF);
+      // sc = forward_bounded_Run3(query_seq, target_prof, Q, T, st_MX3, sp_MX, res, edg);
+      // printf("Bounded Forward Score: %.5f\n", sc);
+      // // dp_matrix_Print(Q, T, st_MX, sp_MX);
+      // // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.bounded_fwd.3.tsv");
+      // printf("=== BOUNDED FORWARD -> END ===\n\n");
+
+      // /* bounded backward */
+      // printf("=== BOUNDED BACKWARD -> START ===\n");
+      // dp_matrix_Clear_X(Q, T, st_MX, sp_MX, -INF);
       // sc = backward_bounded_Run3(query_seq, target_prof, Q, T, st_MX3, sp_MX, res, edg);
-      printf("Bounded Backward Score: %.5f\n", sc);
-      // dp_matrix_Print(Q, T, st_MX, sp_MX);
-      // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.bounded_bck.tsv");
-      printf("=== BOUNDED BACKWARD -> END ===\n");
-
-      // /* display results */
-      // results_Display(results1);
+      // printf("Bounded Backward Score: %.5f\n", sc);
+      // // dp_matrix_Print(Q, T, st_MX, sp_MX);
+      // // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.bounded_bck.3.tsv");
+      // printf("=== BOUNDED BACKWARD -> END ===\n\n");
    }
    else
+   if (fwdbck_mode == MODE_QUAD) 
    {
+      // printf("Using quadratic space algs...\n");
+
+      // /* cloud forward */
+      // printf("=== CLOUD FORWARD -> START ===\n");
+      // cloud_forward_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, res, tr, edg_fwd, alpha, beta);
+      // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.cloud_fwd_vals.tsv");
+      // // edgebounds_Print(edg_fwd);
+      // // dp_matrix_Print(Q, T, st_MX, sp_MX);
+      // dp_matrix_Clear_X(Q, T, st_MX, sp_MX, 0);
+      // cloud_Fill(Q, T, st_MX, sp_MX, edg_fwd, 1, MODE_DIAG);
+      // dp_matrix_Copy(Q, T, st_MX, sp_MX, st_MX_fwd_d, sp_MX_fwd_d);
+      // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.cloud_fwd_diag.tsv");
+      // edgebounds_Save(edg_fwd, "output/myversion.edgebounds_fwd_diag.tsv");
+      // printf("=== CLOUD FORWARD -> END ===\n\n");
+
+      // /* cloud backward */
+      // printf("=== CLOUD BACKWARD -> START ===\n");
+      // cloud_backward_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, res, tr, edg_bck, alpha, beta);
+      // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.cloud_bck_vals.tsv");
+      // // edgebounds_Print(edg_bck);
+      // // dp_matrix_Print(Q, T, st_MX, sp_MX);
+      // dp_matrix_Clear_X(Q, T, st_MX, sp_MX, 0);
+      // cloud_Fill(Q, T, st_MX, sp_MX, edg_bck, 1, MODE_DIAG);
+      // dp_matrix_Copy(Q, T, st_MX, sp_MX, st_MX_bck_d, sp_MX_bck_d);
+      // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.cloud_bck_diag.tsv");
+      // edgebounds_Save(edg_bck, "output/myversion.edgebounds_bck_diag.tsv");
+      // printf("=== CLOUD BACKWARD -> END ===\n\n");
+
+      // printf("=== MERGE & REORIENT CLOUD -> START ===\n");
+      // /* merge and reorient edgebounds from by-diag to by-row */
+      // edgebounds_Merge_Reorient_Cloud(edg_fwd, edg_bck, edg, Q, T, st_MX, sp_MX);
+      // dp_matrix_Clear_X(Q, T, st_MX, sp_MX, 0);
+      // cloud_Fill(Q, T, st_MX, sp_MX, edg, 1, MODE_ROW);
+      // num_cells = cloud_Cell_Count(Q, T, st_MX, sp_MX);
+      // perc_cells = (float)num_cells/(float)tot_cells;
+      // printf("Total Cells Computed = %d/%d = %.4f\n", num_cells, tot_cells, perc_cells);
+      // // edgebounds_Print(edg);
+      // edgebounds_Save(edg, "output/myversion.edgebounds_row.tsv");
+      // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.cloud.tsv");
+      // printf("=== MERGE & REORIENT CLOUD -> END ===\n\n");
+
+      // /* bounded forward */
+      // printf("=== BOUNDED FORWARD -> START ===\n");
+      // dp_matrix_Clear(Q, T, st_MX, sp_MX);
+      // sc = forward_bounded_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, res, edg);
+      // printf("Bounded Forward Score: %.5f\n", sc);
+      // // dp_matrix_Print(Q, T, st_MX, sp_MX);
+      // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.bounded_fwd.tsv");
+      // printf("=== BOUNDED FORWARD -> END ===\n\n");
+
+      // /* bounded backward */
+      // printf("=== BOUNDED BACKWARD -> START ===\n");
+      // dp_matrix_Clear(Q, T, st_MX, sp_MX);
+      // sc = backward_bounded_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, res, edg);
+      // printf("Bounded Backward Score: %.5f\n", sc);
+      // // dp_matrix_Print(Q, T, st_MX, sp_MX);
+      // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.bounded_bck.tsv");
+      // printf("=== BOUNDED BACKWARD -> END ===\n\n");
+   }
+   else 
+   if (fwdbck_mode == MODE_NAIVE) 
+   {
+      printf("using naive algs...\n");
+
       /* cloud forward */
       printf("=== CLOUD FORWARD -> START ===\n");
       cloud_forward_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, res, tr, edg_fwd, alpha, beta);
-      // edgebounds_Print(edg_fwd);
-      // dp_matrix_Print(Q, T, st_MX, sp_MX);
-      dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.cloud_fwd.tsv");
-      printf("=== CLOUD FORWARD -> END ===\n");
+      dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.cloud_fwd_vals.tsv");
+      dp_matrix_Clear_X(Q, T, st_MX, sp_MX, 0);
+      cloud_Fill(Q, T, st_MX, sp_MX, edg_fwd, 1, MODE_DIAG);
+      // dp_matrix_Copy(Q, T, st_MX, sp_MX, st_MX_fwd_d, sp_MX_fwd_d);
+      dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.cloud_fwd_diag.tsv");
+      edgebounds_Save(edg_fwd, "output/myversion.edgebounds_fwd_diag.tsv");
+      printf("=== CLOUD FORWARD -> END ===\n\n");
 
       /* cloud backward */
       printf("=== CLOUD BACKWARD -> START ===\n");
       cloud_backward_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, res, tr, edg_bck, alpha, beta);
-      // edgebounds_Print(edg_bck);
-      // dp_matrix_Print(Q, T, st_MX, sp_MX);
-      dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.cloud_bck.tsv");
-      printf("=== CLOUD BACKWARD -> END ===\n");
+      dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.cloud_bck_vals.tsv");
+      dp_matrix_Clear_X(Q, T, st_MX, sp_MX, 0);
+      cloud_Fill(Q, T, st_MX, sp_MX, edg_bck, 1, MODE_DIAG);
+      // dp_matrix_Copy(Q, T, st_MX, sp_MX, st_MX_bck_d, sp_MX_bck_d);
+      dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.cloud_bck_diag.tsv");
+      edgebounds_Save(edg_bck, "output/myversion.edgebounds_bck_diag.tsv");
+      printf("=== CLOUD BACKWARD -> END ===\n\n");
 
-      // printf("=== MERGE CLOUD -> START ===\n");
-      // edgebounds_Merge(edg_bck, edg_fwd, edg);
-      // printf("=== MERGE CLOUD -> END ===\n");
-
-      // printf("=== REORIENT CLOUD -> START ===\n");
-      // edgebounds_Reorient(edg, edg_row);
-      // printf("=== REORIENT CLOUD -> END ===\n");
-
-      printf("=== REORIENT/MERGE CLOUD -> START ===\n");
-      num_cells = edgebounds_Merge_Reorient(edg_fwd, edg_bck, edg, Q, T, st_MX, sp_MX);
+      /* merge forward and backward clouds, then reorient edgebounds from by-diag to by-row */
+      printf("=== MERGE & REORIENT CLOUD -> START ===\n");
+      edgebounds_Merge_Reorient_Cloud(edg_fwd, edg_bck, edg, Q, T, st_MX, sp_MX);
+      dp_matrix_Clear_X(Q, T, st_MX, sp_MX, 0);
+      cloud_Fill(Q, T, st_MX_cloud, sp_MX_cloud, edg, 1, MODE_ROW);
+      num_cells = cloud_Cell_Count(Q, T, st_MX_cloud, sp_MX_cloud);
       perc_cells = (float)num_cells/(float)tot_cells;
-      printf("Cells Computed = %d/%d = %.2f\n", num_cells, tot_cells, perc_cells);
-      // edgebounds_Print(edg);
-      printf("=== REORIENT/MERGE CLOUD -> END ===\n");
-
-      /* Data viz to see cloud */
-      // printf("=== TEST CLOUD -> START ===\n");
-      // dp_matrix_Clear_X(Q, T, st_MX, sp_MX, 0);
-      // test_cloud(Q, T, st_MX, sp_MX, edg_fwd, 1);
-      // test_cloud(Q, T, st_MX, sp_MX, edg_bck, -1);
-      // // dp_matrix_Print(Q, T, st_MX, sp_MX);
-      // dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.cloud.tsv");
-      // printf("=== TEST CLOUD -> END ===\n");
+      printf("Total Cells Computed = %d/%d = %.4f\n", num_cells, tot_cells, perc_cells);
+      edgebounds_Save(edg, "output/myversion.edgebounds_row.tsv");
+      dp_matrix_Save(Q, T, st_MX_cloud, sp_MX_cloud, "output/myversion.cloud.tsv");
+      printf("=== MERGE & REORIENT CLOUD -> END ===\n\n");
 
       /* bounded forward */
       printf("=== BOUNDED FORWARD -> START ===\n");
-      dp_matrix_Clear_X(Q, T, st_MX, sp_MX, 0);
-      sc = forward_bounded_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, res, edg);
-      printf("Bounded Forward Score: %.2f\n", sc);
-      // dp_matrix_Print(Q, T, st_MX, sp_MX);
-      dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.bounded_fwd.tsv");
-      printf("=== BOUNDED FORWARD -> END ===\n");
+      dp_matrix_Clear(Q, T, st_MX, sp_MX);
+      forward_Bounded_Naive_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, st_MX_cloud, &sc);
+      printf("Bounded Forward Score: %f\n", sc);
+      // fflush(stdout);
+      dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.bounded_fwd_naive.tsv");
+      printf("=== BOUNDED FORWARD -> END ===\n\n");
 
       /* bounded backward */
       printf("=== BOUNDED BACKWARD -> START ===\n");
-      dp_matrix_Clear_X(Q, T, st_MX, sp_MX, 0);
-      sc = backward_bounded_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, res, edg);
-      printf("Bounded Backward Score: %.2f\n", sc);
-      // dp_matrix_Print(Q, T, st_MX, sp_MX);
-      dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.bounded_bck.tsv");
-      printf("=== BOUNDED BACKWARD -> END ===\n");
-
-      // /* display results */
-      // results_Display(results1);
+      dp_matrix_Clear(Q, T, st_MX, sp_MX);
+      backward_Bounded_Naive_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, st_MX_cloud, &sc);
+      printf("Bounded Backward Score: %f\n", sc);
+      dp_matrix_Save(Q, T, st_MX, sp_MX, "output/myversion.bounded_bck_naive.tsv");
+      printf("=== BOUNDED BACKWARD -> END ===\n\n");
    }
 
    printf("...test finished. \n");

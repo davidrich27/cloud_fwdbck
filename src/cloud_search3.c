@@ -3,7 +3,7 @@
  *  @brief Cloud Forward-Backward Algorithm (Linear Space Implementation)
  *
  *  @synopsis
- *       NOTE: HOW TO CONVERT (i,j) to (d,i)
+ *       NOTE: HOW TO CONVERT row-coords to diag-coords
  *       MMX(i-1,j-1) => MMX3(, d_2)
  *       MMX(i,  j-1) => MMX3(, d_1)
  *       MMX(i,  j  ) => MMX3(, d_1)
@@ -27,16 +27,16 @@
 #include "viterbi.h"
 #include "forward_backward.h"
 #include "cloud_search.h"
+#include "cloud_search3.h"
 
 // macros
-#define getName(var) #var
-#define SCALE_FACTOR 1000
+// #define getName(var) #var
+// #define SCALE_FACTOR 1000
 
 // macro functions
 // NOTE: wrap all macro vars in parens!!
 #define max(x,y) (((x) > (y)) ? (x) : (y))
 #define min(x,y) (((x) < (y)) ? (x) : (y))
-
 
 
 /*
@@ -775,15 +775,15 @@ float forward_bounded_Run3(const SEQ* query,
 
    /* --------------------------------------------------------------------------------- */
 
-   /* initialize special states (?) */
-   XMX(SP_N, 0) = 0;                                        /* S->N, p=1             */
-   XMX(SP_B, 0) = XSC(SP_N, SP_MOVE);                       /* S->N->B, no N-tail    */
-   XMX(SP_E, 0) = XMX(SP_C, 0) = XMX(SP_J, 0) = -INF;       /* need seq to get here (?)  */
-
    /* initialize zero row / clear all pre-existing data from matrix */
    for (j = 0; j <= 3; j++)
       for (i = 0; i <= Q; i++)
          MMX3(i, j) = IMX3(i, j) = DMX3(i, j) = -INF;
+
+   /* initialize special states (?) */
+   XMX(SP_N, 0) = 0;                                        /* S->N, p=1             */
+   XMX(SP_B, 0) = XSC(SP_N, SP_MOVE);                       /* S->N->B, no N-tail    */
+   XMX(SP_E, 0) = XMX(SP_C, 0) = XMX(SP_J, 0) = -INF;       /* need seq to get here (?)  */
 
    /* set initial r_0 and r_1 */
    row_cur = x_0 = edg->bounds[0].diag;
@@ -1001,9 +1001,12 @@ float backward_bounded_Run3(const SEQ* query,
 
    /* --------------------------------------------------------------------------------- */
 
-   /* Initialize the Q row. */
-   r_0 = Q; r_0b = 0; r_0e = T;
+   /* initialize zero row / clear all pre-existing data from matrix */
+   for (j = 0; j <= 3; j++)
+      for (i = 0; i <= Q; i++)
+         MMX3(i, j) = IMX3(i, j) = DMX3(i, j) = -INF;
 
+   /* Initialize the Q row. */
    XMX(SP_J,Q) = XMX(SP_B,Q) = XMX(SP_N,Q) = -INF;
    XMX(SP_C,Q) = XSC(SP_C,SP_MOVE);
    XMX(SP_E,Q) = XMX(SP_C,Q) + XSC(SP_E,SP_MOVE);

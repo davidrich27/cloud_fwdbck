@@ -215,11 +215,9 @@ void traceback_Build (const SEQ* query,
    int    j = 0;              /* position in target model (col) (1...M) */
    char   a;                  /* store current character in sequence */
    int    A;                  /* store int value of character */
-   int    st_cur, st_prev;    /* current, previous state in trace */
+   int    st_cur, st_prv;    /* current, previous state in trace */
    float  tol = 1e-5;         /* acceptable tolerance for "equality" tests */
    char   *seq = query->seq;  /* alias for getting seq */
-
-   printf("L=%d, M=%d\n", Q, T);
 
    /* local or global? */
    bool is_local = target->isLocal;
@@ -229,21 +227,20 @@ void traceback_Build (const SEQ* query,
    tr->N = 0;
    tr->size = min_size;
    tr->traces = malloc(min_size * sizeof(TRACE));
-   // printf("traceback test...\n");
 
    /* Backtracing, so C is end state */
    traceback_Append(tr, T_ST, i, j);
    traceback_Append(tr, C_ST, i, j);
-   st_prev = C_ST;
+   st_prv = C_ST;
 
    /* End of trace is S state */
-   while (st_prev != S_ST)
+   while (st_prv != S_ST)
    {
       a = seq[i - 1];
       A = AA_REV[a];
 
       /* jump from current state to the prev state */
-      switch (st_prev)
+      switch (st_prv)
       {
          /* C STATE */
          case C_ST:  /* C(i) comes from C(i-1) or E(i) */
@@ -402,37 +399,38 @@ void traceback_Build (const SEQ* query,
             exit(1);
       }
 
-      /* Add new state and (i,j) to trace */
-      int state_num[] = {MAT_ST, INS_ST, DEL_ST, SP_E, SP_N, SP_J, SP_C, SP_B, -1, -1};
-      static char * states[] = {"ST_M",
-                                "ST_I",
-                                "ST_D",
-                                "ST_E",
-                                "ST_N",
-                                "ST_J",
-                                "ST_C",
-                                "ST_B",
-                                "ST_S",
-                                "ST_T",
-                                "ST_X" };
       traceback_Append(tr, st_cur, i, j);
-      if (st_cur < 3) {
-         printf("%s (%d,%d) \t%f\n", states[st_cur], i, j, ST_MX(st_MX, state_num[st_cur], i, j) );
-      } 
-      else if (st_cur >= 3 && st_cur < 9) {
-         printf("%s (%d,%d) \t%f\n", states[st_cur], i, j, SP_MX(sp_MX, state_num[st_cur], i) );
-      }
-      else {
-         printf("%s (%d,%d)\n", states[st_cur], i, j );
+
+      /* Add new state and (i,j) to trace */
+      // int state_num[] = {MAT_ST, INS_ST, DEL_ST, SP_E, SP_N, SP_J, SP_C, SP_B, -1, -1};
+      // static char * states[] = {"ST_M",
+      //                           "ST_I",
+      //                           "ST_D",
+      //                           "ST_E",
+      //                           "ST_N",
+      //                           "ST_J",
+      //                           "ST_C",
+      //                           "ST_B",
+      //                           "ST_S",
+      //                           "ST_T",
+      //                           "ST_X" };
+      // if (st_cur < 3) {
+      //    printf("%s (%d,%d) \t%f\n", states[st_cur], i, j, ST_MX(st_MX, state_num[st_cur], i, j) );
+      // } 
+      // else if (st_cur >= 3 && st_cur < 9) {
+      //    printf("%s (%d,%d) \t%f\n", states[st_cur], i, j, SP_MX(sp_MX, state_num[st_cur], i) );
+      // }
+      // else {
+      //    printf("%s (%d,%d)\n", states[st_cur], i, j );
+      // }
+
+      /* For NCJ, we deferred i decrement. */
+      if ( (st_cur == N_ST || st_cur == J_ST || st_cur == C_ST) && st_cur == st_prv) {
+         i--;
       }
 
       /* Update previous state */
-      st_prev = st_cur;
-
-      /* For NCJ, we deferred i decrement. */
-      if ( (st_cur == N_ST || st_cur == J_ST || st_cur == C_ST) && st_cur == st_prev) {
-         i--;
-      }
+      st_prv = st_cur;
    }
 
    /* reverse order of traceback */
@@ -472,10 +470,27 @@ void traceback_Build (const SEQ* query,
  */
 void traceback_Reverse (TRACEBACK* tr)
 {
-
    TRACE *tr1, *tr2, tmp;
    int N = tr->N;
+   int st_cur, st_nxt;
 
+   /* */
+   for (int i = 0; i < tr->N; i++) 
+   {
+      tr1 = &tr->traces[i];
+      tr2 = &tr->traces[i+1];
+
+      if (tr1->st == tr2->st && (tr1->st == N_ST || tr1->st == C_ST || tr1->st == J_ST) ) 
+      {
+         if (tr1->i == 0 && tr1->st > 0) 
+         {
+            tr1->i = tr2->i;
+            tr2->i = 0;
+         }
+      }
+   }
+
+   /* reverse traceback inplace */
    for (int i = 0; i < (tr->N / 2); ++i) 
    {
       tr1 = &tr->traces[i];
@@ -538,40 +553,31 @@ void traceback_Append (TRACEBACK* tr,
    switch (st)
    {
       /* Emit-on-Transition States: */
-      /* N STATE */
       case N_ST:
-      /* C STATE */
       case C_ST:
-      /* J STATE */
       case J_ST:
          tr->traces[N].i = ( (tr->traces[N - 1].st == st) ? i : 0 );
          tr->traces[N].j = 0;
          break;
 
-      /* Non-Emitting States: */
-      /* X STATE */
+      /* Non-Emitting States, not in Main Model: */
       case X_ST:
-      /* S STATE */
       case S_ST:
-      /* B STATE */
       case B_ST:
-      /* E STATE */
       case E_ST:
-      /* T STATE */
       case T_ST:
          tr->traces[N].i = 0;
          tr->traces[N].j = 0;
          break;
 
-      /* Emitting States: */
-      /* D STATE */
+      /* Non-Emitting States, but in Main Model: */
       case D_ST:
          tr->traces[N].i = 0;
          tr->traces[N].j = j;
          break;
-      /* M STATE */
+
+      /* Emitting States: */
       case M_ST:
-      /* I STATE */
       case I_ST:
          tr->traces[N].i = i;
          tr->traces[N].j = j;
@@ -646,7 +652,7 @@ void traceback_Show (const int Q, const int T,
       st = tr->traces[k].st;
       i = tr->traces[k].i;
       j = tr->traces[k].j;
-      m = k + 1;
+      m = 1;
       // printf("%d/%d: %d(%d,%d) -> ", k, N, st, i, j);
 
       switch (st) {
@@ -654,10 +660,10 @@ void traceback_Show (const int Q, const int T,
          MMX(i, j) = m;
          break;
       case I_ST:
-         IMX(i, j) = m;
+         MMX(i, j) = m;
          break;
       case D_ST:
-         DMX(i, j) = m;
+         MMX(i, j) = m;
          break;
       case N_ST:
          XMX(SP_N, i) = m;
@@ -678,7 +684,6 @@ void traceback_Show (const int Q, const int T,
          break;
       }
    }
-   printf("\n");
 }
 
 
@@ -696,6 +701,7 @@ void traceback_Show (const int Q, const int T,
  */
 void traceback_Print(TRACEBACK *tr)
 {
+   printf("traceback: \n");
    static char * states[] = {"ST_M",
                              "ST_I",
                              "ST_D",
@@ -715,4 +721,51 @@ void traceback_Print(TRACEBACK *tr)
       printf("[%d](%s,%d,%d)-> \n", i, states[tr->traces[i].st], tr->traces[i].i, tr->traces[i].j);
    }
    printf("\n");
+}
+
+/*
+ *  FUNCTION: traceback_Print()
+ *  SYNOPSIS: Print Traceback object
+ *
+ *  PURPOSE:
+ *
+ *  ARGS:      <tr>      TRACEBACK Object
+ *             <f>       Filename
+ *
+ *  RETURN:
+ */
+void traceback_Save(TRACEBACK *tr,
+                    const char *_filename_)
+{
+   FILE *fp;
+   fp = fopen(_filename_, "w");
+
+   static char * states[] = {"ST_M",
+                             "ST_I",
+                             "ST_D",
+                             "ST_E",
+                             "ST_N",
+                             "ST_J",
+                             "ST_C",
+                             "ST_B",
+                             "ST_S",
+                             "ST_T",
+                             "ST_X" };
+
+   // printf("LENGTH: %d / START: [%d](%d, %d) / END: [%d](%d, %d)\n", tr->N, tr->start, tr->first_m.i, tr->first_m.j, tr->end, tr->last_m.i, tr->last_m.j);
+   
+   for (unsigned int i = 0; i < tr->N; ++i)
+   {
+      int st = tr->traces[i].st;
+      fprintf(fp, "[%d](%s,%d,%d)\n", i, states[st], tr->traces[i].i, tr->traces[i].j);
+
+      // if (st == M_ST || st == I_ST || st == D_ST) {
+      //    fprintf(fp, "[%d](%s,%d,%d) \n", i, states[st], tr->traces[i].i, tr->traces[i].j);
+      // } else {
+      //    fprintf(fp, "[%d](%s) \n", i, states[st]);
+      // }
+   }
+
+   fprintf(fp, "\n");
+   fclose(fp);
 }

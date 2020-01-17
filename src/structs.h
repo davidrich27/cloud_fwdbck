@@ -17,7 +17,7 @@ extern float BG_MODEL[];
 extern float BG_MODEL_log[];
 
 /* MATCH, INSERT, DELETE, SPECIAL DP MATRIX ACCESS MACROS */
-#define ST_MX(mx,st,i,j)   (mx[ (st*(Q+1)*(T+1)) + ((i)*(T+1)) + (j) ])
+#define ST_MX(mx,st,i,j)   (   mx[ (st*(Q+1)*(T+1))     + ((i)*(T+1)) + (j) ])
 #define MMX(i,j)           (st_MX[ (MAT_ST*(Q+1)*(T+1)) + ((i)*(T+1)) + (j) ])
 #define IMX(i,j)           (st_MX[ (INS_ST*(Q+1)*(T+1)) + ((i)*(T+1)) + (j) ])
 #define DMX(i,j)           (st_MX[ (DEL_ST*(Q+1)*(T+1)) + ((i)*(T+1)) + (j) ])
@@ -62,15 +62,26 @@ extern float BG_MODEL_log[];
 
 /* Search modes. */
 typedef enum {
-   MODE_NONE = 0,
-   MODE_MULTILOCAL = 1,     /* multihit local:  "fs" mode   */
-   MODE_MULTIGLOCAL = 2,     /* multihit glocal: "ls" mode   */
-   MODE_UNILOCAL = 3,     /* unihit local: "sw" mode      */
-   MODE_UNIGLOCAL = 4     /* unihit glocal: "s" mode      */
-} MODE;
+   MODE_NONE        = 0,    /* NO APPLICATIONS */
+   MODE_MULTILOCAL  = 1,    /* multihit local:  "fs" mode   */
+   MODE_MULTIGLOCAL = 2,    /* multihit glocal: "ls" mode   */
+   MODE_UNILOCAL    = 3,    /* unihit local: "sw" mode      */
+   MODE_UNIGLOCAL   = 4     /* unihit glocal: "s" mode      */
+} SEARCH_MODE;
 
 #define Test_IsLocal(mode)  (mode == MODE_MULTILOCAL || mode == MODE_UNILOCAL)
 #define Test_IsMulti(mode)  (mode == MODE_MULTILOCAL || mode == MODE_MULTIGLOCAL)
+
+typedef enum {
+   MODE_DIAG = 0,
+   MODE_ROW  = 1
+} EDG_MODE;
+
+typedef enum {
+   MODE_LINEAR = 0,
+   MODE_QUAD   = 1,
+   MODE_NAIVE  = 2
+} FWDBCK_MODE;
 
 typedef enum {
    AMINO, DNA
@@ -248,7 +259,9 @@ typedef struct {
 } SUBMAT;
 
 typedef struct {
-   char *infile_query, *infile_target;
+   float alpha; 
+   int beta;
+   char *target_hmm_file, *query_fasta_file;
    RANGE *range_query, *range_target;
    char *outfile;
 } ARGS;
@@ -285,14 +298,15 @@ typedef struct {
 } TRACEBACK;
 
 typedef struct {
+   int diag;                  /* current anti-diagonal OR row */
    int lb;                    /* bottom-left (lower) edge-bound */
    int rb;                    /* top-right (upper) edge-bound */
-   int diag;                  /* current anti-diagonal */
 } BOUND;
 
 typedef struct {
    int N;                     /* current length */
    int size;                  /* allocated length */
+   int mode;                  /* 
    COORDS start, end;         /* starting point */
    BOUND *bounds;               
 } EDGEBOUNDS;

@@ -1,0 +1,33 @@
+This is a debugging...
+building hmm profile...
+building profile object...
+configuring...
+MODE: Uni-local
+Multi? 1	 Local? 0
+test..
+length=300
+=== RECONFIG LENGTH (100) ===
+nj = 0.000, pmove = 0.020 -3.932, ploop = 0.980 -0.020
+building query sequence...
+test...
+Building query object...
+
+===== SEQ ============================================
+	    NAME:	RANDOM SEQUENCE 1 CONSISTING OF 300 RESIDUES.
+	  LENGTH:	300
+	SEQUENCE:	HVYYLIPTDNAADRDQPGCTHIWCLTRLKTALCIMKPNQNCAINTQGDKVCKDFVDLRYLWQVRQMWSIDTTHGDVLRFCEGISQVHEFHWQKKVIHIYPVDPSGLTYEDNYIKYHPSSCPHMCYQCQSGTHRIKGIFPGRQFDGHCHIICTSHHTQRLHFFSPWQSTDFGFMCNNHEHIEGFMCGLMARCCVALSWWDNWLIQDTDFMMTQTKDQMCCYFEDECFCGAFMQRCSSTRTRDCTVRMEYCHKENENWHPNISTYKYYSQFVGVNSFKKSTAFMSKWNRCSTVFIMNSMHLG
+======================================================
+
+I/O was successful!
+=== VITERBI -> START ===
+Viterbi Score: 259.009521484
+=== VITERBI -> END ===
+=== TRACEBACK -> START ===
+L=300, M=300
+=== TRACEBACK -> END ===
+=== FORWARD -> START ===
+Forward Score: 259.902740479
+=== FORWARD -> END ===
+=== BACKWARD -> START ===
+Backward Score: 258.554473877
+=== BACKWARD -> END ===

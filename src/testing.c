@@ -210,34 +210,85 @@ void rev_test_cycle(int Q, int T,
    dp_matrix_Print(Q, T, st_MX, sp_MX);
 }
 
-/* test to show the cloud area, fill with value */
-void test_cloud(int Q, int T,
+/* test to show the cloud area, fill with value, return number of used cells  */
+int cloud_Fill(int Q, int T,
                 float st_MX[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
                 float sp_MX[ NUM_NORMAL_STATES * (Q + 1) ],
                 EDGEBOUNDS* edg,
-                float val)
+                float val, 
+                int mode)
 {
-   int d_st, d_end, d_cnt;
-   int d, i, j, k;
+   int x, d, i, j, k;
    int rb, lb;
+   int num_cells = 0;
+   int N = edg->N;
+   int MAX = (DEL_ST*(Q+1)*(T+1)) + ((Q)*(T+1)) + (T);
+   int IDX;
 
-   d_st = edg->bounds[0].diag;
-   d_end = edg->bounds[edg->N - 1].diag;
-   d_cnt = 0;
-
-   for (d = d_st; d < d_end; d++, d_cnt++)
+   if (mode == MODE_DIAG)
    {
-      lb = edg->bounds[d_cnt].lb;
-      rb = edg->bounds[d_cnt].rb;
-
-      for (k = lb; k < rb; k++)
+      /* iterate over all bounds in edgebound list */
+      for (x = 0; x < N; x++)
       {
-         i = k;
-         j = d - i;
+         d  = edg->bounds[x].diag;
+         lb = edg->bounds[x].lb;
+         rb = edg->bounds[x].rb;
 
-         MMX(i, j) += 1;
-         IMX(i, j) = 1;
-         DMX(i, j) += val;
+         /* insert value across diag in range */
+         for (k = lb; k < rb; k++)
+         {
+            i = k;
+            j = d - i;
+
+            MMX(i, j) += 1;
+            IMX(i, j) = 1;
+            DMX(i, j) += val;
+            num_cells++;
+         }
       }
    }
+   else if (mode == MODE_ROW)
+   {
+      /* iterate over all bounds in edgebound list */
+      for (x = 0; x < N; x++)
+      {
+         i  = edg->bounds[x].diag;
+         lb = edg->bounds[x].lb;
+         rb = edg->bounds[x].rb;
+
+         /* insert value across row in range */
+         for (j = lb; j < rb; j++)
+         {
+            IDX = (DEL_ST*(Q+1)*(T+1)) + ((i)*(T+1)) + (j);
+            if (IDX > MAX)
+               printf("OVER MAX: (%d,%d) -> (%d,%d)\n", Q, T, i, j);
+
+            MMX(i, j) += 1;
+            IMX(i, j) = 1;
+            DMX(i, j) += val;
+            num_cells++;
+         }
+      }
+   }
+   return num_cells;
+}
+
+/* test to show the cloud area, fill with value, return number of used cells  */
+int cloud_Cell_Count(int Q, int T,
+                   float st_MX[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
+                   float sp_MX[ NUM_NORMAL_STATES * (Q + 1) ])
+{
+   int i, j, num_cells;
+   num_cells = 0;
+
+   for (i = 0; i <= Q; i++)
+   {
+      for (j = 0; j <= T; j++)
+      {
+         if ( MMX(i,j) > 0 ) {
+            num_cells++;
+         }
+      }
+   }
+   return num_cells;
 }
