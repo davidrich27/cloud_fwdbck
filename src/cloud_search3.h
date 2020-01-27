@@ -13,38 +13,38 @@
 void cloud_forward_Run3 (const SEQ* query,
                          const HMM_PROFILE* target,
                          int Q, int T,
-                         float st_MX3[ NUM_NORMAL_STATES * (Q + 1) * (3) ],
-                         float sp_MX[ NUM_SPECIAL_STATES * (Q + 1) ],
-                         RESULTS* res,
+                         float* st_MX3,
+                         float* sp_MX,
                          TRACEBACK* tr,
                          EDGEBOUNDS* edg,
-                         float alpha, int beta );
+                         float alpha, int beta,
+                         int *sc_final )
 
 void cloud_backward_Run3 (const SEQ* query,
                           const HMM_PROFILE* target,
                           int Q, int T,
-                          float st_MX3[ NUM_NORMAL_STATES * (Q + 1) * (3) ],
-                          float sp_MX[ NUM_SPECIAL_STATES * (Q + 1) ],
-                          RESULTS* res,
+                          float* st_MX3,
+                          float* sp_MX,
                           TRACEBACK* tr,
                           EDGEBOUNDS* edg,
-                          float alpha, int beta );
+                          float alpha, int beta,
+                          int *sc_final )
 
 float forward_bounded_Run3(const SEQ* query,
                            const HMM_PROFILE* target,
                            int Q, int T,
-                           float st_MX3[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
-                           float sp_MX[ NUM_SPECIAL_STATES * (Q + 1) ],
-                           RESULTS* res,
-                           EDGEBOUNDS* edg);
+                           float* st_MX3,
+                           float* sp_MX,
+                           EDGEBOUNDS* edg, 
+                           int *sc_final )
 
 float backward_bounded_Run3(const SEQ* query,
                             const HMM_PROFILE* target,
                             int Q, int T,
-                            float st_MX3[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
-                            float sp_MX[ NUM_SPECIAL_STATES * (Q + 1) ],
-                            RESULTS* res,
-                            EDGEBOUNDS* edg);
+                            float* st_MX3,
+                            float* sp_MX,
+                            EDGEBOUNDS* edg, 
+                            int *sc_final )
 
 
 #endif /* _CLOUD_SEARCH_H */

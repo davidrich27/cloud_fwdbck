@@ -102,6 +102,21 @@ typedef struct {
    int j; /* col index */
 } COORDS;
 
+/* for debugging */
+// const char* STATE_NAMES[] = {
+//    "M_ST",
+//    "I_ST",
+//    "D_ST",
+//    "E_ST",
+//    "N_ST",
+//    "J_ST",
+//    "C_ST",
+//    "B_ST",
+//    "S_ST",
+//    "T_ST",
+//    "X_ST",
+// };
+
 typedef enum {
    M_ST = 0,
    I_ST = 1,
@@ -265,6 +280,13 @@ typedef struct {
    RANGE *range_query, *range_target;
    char *outfile;
 } ARGS;
+
+typedef struct {
+   float viterbi_sc;
+   float fwd_sc, bck_sc;
+   float cloud_fwd_sc, cloud_bck_sc;
+   float perc_cells, perc_window;  
+} SCORES;
 
 typedef struct {
    SEQ *query;

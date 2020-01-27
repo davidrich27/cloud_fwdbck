@@ -1,0 +1,129 @@
+##### DP MATRIX ##### 
+XDIM	24	15
+
+XTRACE
+M_ST	4	4
+M_ST	5	5
+M_ST	6	6
+M_ST	7	7
+M_ST	8	8
+M_ST	9	9
+M_ST	10	10
+M_ST	11	11
+M_ST	12	12
+M_ST	13	13
+M_ST	14	14
+M_ST	15	15
+/
+
+##### NORMAL STATES #####
+XMATRIX
+#	0	1	2	3	4	5	6	7	8	9	10	11	12	13	14	15	
+M 0	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	
+I 0	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	
+D 0	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	
+
+M 1	-inf	12.158	8.631	7.969	5.254	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-4.387	
+I 1	-inf	11.564	11.697	11.177	8.647	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	
+D 1	-inf	11.699	7.087	5.860	1.079	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-4.387	
+
+M 2	-inf	8.110	13.059	8.608	6.034	2.783	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-4.367	
+I 2	-inf	6.492	12.462	11.946	9.420	6.199	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	
+D 2	-inf	11.647	12.596	5.608	2.127	-4.367	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-4.367	
+
+M 3	-inf	7.065	7.983	13.313	6.800	3.571	-inf	-inf	-2.255	-inf	-inf	-inf	-inf	-inf	-inf	-4.348	
+I 3	-inf	3.934	4.282	12.717	10.192	6.972	-inf	-inf	0.710	-inf	-inf	-inf	-inf	-inf	-inf	-inf	
+D 3	-inf	10.942	11.896	12.850	2.703	-0.999	-inf	-inf	-3.538	-inf	-inf	-inf	-inf	-inf	-inf	-4.348	
+
+M 4	-inf	4.308	5.279	6.214	11.560	4.360	0.723	-1.311	0.695	-2.460	-3.269	-inf	-inf	-inf	-inf	-4.328	
+I 4	-inf	0.242	1.635	2.071	10.964	7.744	3.857	0.883	1.476	0.348	-0.277	-inf	-inf	-inf	-inf	-inf	
+D 4	-inf	8.233	9.188	10.143	11.097	0.614	-0.593	-0.533	0.191	-3.360	-4.328	-inf	-inf	-inf	-inf	-4.328	
+
+M 5	-inf	-inf	1.831	2.808	3.855	9.113	1.416	-0.583	-0.739	-1.816	-2.699	-inf	-inf	-inf	-inf	-4.308	
+I 5	-inf	-inf	-inf	-1.556	1.109	8.516	4.624	1.616	1.978	1.110	0.495	-inf	-inf	-inf	-inf	-inf	
+D 5	-inf	-inf	5.786	6.741	7.696	8.650	-0.469	-1.125	-1.726	-2.987	-4.308	-inf	-inf	-inf	-inf	-4.308	
+
+M 6	-inf	-inf	-inf	-inf	0.197	1.992	5.979	0.098	0.101	-1.132	-2.038	-inf	-inf	-inf	-inf	-4.288	
+I 6	-inf	-inf	-inf	-inf	-1.156	1.142	5.392	2.345	2.733	1.874	1.268	-inf	-inf	-inf	-inf	-inf	
+D 6	-inf	-inf	-inf	-inf	3.650	4.597	5.517	-0.427	-0.864	-2.527	-4.288	-inf	-inf	-inf	-inf	-4.288	
+
+M 7	-inf	-inf	-inf	-inf	-1.460	-0.639	2.188	3.671	0.881	-0.401	-1.278	-inf	-inf	-inf	-inf	-4.268	
+I 7	-inf	-inf	-inf	-inf	-2.132	-1.394	1.591	3.077	3.484	2.638	2.040	-inf	-inf	-inf	-inf	-inf	
+D 7	-inf	-inf	-inf	-inf	0.903	1.808	2.718	3.222	-0.080	-1.909	-3.822	-inf	-inf	-inf	-inf	-4.268	
+
+M 8	-inf	-inf	-inf	-inf	-1.985	-1.646	-0.427	-0.143	4.829	0.415	-0.552	-3.189	-1.845	-inf	-inf	-4.249	
+I 8	-inf	-inf	-inf	-inf	-2.975	-2.835	-1.448	-1.790	4.233	3.403	2.812	-0.845	-2.275	-inf	-inf	-inf	
+D 8	-inf	-inf	-inf	-inf	0.630	1.547	2.487	3.419	4.368	-1.016	-3.034	-2.779	-2.261	-inf	-inf	-4.249	
+
+M 9	-inf	-inf	-inf	-inf	-3.318	-2.492	-2.071	-1.248	-0.250	4.762	0.339	-2.978	-3.792	-4.073	-inf	-4.229	
+I 9	-inf	-inf	-inf	-inf	-5.279	-3.902	-4.092	-3.268	-2.037	4.166	3.584	-0.088	-2.953	-2.593	-inf	-inf	
+D 9	-inf	-inf	-inf	-inf	-0.403	0.521	1.453	2.400	3.351	4.300	-1.846	-3.583	-3.725	-4.229	-inf	-4.229	
+
+M 10	-inf	-inf	-inf	-inf	-inf	-3.526	-2.949	-2.066	-1.262	-0.352	4.950	-2.380	-3.349	-3.570	-inf	-4.209	
+I 10	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-4.819	-4.001	-3.657	4.353	0.680	-2.249	-1.820	-inf	-inf	
+D 10	-inf	-inf	-inf	-inf	-inf	-0.254	0.682	1.630	2.580	3.533	4.487	-3.331	-3.405	-3.914	-inf	-4.209	
+
+M 11	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-2.848	-3.305	-2.795	2.046	-3.053	-3.046	-3.986	-4.189	
+I 11	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-3.887	-4.186	-4.416	1.449	-1.569	-1.076	-3.804	-inf	
+D 11	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-1.114	-0.284	0.644	1.588	-3.089	-3.287	-3.788	-4.189	
+
+M 12	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-3.035	-3.435	-3.216	-0.309	-3.087	-3.589	-4.169	
+I 12	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-3.714	-4.228	-4.144	-0.866	-0.338	-3.098	-inf	
+D 12	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-2.571	-2.236	-1.546	-0.736	-3.489	-3.569	-4.169	
+
+M 13	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-1.003	-3.267	-3.662	-3.299	-2.069	1.019	-3.762	-4.150	
+I 13	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-1.645	-4.188	-4.291	-4.675	-2.906	0.429	-2.466	-inf	
+D 13	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-1.314	-2.481	-1.953	-1.153	-0.283	0.565	-3.698	-4.150	
+
+M 14	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-3.496	-2.909	-3.933	-3.866	-2.373	-1.435	-4.130	
+I 14	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-4.879	-3.864	-6.402	-6.137	-3.175	-1.724	-inf	
+D 14	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-3.064	-2.866	-3.129	-2.704	-2.073	-1.827	-4.130	
+
+M 15	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-4.095	-4.089	-4.075	-4.039	-1.423	-4.110	
+I 15	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-2.091	-inf	
+D 15	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-3.517	-3.367	-3.057	-2.532	-1.808	-4.110	
+
+M 16	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-4.090	
+I 16	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	
+D 16	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-4.090	
+
+M 17	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-4.070	
+I 17	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	
+D 17	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-4.070	
+
+M 18	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-4.051	
+I 18	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	
+D 18	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-4.051	
+
+M 19	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-4.031	
+I 19	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	
+D 19	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-4.031	
+
+M 20	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-4.011	
+I 20	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	
+D 20	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-4.011	
+
+M 21	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-3.991	
+I 21	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	
+D 21	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-3.991	
+
+M 22	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-3.971	
+I 22	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	
+D 22	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-3.971	
+
+M 23	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-3.952	
+I 23	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	
+D 23	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-3.952	
+
+M 24	-inf	-3.920	-3.920	-3.920	-3.920	-3.920	-3.920	-3.920	-3.920	-3.920	-3.920	-3.920	-3.921	-3.922	-3.924	-3.932	
+I 24	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	-inf	
+D 24	-inf	-3.446	-3.446	-3.446	-3.446	-3.446	-3.446	-3.446	-3.446	-3.447	-3.449	-3.454	-3.468	-3.505	-3.606	-3.932	
+
+/
+
+###### SPECIAL STATES #####
+N	5.431	5.416	5.280	4.787	2.952	0.502	-1.980	-2.627	-2.731	-3.104	-3.662	-6.152	-7.085	-7.261	-8.726	-9.162	-9.585	-9.596	-9.586	-9.575	-9.565	-10.437	-10.724	-10.729	-inf	
+J	-inf	5.416	5.280	4.787	2.952	0.502	-1.980	-2.627	-2.731	-3.104	-3.662	-6.152	-7.085	-7.261	-8.726	-9.162	-9.585	-9.596	-9.586	-9.575	-9.565	-10.437	-10.724	-10.729	-inf	
+E	-inf	-4.387	-4.367	-4.348	-4.328	-4.308	-4.288	-4.268	-4.249	-4.229	-4.209	-4.189	-4.169	-4.150	-4.130	-4.110	-4.090	-4.070	-4.051	-4.031	-4.011	-3.991	-3.971	-3.952	-3.932	
+C	-inf	-4.387	-4.367	-4.348	-4.328	-4.308	-4.288	-4.268	-4.249	-4.229	-4.209	-4.189	-4.169	-4.150	-4.130	-4.110	-4.090	-4.070	-4.051	-4.031	-4.011	-3.991	-3.971	-3.952	-3.932	
+B	5.998	7.410	8.298	8.548	6.795	4.348	1.232	-0.849	0.076	0.003	0.185	-2.708	-4.880	-3.587	-5.801	-6.259	-9.144	-10.328	-10.308	-10.342	-6.160	-7.838	-10.490	-6.797	-inf	

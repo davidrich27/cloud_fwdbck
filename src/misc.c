@@ -351,23 +351,41 @@ void dp_matrix_Copy (const int Q, const int T,
  *  ARGS:      <Q>         query length,
  *             <T>         target length,
  *             <st_MX>     Normal State (Match, Insert, Delete) Matrix,
- *             <sp_MX>     Special State (J,N,B,C,E) Matrix
+ *             <sp_MX>     Special State
  *             <f>         Filename
  *
  *  RETURN:
  */
-void dp_matrix_Save (const int Q, const int T,
-                     const float st_MX[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
-                     const float sp_MX[ NUM_SPECIAL_STATES * (Q + 1) ],
-                     const char *_filename_)
+void dp_matrix_Save (const int Q, const int T, 
+                           const float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
+                           const float sp_MX[ NUM_SPECIAL_STATES * (Q + 1) ],
+                           const char *_filename_)
 {
    FILE *fp;
    fp = fopen(_filename_, "w");
 
+   const char* STATE_NAMES[] = {
+   "M_ST",
+   "I_ST",
+   "D_ST",
+   "E_ST",
+   "N_ST",
+   "J_ST",
+   "C_ST",
+   "B_ST",
+   "S_ST",
+   "T_ST",
+   "X_ST",
+   };
+
    /* PRINT resulting dp matrix */
    fprintf(fp, "##### DP MATRIX ##### \n");
    fprintf(fp, "XDIM\t%d\t%d\n\n", Q, T);
+
    /* Header */
+   fprintf(fp, "##### NORMAL STATES #####\n");
+   fprintf(fp, "XMATRIX\n");
+   /* Header Indices */
    fprintf(fp, "#\t");
    for (int i = 0; i <= T; i++)
    {
@@ -375,7 +393,7 @@ void dp_matrix_Save (const int Q, const int T,
    }
    fprintf(fp, "\n");
 
-   /* Row-by-Row */
+   /* Row-by-Row Values */
    for (int i = 0; i < Q + 1; i++)
    {
       fprintf(fp, "M %d\t", i );
@@ -399,6 +417,7 @@ void dp_matrix_Save (const int Q, const int T,
       }
       fprintf(fp, "\n\n");
    }
+   fprintf(fp, "/\n\n");
 
    fprintf(fp, "###### SPECIAL STATES #####\n");
    fprintf(fp, "N\t");
@@ -423,4 +442,124 @@ void dp_matrix_Save (const int Q, const int T,
    fprintf(fp, "\n");
 
    fclose(fp);
+}
+
+/*
+ *  FUNCTION:  dp_matrix_Save()
+ *  SYNOPSIS:  Save dynamic programming matrix to file.
+ *
+ *  PURPOSE:
+ *
+ *  ARGS:      <Q>         query length,
+ *             <T>         target length,
+ *             <st_MX>     Normal State (Match, Insert, Delete) Matrix,
+ *             <sp_MX>     Special State
+ *             <tr>        TRACE object
+ *             <f>         Filename
+ *
+ *  RETURN:
+ */
+void dp_matrix_trace_Save (const int Q, const int T, 
+                           const float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
+                           const float sp_MX[ NUM_SPECIAL_STATES * (Q + 1) ],
+                           const TRACEBACK *tr,
+                           const char *_filename_)
+{
+   printf("Saving matrix...\n");
+
+   FILE *fp;
+   fp = fopen(_filename_, "w");
+
+   const char* STATE_NAMES[] = {
+   "M_ST",
+   "I_ST",
+   "D_ST",
+   "E_ST",
+   "N_ST",
+   "J_ST",
+   "C_ST",
+   "B_ST",
+   "S_ST",
+   "T_ST",
+   "X_ST",
+   };
+
+   /* PRINT resulting dp matrix */
+   fprintf(fp, "##### DP MATRIX ##### \n");
+   fprintf(fp, "XDIM\t%d\t%d\n\n", Q, T);
+
+   /* Traceback */
+   fprintf(fp, "XTRACE\n");
+   /* Traceback */
+   for (int i = 0; i < tr->N; i++) 
+   {
+      int st = tr->traces[i].st;
+      if ( st == M_ST ) {
+         fprintf(fp, "%s\t%d\t%d\n", STATE_NAMES[st], tr->traces[i].i, tr->traces[i].j);
+      }
+   }
+   fprintf(fp, "/\n\n");
+
+   /* Header */
+   fprintf(fp, "##### NORMAL STATES #####\n");
+   fprintf(fp, "XMATRIX\n");
+   /* Header Indices */
+   fprintf(fp, "#\t");
+   for (int i = 0; i <= T; i++)
+   {
+      fprintf(fp, "%d\t", i);
+   }
+   fprintf(fp, "\n");
+
+   /* Row-by-Row Values */
+   for (int i = 0; i < Q + 1; i++)
+   {
+      fprintf(fp, "M %d\t", i );
+      for (int j = 0; j <= T; j++)
+      {
+         fprintf(fp, "%.3f\t", MMX(i, j) );
+      }
+      fprintf(fp, "\n");
+
+      fprintf(fp, "I %d\t", i );
+      for (int j = 0; j <= T; j++)
+      {
+         fprintf(fp, "%.3f\t", IMX(i, j) );
+      }
+      fprintf(fp, "\n");
+
+      fprintf(fp, "D %d\t", i );
+      for (int j = 0; j <= T; j++)
+      {
+         fprintf(fp, "%.3f\t", DMX(i, j) );
+      }
+      fprintf(fp, "\n\n");
+   }
+   fprintf(fp, "/\n\n");
+
+   fprintf(fp, "###### SPECIAL STATES #####\n");
+   fprintf(fp, "N\t");
+   for (int i = 0; i <= Q; i++)
+   { fprintf(fp, "%.3f\t", XMX(SP_N, i) ); }
+   fprintf(fp, "\n");
+   fprintf(fp, "J\t");
+   for (int i = 0; i <= Q; i++)
+   { fprintf(fp, "%.3f\t", XMX(SP_J, i) ); }
+   fprintf(fp, "\n");
+   fprintf(fp, "E\t");
+   for (int i = 0; i <= Q; i++)
+   { fprintf(fp, "%.3f\t", XMX(SP_E, i) ); }
+   fprintf(fp, "\n");
+   fprintf(fp, "C\t");
+   for (int i = 0; i <= Q; i++)
+   { fprintf(fp, "%.3f\t", XMX(SP_C, i) ); }
+   fprintf(fp, "\n");
+   fprintf(fp, "B\t");
+   for (int i = 0; i <= Q; i++)
+   { fprintf(fp, "%.3f\t", XMX(SP_B, i) ); }
+   fprintf(fp, "\n");
+
+   fclose(fp);
+
+   printf("Saved Matrix to: '%s'\n", _filename_);
 }

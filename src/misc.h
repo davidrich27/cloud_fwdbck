@@ -43,6 +43,11 @@ void dp_matrix_Save (const int Q, const int T,
                      const float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
                      const float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ],
                      const char *_filename_);
+void dp_matrix_trace_Save (const int Q, const int T, 
+                        const float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
+                        const float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ],
+                        const TRACEBACK *tr,
+                        const char *_filename_);
 void test_matrix_Print (const int Q, const int T, 
                         const float test_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ]);
 int dp_matrix_Compare (const int Q, const int T,

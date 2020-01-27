@@ -242,7 +242,7 @@ void traceback_Build (const SEQ* query,
       /* jump from current state to the prev state */
       switch (st_prv)
       {
-         /* C STATE */
+         /* C STATE to {C,E} */
          case C_ST:  /* C(i) comes from C(i-1) or E(i) */
             if (XMX(SP_C, i) == -INF ) {
                printf("ERROR: Impossible C_ST reached at (%d,%d)\n", i, j);
@@ -259,7 +259,7 @@ void traceback_Build (const SEQ* query,
             }
             break;
 
-         /* E STATE */
+         /* E STATE to {M,D} */
          case E_ST:  /* E connects from any M state. k set here */
             if (XMX(SP_E, i) == -INF ) {
                printf("ERROR: Impossible E_ST reached at (%d,%d)\n", i, j);
@@ -296,7 +296,7 @@ void traceback_Build (const SEQ* query,
             }
             break;
 
-         /* M STATE */
+         /* M STATE to {B,M,I,D} */
          case M_ST:  /* M connects from i-1,k-1, or B */
             if (MMX(i, j) == -INF ) {
                printf("ERROR: Impossible M_ST reached at (%d,%d)\n", i, j);
@@ -309,26 +309,26 @@ void traceback_Build (const SEQ* query,
                st_cur = M_ST;
             else if ( CMP_TOL( MMX(i, j), IMX(i - 1, j - 1) + TSC(j - 1, I2M) + MSC(j, A) ) )
                st_cur = I_ST;
-            else if ( CMP_TOL( MMX(i, j), MMX(i - 1, j - 1) + TSC(j - 1, D2M) + MSC(j, A) ) )
+            else if ( CMP_TOL( MMX(i, j), DMX(i - 1, j - 1) + TSC(j - 1, D2M) + MSC(j, A) ) )
                st_cur = D_ST;
             else {
                printf("ERROR: Failed to trace from M_ST at (%d,%d)\n", i, j);
-               printf("TOL: %f vs %f\n", MMX(i, j), MMX(i - 1, j - 1) + TSC(j - 1, M2M) + MSC(j, A) );
+               printf("TOL: %f vs %f\n", MMX(i, j), MMX(i - 1, j - 1) + TSC(j - 1, D2M) + MSC(j, A) );
                exit(1);
             }
             j--; i--;
             break;
 
-         /* D STATE */
+         /* D STATE to {M,D} */
          case D_ST:  /* D connects from M,D at i,k-1 */
             if (DMX(i, j) == -INF ) {
                printf("ERROR: Impossible D_ST reached at (%d,%d)\n", i, j);
                exit(1);
             }
 
-            if ( CMP_TOL( MMX(i, j), MMX(i - 1, j - 1) + TSC(j - 1, M2M) ) )
+            if ( CMP_TOL( DMX(i, j), MMX(i, j - 1) + TSC(j - 1, M2D) ) )
                st_cur = M_ST;
-            else if ( CMP_TOL( MMX(i, j), MMX(i - 1, j - 1) + TSC(j - 1, D2M) ) )
+            else if ( CMP_TOL( DMX(i, j), DMX(i, j - 1) + TSC(j - 1, D2D) ) )
                st_cur = D_ST;
             else {
                printf("ERROR: Failed to trace from D_ST at (%d,%d)\n", i, j);
@@ -337,7 +337,7 @@ void traceback_Build (const SEQ* query,
             j--;
             break;
 
-         /* I STATE */
+         /* I STATE to {M,I} */
          case I_ST:  /* I connects from M,I at i-1,k */
             if (IMX(i, j) == -INF ) {
                printf("ERROR: Impossible I_ST reached at (%d,%d)\n", i, j);
@@ -355,7 +355,7 @@ void traceback_Build (const SEQ* query,
             i--;
             break;
 
-         /* N STATE */
+         /* N STATE to {N,S} */
          case N_ST:  /* N connects from S, N */
             if (XMX(SP_N, i) == -INF ) {
                printf("ERROR: Impossible N_ST reached at (%d,%d)\n", i, j);
@@ -365,7 +365,7 @@ void traceback_Build (const SEQ* query,
             st_cur = ( (i <= 0) ? S_ST : N_ST );
             break;
 
-         /* B STATE */
+         /* B STATE to {N,J} */
          case B_ST:  /* B connects from N, J */
             if ( CMP_TOL( XMX(SP_B, i), XMX(SP_N, i) + XSC(SP_N, SP_MOVE) ) )
                st_cur = N_ST;
@@ -377,7 +377,7 @@ void traceback_Build (const SEQ* query,
             }
             break;
 
-         /* J STATE */
+         /* J STATE to {J,E} */
          case J_ST:  /* J connects from E(i) or J(i-1) */
             if (XMX(SP_J, i) == -INF ) {
                printf("ERROR: Impossible J_ST reached at (%d,%d)\n", i, j);
@@ -399,10 +399,8 @@ void traceback_Build (const SEQ* query,
             exit(1);
       }
 
-      traceback_Append(tr, st_cur, i, j);
-
       /* Add new state and (i,j) to trace */
-      // int state_num[] = {MAT_ST, INS_ST, DEL_ST, SP_E, SP_N, SP_J, SP_C, SP_B, -1, -1};
+      int state_num[] = {MAT_ST, INS_ST, DEL_ST, SP_E, SP_N, SP_J, SP_C, SP_B, -1, -1};
       // static char * states[] = {"ST_M",
       //                           "ST_I",
       //                           "ST_D",
@@ -415,14 +413,16 @@ void traceback_Build (const SEQ* query,
       //                           "ST_T",
       //                           "ST_X" };
       // if (st_cur < 3) {
-      //    printf("%s (%d,%d) \t%f\n", states[st_cur], i, j, ST_MX(st_MX, state_num[st_cur], i, j) );
+      //    printf("%s:\t(%d,%d)  \t%f\n", states[st_cur], i, j, ST_MX(st_MX, state_num[st_cur], i, j) );
       // } 
       // else if (st_cur >= 3 && st_cur < 9) {
-      //    printf("%s (%d,%d) \t%f\n", states[st_cur], i, j, SP_MX(sp_MX, state_num[st_cur], i) );
+      //    printf("%s:\t(%d,%d)  \t%f\n", states[st_cur], i, j, SP_MX(sp_MX, state_num[st_cur], i) );
       // }
       // else {
-      //    printf("%s (%d,%d)\n", states[st_cur], i, j );
+      //    printf("%s:\t(%d,%d)\n", states[st_cur], i, j );
       // }
+
+      traceback_Append(tr, st_cur, i, j);
 
       /* For NCJ, we deferred i decrement. */
       if ( (st_cur == N_ST || st_cur == J_ST || st_cur == C_ST) && st_cur == st_prv) {

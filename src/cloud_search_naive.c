@@ -63,12 +63,10 @@ float forward_Bounded_Naive_Run (const SEQ* query,
    bool   is_local = target->isLocal;
    float  sc_E = (is_local) ? 0 : -INF;
 
+   /* --------------------------------------------------------------------------------- */
+
    /* clear matrix */
-   for (i = 0; i <= Q; i++) {
-      for (j = 0; j <= T; j++) {
-         MMX(i,j) = IMX(i,j) = DMX(i,j) = -INF;
-      }
-   }
+   dp_matrix_Clear(Q, T, st_MX, sp_MX);
 
    /* initialize special states (?) */
    XMX(SP_N,0) = 0;                                         /* S->N, p=1             */
@@ -158,7 +156,7 @@ float forward_Bounded_Naive_Run (const SEQ* query,
                         );
          MMX(i,j) = prev_sum + MSC(j,A);
 
-         /* FIND SUM OF PATHS TO INSERT STATE (unrolled) */
+         /* FIND SUM OF PATHS TO INSERT STATE */
          IMX(i,j) = -INF;
 
          /* FIND SUM OF PATHS TO DELETE STATE (FROM MATCH OR DELETE) (unrolled) */

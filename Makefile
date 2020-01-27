@@ -7,7 +7,7 @@
 #################################################################################
 
 # define C compiler to use
-CC = gcc
+CC = gcc-8
 
 # final executable
 TARGET_EXEC ?= cloud_fwdbck.exe

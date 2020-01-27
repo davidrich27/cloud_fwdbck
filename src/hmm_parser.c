@@ -48,6 +48,8 @@ void hmmprofile_Create(HMM_PROFILE *prof, char *_filename_)
       exit(EXIT_FAILURE);
    }
 
+   /* NOTE: May need to change to variable length string fields */
+
    /* parse header */
    while ( ( line_size = getline ( &line_buf, &line_buf_size, fp ) ), line_size != -1  && inHeader) /* read a line */
    {
