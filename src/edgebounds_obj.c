@@ -22,7 +22,6 @@
 #include "hmm_parser.h"
 #include "viterbi.h"
 #include "forward_backward.h"
-#include "cloud_search.h"
 #include "testing.h"
 #include "edgebounds_obj.h"
 

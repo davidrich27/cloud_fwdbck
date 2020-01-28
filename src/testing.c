@@ -10,10 +10,6 @@
 #include "structs.h"
 #include "misc.h"
 #include "hmm_parser.h"
-#include "viterbi.h"
-#include "forward_backward.h"
-#include "cloud_search.h"
-#include "testing.h"
 
 // macro functions
 // NOTE: wrap all macro vars in parens!!

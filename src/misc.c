@@ -258,6 +258,25 @@ void dp_matrix_Clear (const int Q, const int T,
    }
 }
 
+/* Clear all matrix values to -INF. (for testing) */
+void dp_matrix_Clear3 (const int Q, const int T,
+                      float st_MX3[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
+                      float sp_MX[ NUM_SPECIAL_STATES * (Q + 1) ])
+{
+   for (int i = 0; i <= Q; i++)
+   {
+      for (int j = 0; j < NUM_SPECIAL_STATES; j++) {
+         XMX(j, i) = -INF;
+      }
+   }
+
+   for (int i = 0; i < 3; i++) {
+      for (int j = 0; j <= T; j++) {
+         MMX3(i, j) = IMX3(i, j) = DMX3(i, j) = -INF;
+      }
+   }
+}
+
 /* Set all matrix values to val */
 void dp_matrix_Clear_X (const int Q, const int T,
                         float st_MX[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],

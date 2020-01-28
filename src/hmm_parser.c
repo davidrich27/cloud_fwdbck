@@ -87,7 +87,7 @@ void hmmprofile_Create(HMM_PROFILE *prof, char *_filename_)
          prof->leng = value;
 
          /* allocate nodes */
-         prof->hmm_model = malloc( sizeof (HMM_NODE) * prof->leng + 1 );
+         prof->hmm_model = malloc( sizeof (HMM_NODE) * (prof->leng + 1) );
       }
       else if ( strcmp( header, "ALPH" ) == 0 ) {
          field = strtok( NULL, " \n" );

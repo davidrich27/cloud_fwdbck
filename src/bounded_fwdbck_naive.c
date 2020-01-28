@@ -1,6 +1,6 @@
 /*******************************************************************************
- *  @file forward_backward.c
- *  @brief The Forward-Backward Algorithm for Sequence Alignment Search.
+ *  @file bounded.c
+ *  @brief Bounded Forward-Backward Algorithm for Cloud Search (NAIVE).
  *
  *  @author Dave Rich (devrek)
  *  @bug Lots.
@@ -20,6 +20,8 @@
 #include "hmm_parser.h"
 #include "viterbi.h"
 #include "forward_backward.h"
+#include "cloud_search_quad.h"
+#include "bounded_fwdbck_naive.h"
 
 /*  
  *  FUNCTION: forward_Bounded_Naive_Run()
@@ -51,6 +53,7 @@ float forward_Bounded_Naive_Run (const SEQ* query,
    int    A;           /* store int value of character */
    int    i,j,k = 0;   /* row, column indices */
    char   *seq = query->seq; /* alias for getting seq */
+   int    x_0, r_0, x_1, r_1;
 
    float  prev_mat, prev_del, prev_ins, prev_beg, prev_sum;
    float  sc, sc_1, sc_2;
@@ -110,9 +113,9 @@ float forward_Bounded_Naive_Run (const SEQ* query,
             /* best-to-match */
             prev_sum = calc_Logsum( 
                            calc_Logsum( prev_mat, prev_ins ),
-                           calc_Logsum( prev_beg, prev_del )
-                        );
+                           calc_Logsum( prev_beg, prev_del ) );
             MMX(i,j) = prev_sum + MSC(j,A);
+            // fprintf(tfp, "MMX(%d,%d): m=%f, i=%f, d=%f, b=%f\n", i, j, sc1, sc2, sc3, sc4 );
 
             /* FIND SUM OF PATHS TO INSERT STATE (FROM MATCH OR INSERT) */
             /* previous states (match takes the left element of each state) */
@@ -138,6 +141,9 @@ float forward_Bounded_Naive_Run (const SEQ* query,
             XMX(SP_E,i) = calc_Logsum( 
                               calc_Logsum( prev_mat, prev_del ),
                               XMX(SP_E,i) );
+
+            x_0 = r_0 = i;
+            // fprintf(tfp, "PRE (%d,%d) -> E: %f, Esc: %f, MMX: %f, DMX: %f, MSC: %f \n", x_0, j, XMX(SP_E, x_0), sc_E, MMX(r_0, j), DMX(r_0, j), MSC(j,A) );
          }
       }
 
@@ -146,7 +152,7 @@ float forward_Bounded_Naive_Run (const SEQ* query,
       {
          /* UNROLLED FINAL LOOP ITERATION */
          j = T; 
-         fprintf(tfp, "%d...", j);
+         fprintf(tfp, "%d!...", j);
 
          /* FIND SUM OF PATHS TO MATCH STATE (FROM MATCH, INSERT, DELETE, OR BEGIN) */
          /* best previous state transition (match takes the diag element of each prev state) */

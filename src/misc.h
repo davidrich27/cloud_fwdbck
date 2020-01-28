@@ -35,6 +35,9 @@ void dp_matrix_Print (const int Q, const int T,
 void dp_matrix_Clear (const int Q, const int T, 
                       float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
                       float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ]);
+void dp_matrix_Clear3 (const int Q, const int T,
+                      float st_MX3[ NUM_NORMAL_STATES * (Q + 1) * (T + 1) ],
+                      float sp_MX[ NUM_SPECIAL_STATES * (Q + 1) ]);
 void dp_matrix_Clear_X (const int Q, const int T, 
                        float st_MX[ NUM_NORMAL_STATES * (Q+1) * (T+1) ], 
                        float sp_MX[ NUM_SPECIAL_STATES * (Q+1) ],

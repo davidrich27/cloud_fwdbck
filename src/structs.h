@@ -17,14 +17,14 @@ extern float BG_MODEL[];
 extern float BG_MODEL_log[];
 
 /* MATCH, INSERT, DELETE, SPECIAL DP MATRIX ACCESS MACROS */
-#define ST_MX(mx,st,i,j)   (   mx[ (st*(Q+1)*(T+1))     + ((i)*(T+1)) + (j) ])
+#define ST_MX(mx,st,i,j)   (   mx[ (    st*(Q+1)*(T+1)) + ((i)*(T+1)) + (j) ])
 #define MMX(i,j)           (st_MX[ (MAT_ST*(Q+1)*(T+1)) + ((i)*(T+1)) + (j) ])
 #define IMX(i,j)           (st_MX[ (INS_ST*(Q+1)*(T+1)) + ((i)*(T+1)) + (j) ])
 #define DMX(i,j)           (st_MX[ (DEL_ST*(Q+1)*(T+1)) + ((i)*(T+1)) + (j) ])
 /* MATCH, INSERT, DELETE, SPECIAL ANTI-DIAG ACCESS MACROS (d = diag, i = offset) */
-#define MMX3(i,d)          (st_MX3[ (MAT_ST*(Q+1)*3) + ((d)*(Q+1)) + (i) ])
-#define IMX3(i,d)          (st_MX3[ (INS_ST*(Q+1)*3) + ((d)*(Q+1)) + (i) ])
-#define DMX3(i,d)          (st_MX3[ (DEL_ST*(Q+1)*3) + ((d)*(Q+1)) + (i) ])
+#define MMX3(i,j)          (st_MX3[ (MAT_ST*3*(T+1)) + ((i)*(T+1)) + (j) ])
+#define IMX3(i,j)          (st_MX3[ (INS_ST*3*(T+1)) + ((i)*(T+1)) + (j) ])
+#define DMX3(i,j)          (st_MX3[ (DEL_ST*3*(T+1)) + ((i)*(T+1)) + (j) ])
 
 
 /* SPECIAL STATE MATRIX MACROS */
