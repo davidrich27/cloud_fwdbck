@@ -512,7 +512,7 @@ void dp_matrix_trace_Save (const int Q, const int T,
    fprintf(fp, "\n");
 
    /* Row-by-Row Values */
-   for (int i = 0; i < Q + 1; i++)
+   for (int i = 0; i <= Q; i++)
    {
       fprintf(fp, "M %d\t", i );
       for (int j = 0; j <= T; j++)
@@ -538,26 +538,37 @@ void dp_matrix_trace_Save (const int Q, const int T,
    fprintf(fp, "/\n\n");
 
    fprintf(fp, "###### SPECIAL STATES #####\n");
+   fprintf(fp, "XSPECIAL\n");
    fprintf(fp, "N\t");
    for (int i = 0; i <= Q; i++)
-   { fprintf(fp, "%.3f\t", XMX(SP_N, i) ); }
+   { 
+      fprintf(fp, "%.3f\t", XMX(SP_N, i) ); 
+   }
    fprintf(fp, "\n");
    fprintf(fp, "J\t");
    for (int i = 0; i <= Q; i++)
-   { fprintf(fp, "%.3f\t", XMX(SP_J, i) ); }
+   { 
+      fprintf(fp, "%.3f\t", XMX(SP_J, i) ); 
+   }
    fprintf(fp, "\n");
    fprintf(fp, "E\t");
    for (int i = 0; i <= Q; i++)
-   { fprintf(fp, "%.3f\t", XMX(SP_E, i) ); }
+   { 
+      fprintf(fp, "%.3f\t", XMX(SP_E, i) ); 
+   }
    fprintf(fp, "\n");
    fprintf(fp, "C\t");
    for (int i = 0; i <= Q; i++)
-   { fprintf(fp, "%.3f\t", XMX(SP_C, i) ); }
+   {
+      fprintf(fp, "%.3f\t", XMX(SP_C, i) ); 
+   }
    fprintf(fp, "\n");
    fprintf(fp, "B\t");
    for (int i = 0; i <= Q; i++)
-   { fprintf(fp, "%.3f\t", XMX(SP_B, i) ); }
-   fprintf(fp, "\n");
+   { 
+      fprintf(fp, "%.3f\t", XMX(SP_B, i) ); 
+   }
+   fprintf(fp, "\n/\n");
 
    fclose(fp);
 

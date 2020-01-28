@@ -410,6 +410,7 @@ void test(char *hmm_file, char *fasta_file, float alpha, int beta)
       // dp_matrix_Clear_X(Q, T, st_MX_cloud, sp_MX_cloud, 1);
       // edgebounds_Build_From_Cloud(edg, Q, T, st_MX_cloud, MODE_ROW);
       // edgebounds_Save(edg, "output/myversion.edgebounds_full.tsv");
+      // dp_matrix_trace_Save(Q, T, st_MX_cloud, sp_MX_cloud, tr, "output/myversion.cloud.full_fwdbck.tsv");
       // printf("=== TEST CLOUD -> END ===\n\n");
 
       /* bounded forward */
@@ -425,8 +426,8 @@ void test(char *hmm_file, char *fasta_file, float alpha, int beta)
       scores->cloud_fwd_sc = sc;
       dp_matrix_trace_Save(Q, T, st_MX, sp_MX, tr, "output/myversion.bounded_fwd.quadratic.tsv");
 
-      backward_bounded_Run3(query_seq, target_prof, Q, T, st_MX3, sp_MX, edg, &sc);
-      printf("Bound Backward Score (Linear): %f\n", sc);
+      // backward_bounded_Run3(query_seq, target_prof, Q, T, st_MX3, sp_MX, edg, &sc);
+      // printf("Bound Backward Score (Linear): %f\n", sc);
       printf("=== BOUNDED FORWARD -> END ===\n\n");
 
       /* bounded backward */
@@ -442,8 +443,8 @@ void test(char *hmm_file, char *fasta_file, float alpha, int beta)
       printf("Bounded Backward Score (Quadratic): %f\n", sc);
       dp_matrix_trace_Save(Q, T, st_MX, sp_MX, tr, "output/myversion.bounded_bck.quadratic.tsv");
 
-      backward_bounded_Run3(query_seq, target_prof, Q, T, st_MX3, sp_MX, edg, &sc);
-      printf("Bound Backward Score (Linear): %f\n", sc);
+      // backward_bounded_Run3(query_seq, target_prof, Q, T, st_MX3, sp_MX, edg, &sc);
+      // printf("Bound Backward Score (Linear): %f\n", sc);
       printf("=== BOUNDED BACKWARD -> END ===\n\n");
 
       /* sample stats */

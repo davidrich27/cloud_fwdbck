@@ -753,11 +753,13 @@ float forward_bounded_Run(const SEQ* query,
    bool   is_local = target->isLocal;
    float  sc_E = (is_local) ? 0 : -INF;
 
+   /* DEBUG OUTPUT */
+   FILE *tfp = fopen("test_output/fwd_bounded.quad.txt", "w+");
+
    /* --------------------------------------------------------------------------------- */
 
    /* clear all pre-existing data from matrix */
    dp_matrix_Clear(Q, T, st_MX, sp_MX);
-   printf("Q=%d, T=%d\n", Q, T);
 
    /* initialize special states (?) */
    XMX(SP_N,0) = 0;                                         /* S->N, p=1             */
@@ -787,6 +789,7 @@ float forward_bounded_Run(const SEQ* query,
    /* FOR every position in QUERY sequence (row in matrix) */
    for (x_0 = 1; x_0 <= Q; x_0++)
    {
+      fprintf(tfp, "(i=%d): ", x_0);
       /* convert quadratic space row index to linear space row index (ex % 2) */
       row_cur = x_0;
       r_0 = x_0;        /* for use in linear space alg (mod-mapping) */
@@ -794,7 +797,7 @@ float forward_bounded_Run(const SEQ* query,
 
       /* add every edgebound from current row */
       r_0b = k;
-      // printf("k: %d => row_cur: %d, k.diag: %d\n", k, row_cur, edg->bounds[k].diag);
+      // fprintf("k: %d => row_cur: %d, k.diag: %d\n", k, row_cur, edg->bounds[k].diag);
       while ( k < N && edg->bounds[k].diag == row_cur ) {
          k++;
       }
@@ -814,19 +817,20 @@ float forward_bounded_Run(const SEQ* query,
          /* in this context, "diag" represents the "row" */
          x = edg->bounds[i].diag;            /* NOTE: this is always the same as cur_row, x_0 */
          y1 = max(1, edg->bounds[i].lb);     /* can't overflow the left edge */
-         y2 = min(edg->bounds[i].rb, T);   /* can't overflow the right edge */
-         // printf("%d: (%d->%d,%d->%d)\n", x, edg->bounds[i].lb, y1, edg->bounds[i].rb, y2);
+         y2 = min(edg->bounds[i].rb, T+1);   /* can't overflow the right edge */
+         // printf("%d: (%d,%d)->(%d,%d)\n", x, edg->bounds[i].lb, edg->bounds[i].rb, y1, y2);
 
          /* MAIN RECURSION */
          /* FOR every position in TARGET profile */
-         for (j = y1; j < y2; j++)
+         for (j = y1; j < y2 - 1; j++)
          {
+            fprintf(tfp, "%d...", j);
             /* FIND SUM OF PATHS TO MATCH STATE (FROM MATCH, INSERT, DELETE, OR BEGIN) */
             /* best previous state transition (match takes the diag element of each prev state) */
             prev_mat = MMX(r_1,j-1)  + TSC(j-1,M2M);
             prev_ins = IMX(r_1,j-1)  + TSC(j-1,I2M);
             prev_del = DMX(r_1,j-1)  + TSC(j-1,D2M);
-            prev_beg = XMX(SP_B,i-1) + TSC(j-1,B2M); /* from begin match state (new alignment) */
+            prev_beg = XMX(SP_B, x_0) + TSC(j-1,B2M); /* from begin match state (new alignment) */
 
             /* best-to-match */
             prev_sum = calc_Logsum( 
@@ -859,11 +863,12 @@ float forward_bounded_Run(const SEQ* query,
                                     calc_Logsum( prev_mat, prev_del ),
                                     XMX(SP_E, x_0) );
 
-            // printf("(%d,%d) -> E: %f, Esc: %f, MMX: %f, DMX: %f, MSC: %f \n", x_0, j, XMX(SP_E, x_0), sc_E, MMX(r_0, j), DMX(r_0, j), MSC(j,A) );
+            printf("(%d,%d) -> E: %f, Esc: %f, MMX: %f, DMX: %f, MSC: %f \n", x_0, j, XMX(SP_E, x_0), sc_E, MMX(r_0, j), DMX(r_0, j), MSC(j,A) );
          }
 
          /* UNROLLED FINAL LOOP ITERATION */
-         j = y2; 
+         j = y2 - 1; 
+         fprintf(tfp, "%d...", j);
 
          /* FIND SUM OF PATHS TO MATCH STATE (FROM MATCH, INSERT, DELETE, OR BEGIN) */
          /* best previous state transition (match takes the diag element of each prev state) */
@@ -894,9 +899,9 @@ float forward_bounded_Run(const SEQ* query,
          prev_del = DMX(r_0, j);
          XMX(SP_E, x_0) = calc_Logsum( 
                               calc_Logsum( prev_mat, prev_del ),
-                              XMX(SP_E, x_0)
-                           );
+                              XMX(SP_E, x_0) );
       }
+      fprintf(tfp, "...done\n");
 
       /* ONCE ROW IS COMPLETED, UPDATE SPECIAL STATES */
       {
@@ -932,9 +937,9 @@ float forward_bounded_Run(const SEQ* query,
 
    /* T state */
    sc_best = XMX(SP_C,Q) + XSC(SP_C,SP_MOVE);
-   printf("sc_best: %f\n", sc_best);
-
    sc_final[0] = sc_best;
+
+   fclose(tfp);
    return sc_best;
 }
 
@@ -985,6 +990,9 @@ float backward_bounded_Run(const SEQ* query,
    bool   is_local = target->isLocal;
    float  sc_E = (is_local) ? 0 : -INF;
 
+   /* DEBUG OUTPUT */
+   FILE *tfp = fopen("test_output/bck_bounded.quad.txt", "w+");
+
    /* --------------------------------------------------------------------------------- */
 
    /* Initialize the Q row. */
@@ -1022,10 +1030,15 @@ float backward_bounded_Run(const SEQ* query,
    x_1 = Q;    /* initial one-row-back */
    r_1 = x_1;  /* for use in linear space alg (mod-mapping) */
 
+   // for (int l = 0; l < N; l++) {
+   //    fprintf(tfp, "%d: (%d, %d)\n", edg->bounds[l].diag, edg->bounds[l].lb, edg->bounds[l].rb);
+   // }
+
    /* MAIN RECURSION */
    /* FOR every bound in EDGEBOUND */
    for (x_0 = Q-1; x_0 > 0; --x_0)
    {
+      fprintf(tfp, "(i=%d): ", x_0);
       /* convert quadratic space row index to linear space row index (ex % 2) */
       row_cur = x_0;
       r_0 = x_0;        /* for use in linear space alg (mod-mapping) */
@@ -1075,7 +1088,7 @@ float backward_bounded_Run(const SEQ* query,
          // printf("x_0: %d -> B: %f, J: %f, C: %f, E: %f, N: %f, MSC(%d): %f \n", x_0, XMX(SP_B, x_0), XMX(SP_J, x_0), XMX(SP_C, x_0),  XMX(SP_E, x_0), XMX(SP_N, x_0), A, MSC(j, A) );
       }
 
-      // printf("x_0: %d (%d, %d) -> (%d, %d)\n", x_0, r_0b, r_0e, edg->bounds[r_0b], edg->bounds[r_0e]);
+      // fprintf(tfp, "x_0: %d (%d, %d) -> (%d, %d)\n", x_0, r_0b, r_0e, edg->bounds[r_0b], edg->bounds[r_0e-1]);
 
       /* FOR every EDGEBOUND in current ROW */
       for (i = r_0b; i > r_0e; i--)
@@ -1088,6 +1101,7 @@ float backward_bounded_Run(const SEQ* query,
          /* FOR every position in TARGET profile */
          for (j = y2-1; j >= y1; --j)
          {
+            fprintf(tfp, "%d...", j);
             sc_M = MSC(j+1,A);
             sc_I = ISC(j+1,A);
             // printf("(%d,%d): A=%d, MSC=%f, ISC=%f\n", x_0, j, A, sc_M, sc_I);
@@ -1096,7 +1110,7 @@ float backward_bounded_Run(const SEQ* query,
             prev_mat = MMX(r_1, j+1)  + TSC(j, M2M) + sc_M;
             prev_ins = IMX(r_1, j)    + TSC(j, M2I) + sc_I;
             prev_del = DMX(r_0, j+1)  + TSC(j, M2D);
-            prev_end = XMX(SP_E, r_0) + sc_E;     /* from end match state (new alignment) */
+            prev_end = XMX(SP_E, x_0) + sc_E;     /* from end match state (new alignment) */
             /* best-to-match */
             prev_sum = calc_Logsum( 
                               calc_Logsum( prev_mat, prev_ins ),
@@ -1129,35 +1143,44 @@ float backward_bounded_Run(const SEQ* query,
       r_1 = r_0;
       r_1b = r_0b;
       r_1e = r_0e;
+
+      fprintf(tfp, "...done\n");
+      fprintf(tfp, "N(0): %f\n", XMX(SP_N, 0));
    }
 
    /* FINAL ROW */
-   row_cur = x_0 = 1;
-   r_0 = row_cur % 2;
+   row_cur = x_0 = i = 0;
+   x_1 = x_0 + 1;
+   r_0 = x_0;
+   r_1 = x_1;
+
    /* FINAL i = 0 row */
-   a = seq[x_0];
+   a = seq[1];
    A = AA_REV[a];
 
-   XMX(SP_B,0) = MMX(1,1) + TSC(0,B2M) + MSC(1,A);
+   j = 1;
+   XMX(SP_B,x_0) = MMX(r_1,j) + TSC(x_0,B2M) + MSC(j,A);
 
    for (j = 2; j >= T; j++) {
-      XMX(SP_B,0) = calc_Logsum( XMX(SP_B,0),
-                                 MMX(1,j) + TSC(j-1,B2M) + MSC(j,A) );
+      XMX(SP_B,x_0) = calc_Logsum( XMX(SP_B,x_0),
+                                 MMX(r_1,j) + TSC(j-1,B2M) + MSC(j,A) );
    }
 
-   XMX(SP_J,i) = -INF;
-   XMX(SP_C,i) = -INF;
-   XMX(SP_E,i) = -INF;
+   XMX(SP_J,r_0) = -INF;
+   XMX(SP_C,r_0) = -INF;
+   XMX(SP_E,r_0) = -INF;
 
-   XMX(SP_N,i) = calc_Logsum( XMX(SP_N,1) + XSC(SP_N,SP_LOOP),
-                              XMX(SP_B,0) + XSC(SP_N,SP_MOVE) );
+   XMX(SP_N,x_0) = calc_Logsum( XMX(SP_N,x_1) + XSC(SP_N,SP_LOOP),
+                                XMX(SP_B,x_0) + XSC(SP_N,SP_MOVE) );
 
    for (j = T; j >= 1; j--) {
-      MMX(i,j) = IMX(i,j) = DMX(i,j) = -INF;
+      MMX(x_0,j) = IMX(x_0,j) = DMX(x_0,j) = -INF;
    }
 
-   sc_best = XMX(SP_N,0);
+   fprintf(tfp, "a=%d, A=%d, MSC=%f\n", a, A, MSC(1,A) );
 
+   sc_best = XMX(SP_N,0);
    sc_final[0] = sc_best;
+   fclose(tfp);
    return sc_best;
 }

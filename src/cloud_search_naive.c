@@ -22,7 +22,7 @@
 #include "forward_backward.h"
 
 /*  
- *  FUNCTION: forward_Run()
+ *  FUNCTION: forward_Bounded_Naive_Run()
  *  SYNOPSIS: Perform Forward part of Forward-Backward Algorithm.
  *
  *  PURPOSE:
@@ -63,6 +63,9 @@ float forward_Bounded_Naive_Run (const SEQ* query,
    bool   is_local = target->isLocal;
    float  sc_E = (is_local) ? 0 : -INF;
 
+   /* DEBUG OUTPUT */
+   FILE *tfp = fopen("test_output/fwd_bounded.naive.txt", "w+");
+
    /* --------------------------------------------------------------------------------- */
 
    /* clear matrix */
@@ -80,6 +83,7 @@ float forward_Bounded_Naive_Run (const SEQ* query,
    /* FOR every position in QUERY seq */
    for (i = 1; i <= Q; i++)
    {  
+      fprintf(tfp, "(i=%d): ", i);
       /* Get next sequence character */
       a = seq[i-1];
       A = AA_REV[a];
@@ -96,6 +100,7 @@ float forward_Bounded_Naive_Run (const SEQ* query,
          sc_cloud = ST_MX( st_MX_cloud, I_ST, i, j);
          if ( sc_cloud > 0 ) 
          {
+            fprintf(tfp, "%d...", j);
             /* FIND SUM OF PATHS TO MATCH STATE (FROM MATCH, INSERT, DELETE, OR BEGIN) */
             /* best previous state transition (match takes the diag element of each prev state) */
             sc1 = prev_mat = MMX(i-1,j-1)  + TSC(j-1,M2M);
@@ -132,8 +137,7 @@ float forward_Bounded_Naive_Run (const SEQ* query,
 
             XMX(SP_E,i) = calc_Logsum( 
                               calc_Logsum( prev_mat, prev_del ),
-                              XMX(SP_E,i)
-                           );
+                              XMX(SP_E,i) );
          }
       }
 
@@ -142,6 +146,7 @@ float forward_Bounded_Naive_Run (const SEQ* query,
       {
          /* UNROLLED FINAL LOOP ITERATION */
          j = T; 
+         fprintf(tfp, "%d...", j);
 
          /* FIND SUM OF PATHS TO MATCH STATE (FROM MATCH, INSERT, DELETE, OR BEGIN) */
          /* best previous state transition (match takes the diag element of each prev state) */
@@ -174,9 +179,9 @@ float forward_Bounded_Naive_Run (const SEQ* query,
          /* best-to-begin */
          XMX(SP_E,i) = calc_Logsum( 
                            calc_Logsum( DMX(i,j), MMX(i,j) ),
-                           XMX(SP_E,i) 
-                        );
+                           XMX(SP_E,i) );
       }
+      fprintf(tfp, "...done\n");
       
       /* SPECIAL STATES */
       /* J state */
@@ -200,12 +205,13 @@ float forward_Bounded_Naive_Run (const SEQ* query,
 
    /* T state */
    sc_best = XMX(SP_C,Q) + XSC(SP_C,SP_MOVE);
-
    sc_final[0] = sc_best;
+
+   fclose(tfp);
    return sc_best;
 }
 
-/* FUNCTION: backward_Run()
+/* FUNCTION: backward_Bounded_Naive_Run()
  * SYNOPSIS: Perform Backward part of Forward-Backward Algorithm.
  *
  * PURPOSE:
@@ -245,6 +251,11 @@ float backward_Bounded_Naive_Run (const SEQ* query,
    bool   is_local = target->isLocal;
    float  sc_E = (is_local) ? 0 : -INF;
 
+   /* DEBUG OUTPUT */
+   FILE *tfp = fopen("test_output/bck_bounded.naive.txt", "w+");
+
+   /* --------------------------------------------------------------------------------- */
+
    /* Initialize the Q row. */
    XMX(SP_J,Q) = XMX(SP_B,Q) = XMX(SP_N,Q) = -INF;
    XMX(SP_C,Q) = XSC(SP_C,SP_MOVE);
@@ -272,6 +283,7 @@ float backward_Bounded_Naive_Run (const SEQ* query,
    /* FOR every position in QUERY seq */
    for (i = Q-1; i >= 1; i--)
    {
+      fprintf(tfp, "(i=%d): ", i);
       /* Get next sequence character */
       a = seq[i];
       A = AA_REV[a];
@@ -303,9 +315,11 @@ float backward_Bounded_Naive_Run (const SEQ* query,
       /* FOR every position in TARGET profile */
       for (j = T-1; j >= 1; j--)
       {
-         sc_cloud = ST_MX( st_MX_cloud, M_ST, i, j);
+         sc_cloud = ST_MX( st_MX_cloud, I_ST, i, j);
          if ( sc_cloud > 0 ) 
          {
+
+            fprintf(tfp, "%d...", j);
             sc_M = MSC(j+1,A);
             sc_I = ISC(j,A);
 
@@ -335,11 +349,12 @@ float backward_Bounded_Naive_Run (const SEQ* query,
             /* best-to-delete */
             prev_sum = calc_Logsum( 
                               prev_mat, 
-                              calc_Logsum( prev_del, prev_end ) 
-                        );
+                              calc_Logsum( prev_del, prev_end ) );
             DMX(i,j) = prev_sum;
          }
       }
+      fprintf(tfp, "...done\n");
+      fprintf(tfp, "N(0): %f\n", XMX(SP_N, 0));
    }
 
    /* FINAL i = 0 row */
@@ -366,9 +381,11 @@ float backward_Bounded_Naive_Run (const SEQ* query,
       MMX(i,j) = IMX(i,j) = DMX(i,j) = -INF;
    }
 
-   sc_best = XMX(SP_N,0);
+   fprintf(tfp, "a=%d, A=%d, MSC=%f\n", a, A, MSC(1,A) );
 
+   sc_best = XMX(SP_N,0);
    sc_final[0] = sc_best;
+   fclose(tfp);
    return sc_best;
 }
 

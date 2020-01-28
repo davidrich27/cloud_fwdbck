@@ -34,6 +34,17 @@ sp_dict = {
    "B": 4
 }
 
+opts = {
+   "-4": False,
+   "-tr": False,
+   "-diff": False,
+   "-add": False,
+   "-eq": False
+};
+
+tsv_matrix = [];
+
+
 # If value is infinity, replace it with another value
 def replace_inf(val, replace):
    if val == np.inf:
@@ -77,7 +88,7 @@ def load_matrix(tsv_matrix):
 
          # matrix values
          elif line.startswith("XMATRIX"):
-            f.readline()
+            line = f.readline()
             while line and not line.startswith("/"):
                # label which matrix it goes to
                line = line.split("\t")
@@ -90,14 +101,24 @@ def load_matrix(tsv_matrix):
                   st_cur = nm_dict[l]
                   row_cur = (int)(label[1])
 
-                  for i in range(n):
+                  for i in range(n+1):
                      mx_cur[i][row_cur][st_cur] = (float)(line[i+1])
                   pass
 
+               line = f.readline()
+            pass
+
+         elif line.startswith("XSPECIAL"):
+            line = f.readline()
+            while line and not line.startswith("/"):
+               # label which row 
+               line = line.split("\t")
+               label = line[0]
+
                # read in row from special state matrix
-               if l in sp_dict.keys():
+               if label in sp_dict.keys():
                   mx_cur = SP_MX
-                  st_cur = sp_dict[l]
+                  st_cur = sp_dict[label]
 
                   for i in range(m+1):
                      mx_cur[i][st_cur] = (float)(line[i+1])
@@ -137,7 +158,19 @@ def add_matrix(mat1, mat2):
 
    return res
 
-# Find non-infinite min/max (and )
+# Test equality of two matrices (within tolerance)
+def eq_matrix(mat1, mat2, tol = 0.01):
+   res = np.zeros_like(mat1)
+
+   for i,x in np.ndenumerate(mat1):
+      if abs(mat1[i] - mat2[i]) < tol :
+         res[i] = 0
+      else:
+         res[i] = 1
+
+   return res
+
+# Find non-infinite min/max
 def minmax_matrix(NM_MX, SP_MX):
    min_val = np.inf
    max_val = -np.inf
@@ -180,6 +213,7 @@ def remove_inf_matrix(NM_MX, SP_MX, min_val, max_val):
          SP_MX[i] = max_val * multiplier
       elif (val == -np.inf):
          SP_MX[i] = min_val * multiplier
+   return None
 
 # Normalize matrix
 def normalize_matrix(NM_MX, min_val, max_val, rang):
@@ -188,6 +222,7 @@ def normalize_matrix(NM_MX, min_val, max_val, rang):
    NM_MX = np.exp(NM_MX)
    # NM_MX *= 255
    # NM_MX = NM_MX.astype(int)
+   return None
 
 # Normalize all anti-diagonals of matrix
 def normalize_antidiags(NM_MX):
@@ -254,22 +289,21 @@ def normalize_antidiags(NM_MX):
                   M[i,j,c] = ((M[i,j,c] - min_val)/ range_val)
                else:
                   M[i,j,c] = 0.0
-         # print("POST d:",d,"range_val:",range_val,"min_val:",min_val, "max_val:", max_val)         
-
+         # print("POST d:",d,"range_val:",range_val,"min_val:",min_val, "max_val:", max_val)
+   return None       
 
 # Output matrix at heatmap
-def output_heatmap(MAT_MX, INS_MX, DEL_MX, SP_MX, vmin, vmax):
+def output_heatmap(title, MAT_MX, INS_MX, DEL_MX, SP_MX, vmin, vmax):
    fig, ( (ax1, ax2), (ax3, ax4) ) = plt.subplots(2, 2)
 
-   ax1.set_title( "MATCH" )
-   # ax1.pcolor( MAT_MX, cmap='plasma', edgecolor='white', linewidths=.5 )
-   ax1.imshow( MAT_MX, cmap='plasma', interpolation='nearest' )
+   ax1.set_title( title )
+   ax1.imshow( MAT_MX, cmap='jet', interpolation='nearest' )
    ax2.set_title( "INSERT" )
-   ax2.imshow( INS_MX, cmap='plasma', interpolation='nearest' )
+   ax2.imshow( INS_MX, cmap='jet', interpolation='nearest' )
    ax3.set_title( "DELETE" )
-   ax3.imshow( DEL_MX, cmap='plasma', interpolation='nearest' )
+   ax3.imshow( DEL_MX, cmap='jet', interpolation='nearest' )
    ax4.set_title( "SPECIAL" )
-   im = ax4.imshow( SP_MX, cmap='plasma', interpolation='nearest' )
+   im = ax4.imshow( SP_MX, cmap='jet', interpolation='nearest' )
 
    # Add legend
    cbar = ax1.figure.colorbar(im, ax=ax4)
@@ -279,12 +313,12 @@ def output_heatmap(MAT_MX, INS_MX, DEL_MX, SP_MX, vmin, vmax):
    return None
 
 # Output heatmap of single matrix with traceback on top
-def output_heatmap_trace(MAT_MX, TR, vmin, vmax):
+def output_heatmap_trace(title, MAT_MX, TR, vmin, vmax):
    fig, ax1 = plt.subplots(1, 1)
 
    # plot heatmap
-   ax1.set_title( "HEATMAP" )
-   im = ax1.imshow( MAT_MX, cmap='plasma', interpolation='nearest' )
+   ax1.set_title( title )
+   im = ax1.imshow( MAT_MX, cmap='jet', interpolation='nearest' )
 
    # plot viterbi traceback
    tr_len = len(TR[0])-1
@@ -310,15 +344,6 @@ def output_heatmap_trace(MAT_MX, TR, vmin, vmax):
 ##############################################################################
 ###########################         MAIN         #############################
 ##############################################################################
-
-opts = {
-   "-4": False,
-   "-tr": False,
-   "-diff": False,
-   "-add": False,
-};
-
-tsv_matrix = [];
 
 # Parse args
 if (len(sys.argv) == 1):
@@ -350,6 +375,21 @@ for i in range(N):
    SP_MX.append(S_MX);
    TRACE.append(TR);
 
+# Find min, max, range of matrix
+min_val = np.inf;
+max_val = -np.inf;
+for i in range(N):
+   mx_min, mx_max = minmax_matrix(NM_MX[i], SP_MX[i]);
+   min_val = min( min_val, mx_min );
+   max_val = max( max_val, mx_max );
+rang = max_val - min_val;
+print("min:", min_val, "max:", max_val, "range:", rang);
+
+# Remove infinite values from matrix and replace with (min/max values * multiplier)
+for i in range(N):
+   remove_inf_matrix(NM_MX[i], SP_MX[i], min_val, max_val);
+   next;
+
 # if diff, then take the difference of the two matrices
 if opts["-diff"]:
    if len(tsv_matrix) == 2:
@@ -374,21 +414,21 @@ if opts["-add"]:
       print("To use -diff, requires two matrices")
       exit(0)
 
+# if eq, then compare equality of two matrices
+if opts["-eq"]:
+   if len(tsv_matrix) == 2:
+      NM_MX[0] = eq_matrix( NM_MX[0], NM_MX[1] );
+      SP_MX[0] = eq_matrix( SP_MX[0], SP_MX[1] );
+      NM_MX.pop(1)
+      SP_MX.pop(1)
+      N -= 1
+   else:
+      print("To use -eq, requires two matrices")
+      exit(0)
 
-# Find min, max, range of matrix
-min_val = np.inf;
-max_val = -np.inf;
-for i in range(N):
-   mx_min, mx_max = minmax_matrix(NM_MX[i], SP_MX[i]);
-   min_val = min( min_val, mx_min );
-   max_val = max( max_val, mx_max );
-rang = max_val - min_val;
-print("min:", min_val, "max:", max_val, "range:", rang);
-
-# Remove infinite values from matrix and replace with min/max values
-for i in range(N):
-   remove_inf_matrix(NM_MX[i], SP_MX[i], min_val, max_val);
-   next;
+# title
+title1 = "MATCH\n(min=%f, max=%f)" % (min_val, max_val)
+title2 = title1
 
 # # Normalize matrix
 # for i in range(N):
@@ -402,6 +442,11 @@ for i in range(N):
 #    normalize_antidiags(NM_MX[i])
 #    next
 
+# Transpose matrix so that query is on x-axis, model is on y-axis
+for i in range(N):
+   # NM_MX[i] = NM_MX[i].T
+   next
+
 # Split matrix into state matrices: match, delete, insert
 MAT_MX = []
 INS_MX = []
@@ -412,18 +457,20 @@ for i in range(N):
    DEL_MX.append( NM_MX[i][:,:,2] )
    next
 
+print("shape", MAT_MX[0].shape)
+
 # Print matrices
 for i in range(N):
-   print( 'MAT:\n', MAT_MX[i] )
-   print( 'INS:\n', INS_MX[i] )
-   print( 'DEL:\n', DEL_MX[i] )
-   print( 'SPECIAL:\n', SP_MX[i] )
+   # print( 'MAT:\n', MAT_MX[i] )
+   # print( 'INS:\n', INS_MX[i] )
+   # print( 'DEL:\n', DEL_MX[i] )
+   # print( 'SPECIAL:\n', SP_MX[i] )
    next
 
 # Output matrices as heatmaps
 for i in range(N):
    if opts["-4"]:
-      output_heatmap(MAT_MX[i], INS_MX[i], DEL_MX[i], SP_MX[i], min_val, max_val)
+      output_heatmap(title1, MAT_MX[i], INS_MX[i], DEL_MX[i], SP_MX[i], min_val, max_val)
    if opts["-tr"]:
-      output_heatmap_trace(MAT_MX[i], TRACE[i], min_val, max_val)
+      output_heatmap_trace(title2, MAT_MX[i], TRACE[i], min_val, max_val)
    next
