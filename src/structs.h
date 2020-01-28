@@ -88,7 +88,7 @@ typedef enum {
 } ALPHABET;
 
 typedef struct {
-   int start;
+   int st;
    int end;
 } RANGE;
 
@@ -276,9 +276,11 @@ typedef struct {
 typedef struct {
    float alpha; 
    int beta;
+   int search_mode;
    char *target_hmm_file, *query_fasta_file;
    RANGE *range_query, *range_target;
-   char *outfile;
+   char *outfile_name;
+   // FILE *outfile;
 } ARGS;
 
 typedef struct {

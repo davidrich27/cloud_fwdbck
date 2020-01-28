@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  @file cloud_search.c
+ *  @file cloud_search_quad.c
  *  @brief Cloud Search for Forward-Backward Pruning Alg. (QUADRATIC SPACE)
  *
  *  @synopsis
@@ -20,13 +20,12 @@
 #include "structs.h"
 #include "misc.h"
 #include "hmm_parser.h"
-#include "viterbi.h"
-#include "forward_backward.h"
 #include "cloud_search_quad.h"
 
 // macros
 // #define getName(var) #var
 // #define SCALE_FACTOR 1000
+# define VERY_SMALL -10000.f
 
 // macro functions
 // NOTE: wrap all macro vars in parens!!
@@ -82,10 +81,13 @@ void cloud_forward_Run(const SEQ* query,
    char   *seq = query->seq;     /* alias for getting seq */
 
    /* vars for recurrance */
-   int    d_mod3, d_0, d_1, d_2; /* d (mod 3) for assigning prev array ptrs */
+   int    d_0, d_1, d_2;         /* for assigning prev array ptrs */
+   int    d0,  d1,  d2;          /* for assigning prev array ptrs in mod for linear space */
+
    float  prev_mat, prev_del, prev_ins, prev_beg, prev_end, prev_sum;
    float  sc, sc_1, sc_2, sc_best, sc_max;
    float  sc_M, sc_I, sc_D;
+
    /* vars for pruning */
    float  cell_max, total_max, total_limit, diag_max, diag_limit;
 
@@ -104,8 +106,6 @@ void cloud_forward_Run(const SEQ* query,
    /* --------------------------------------------------------------------------------- */
 
    dp_matrix_Clear(Q, T, st_MX, sp_MX);
-   // float st_MX_test[ NUM_NORMAL_STATES * (Q+1) * (T+1) ];
-   // float sp_MX_test[ NUM_SPECIAL_STATES * (Q+1) ];
 
    /* INIT ANTI-DIAGS */
    /* test coords */
@@ -134,18 +134,6 @@ void cloud_forward_Run(const SEQ* query,
    rb = start.i + 1;
    num_cells = 0;
 
-   /* INITIALIZE VALUES */
-   /* initialize special states (?) */
-   // XMX(SP_N,0) = 0;                                         /* S->N, p=1             */
-   // XMX(SP_B,0) = XSC(SP_N,SP_MOVE);                         /* S->N->B, no N-tail    */
-   // XMX(SP_E,0) = XMX(SP_C,0) = XMX(SP_J,0) = -INF;          /* need seq to get here (?)  */
-
-   /* initialize 0 row (top-edge) and ) column (left-edge) */
-   for (j = 0; j <= T; j++)
-      MMX(0,j) = IMX(0,j) = DMX(0,j) = -INF;
-   for (i = 0; i <= Q; i++)
-      MMX(i,0) = IMX(i,0) = DMX(i,0) = -INF;
-
    /* keeps largest number seen on current diagonal */
    diag_max = -INF;
    total_max = -INF;
@@ -153,14 +141,16 @@ void cloud_forward_Run(const SEQ* query,
    /* begin state probability begins at 0 */
    prev_beg = 0;
 
-   printf("alpha: %.f, beta: %d\n", alpha, beta);
-
    /* ITERATE THROUGH ANTI-DIAGONALS */
    for (d = d_st; d <= d_end; d++, d_cnt++)
    {
-      d_0 = d;      /* current diagonal */
-      d_1 = (d-1);  /* look back 1 diagonal */
-      d_2 = (d-2);  /* look back 2 diagonals */
+      d_0 = d;          /* current antidiagonal */
+      d_1 = (d-1);      /* look back 1 antidiagonal */
+      d_2 = (d-2);      /* look back 2 antidiagonal */
+      /* mod-mapping of antidiagonals into linear space */
+      d0  = d_0 % 3; 
+      d1  = d_1 % 3;
+      d2  = d_2 % 3;
 
       /* is dp matrix diagonal growing or shrinking? */
       if (d <= dim_min)
@@ -172,8 +162,9 @@ void cloud_forward_Run(const SEQ* query,
       /* if free passes are complete (beta < d), prune and set new edgebounds */
       if (beta < d_cnt)
       {
-         lb_new = -100;
-         rb_new = -100;
+
+         lb_new = VERY_SMALL;
+         rb_new = VERY_SMALL;
 
          /* Traverse current bounds to find diag_max, max for the current diag */
          diag_max = -INF;
@@ -187,8 +178,9 @@ void cloud_forward_Run(const SEQ* query,
          }
 
          /* Total max records largest cell score seen so far */
-         if (diag_max > total_max)
+         if (diag_max > total_max) {
             total_max = diag_max;
+         }
 
          /* Set score threshold for pruning */
          diag_limit = diag_max - alpha;
@@ -212,7 +204,7 @@ void cloud_forward_Run(const SEQ* query,
          }
 
          /* If no boundary edges are found on diag, then branch is pruned entirely and we are done */
-         if (lb_new == -100)
+         if (lb_new == VERY_SMALL)
             break;
 
          /* Find the first cell from the right which passes above threshold */
@@ -254,9 +246,6 @@ void cloud_forward_Run(const SEQ* query,
       if (rb > re)
          rb = re;
 
-      // printf("%d: new[%d, %d] -> edg[%d, %d] -> bounds[%d, %d]\n", d, lb_new, rb_new, le, re, lb, rb );
-      // printf("%d: edg[%d, %d] -> bounds[%d, %d]\n", d, le, re, lb, rb );
-
       /* ADD NEW ANTI-DIAG TO EDGEBOUNDS */
       edg->bounds[edg->N].lb = lb;
       edg->bounds[edg->N].rb = rb;
@@ -270,7 +259,7 @@ void cloud_forward_Run(const SEQ* query,
          edg->bounds = realloc(edg->bounds, edg->size * sizeof(BOUND) );
       }
 
-
+      /* MAIN RECURSION */
       /* ITERATE THROUGH CELLS OF NEXT ANTI-DIAGONAL */
       for (k = lb; k < rb; k++, total_cnt++)
       {
@@ -279,8 +268,6 @@ void cloud_forward_Run(const SEQ* query,
 
          a = seq[i];
          A = AA_REV[a];
-
-         /* MAIN RECURSION */
 
          /* FIND SUM OF PATHS TO MATCH STATE (FROM MATCH, INSERT, DELETE, OR BEGIN) */
          /* best previous state transition (match takes the diag element of each prev state) */
@@ -311,35 +298,6 @@ void cloud_forward_Run(const SEQ* query,
          /* best-to-delete */
          prev_sum = calc_Logsum(prev_mat, prev_del);
          DMX(i,j) = prev_sum;
-
-         // printf("D (%d,%d) :: MMX: %f, M2D: %f, DMX: %f D2D: %f\n", i,j, MMX(i,j-1), TSC(j-1,M2D), DMX(i,j-1), TSC(j-1,D2D));
-
-         // /* UPDATE E STATE */
-         // XMX(SP_E,i) = calc_Logsum( XMX(SP_E,i), 
-         //                            MMX(i,j) + sc_E );
-         // XMX(SP_E,i) = calc_Logsum( XMX(SP_E,i), 
-         //                            DMX(i,j) + sc_E );
-
-         // /* SPECIAL STATES */
-         // /* J state */
-         // sc_1 = XMX(SP_J,i-1) + XSC(SP_J,SP_LOOP);       /* J->J */
-         // sc_2 = XMX(SP_E,i)   + XSC(SP_E,SP_LOOP);       /* E->J is E's "loop" */
-         // XMX(SP_J,i) = calc_Logsum( sc_1, sc_2 );         
-
-         // /* C state */
-         // sc_1 = XMX(SP_C,i-1) + XSC(SP_C,SP_LOOP);
-         // sc_2 = XMX(SP_E,i)   + XSC(SP_E,SP_MOVE);
-         // XMX(SP_C,i) = calc_Logsum( sc_1, sc_2 );
-
-         // /* N state */
-         // XMX(SP_N,i) = XMX(SP_N,i-1) + XSC(SP_N,SP_LOOP);
-
-         // /* B state */
-         // sc_1 = XMX(SP_N,i) + XSC(SP_N,SP_MOVE);         /* N->B is N's move */
-         // sc_2 = XMX(SP_J,i) + XSC(SP_J,SP_MOVE);         /* J->B is J's move */
-         // XMX(SP_B,i) = calc_Logsum( sc_1, sc_2 );   
-
-         // printf("CALC (%d,%d): %.1f %.1f %.1f \n", i, j, MMX(i,j),IMX(i,j),DMX(i,j));
       }
    }
 }
@@ -394,14 +352,15 @@ void cloud_backward_Run(const SEQ* query,
    char   *seq = query->seq;     /* alias for getting seq */
 
    /* vars for recurrance */
+   int    d_0, d_1, d_2;         /* for assigning prev array ptrs */
+   int    d0,  d1,  d2;          /* for assigning prev array ptrs in mod for linear space */
+
    float  prev_mat, prev_del, prev_ins, prev_beg, prev_end, prev_sum;
    float  sc, sc_1, sc_2, sc_best, sc_max;
    float  sc_M, sc_I, sc_D;
 
    /* vars for pruning */
    float  cell_max, total_max, total_limit, diag_max, diag_limit;
-
-   int    d_mod3, d_0, d_1, d_2; /* d (mod 3) for assigning prev array ptrs */
 
    /* local or global? (multiple alignments) */
    bool   is_local = target->isLocal;
@@ -423,13 +382,6 @@ void cloud_backward_Run(const SEQ* query,
    start = tr->first_m;
    end = tr->last_m;
 
-   /* TESTING */
-   // alpha = 6.0;
-   // beta = 5;
-   // start = (COORDS) {1, 1};
-   // end = (COORDS) {T, Q}; 
-   printf("T=%d, Q=%d, alpha=%.1f, beta=%d\n", T, Q, alpha, beta);
-
    /* diag index at corners of dp matrix */
    d_st = 0;
    d_end = Q + T;
@@ -437,7 +389,7 @@ void cloud_backward_Run(const SEQ* query,
 
    /* diag index of different start points, creating submatrix */
    // d_st = start.i + start.j;
-   d_end = end.i + end.j;
+   d_end = end.i + end.j + 1;
 
    /* dimension of submatrix */
    dim_Q = end.i;
@@ -458,64 +410,19 @@ void cloud_backward_Run(const SEQ* query,
       edg->bounds = realloc(edg->bounds, edg->size * sizeof(BOUND) );
    }
 
-   // /* INITIALIZE SPECIAL STATES */
-   // /* Initialize the Q row. */
-   // XMX(SP_J,Q) = XMX(SP_B,Q) = XMX(SP_N,Q) = -INF;
-   // XMX(SP_C,Q) = XSC(SP_C,SP_MOVE);
-   // XMX(SP_E,Q) = XMX(SP_C,Q) + XSC(SP_E,SP_MOVE);
-
-   MMX(Q,T) = DMX(Q,T) = XMX(SP_E,Q);
-   IMX(Q,T) = -INF;
-
-   for (j = T-1; j >= 1; j--)
-   {
-      MMX(Q,j) = calc_Logsum( XMX(SP_E,Q) + sc_E, 
-                              DMX(Q,j+1)  + TSC(j,M2D) );
-      DMX(Q,j) = calc_Logsum( XMX(SP_E,Q) + sc_E,
-                              DMX(Q,j+1)  + TSC(j,D2D) );
-      IMX(Q,j) = -INF;
-   }
-
-   // /* compute special states probs up to first i-index */
-   // for (i = Q-1; i >= end.i; i--) {
-
-   //    /* Push from Match State to Next */
-   //    a = seq[i];
-   //    A = AA_REV[a];
-
-   //    /* SPECIAL STATES */
-   //    XMX(SP_B,i) = MMX(i+1,1) + TSC(0,B2M) + MSC(1,A);
-
-   //    /* B -> MATCH */
-   //    for (j = 2; j <= T; j++)
-   //    {
-   //       XMX(SP_B,i) = calc_Logsum( XMX(SP_B,i),
-   //                                  MMX(i+1,j) + TSC(j-1,B2M) + MSC(j,A) );
-   //    }
-
-   //    XMX(SP_J,i) = calc_Logsum( XMX(SP_J,i+1) + XSC(SP_J,SP_LOOP),
-   //                               XMX(SP_B,i)   + XSC(SP_J,SP_MOVE) );
-
-   //    XMX(SP_C,i) = XMX(SP_C,i+1) + XSC(SP_C,SP_LOOP);
-
-   //    XMX(SP_E,i) = calc_Logsum( XMX(SP_J,i) + XSC(SP_E,SP_LOOP),
-   //                               XMX(SP_C,i) + XSC(SP_E,SP_MOVE) );
-
-   //    XMX(SP_N,i) = calc_Logsum( XMX(SP_N,i+1) + XSC(SP_N,SP_LOOP),
-   //                               XMX(SP_B,i)   + XSC(SP_N,SP_MOVE) );
-   // }
-
    /* end state starts at 0 */
    prev_end = 0;
-
-   printf("alpha: %.f, beta: %d\n", alpha, beta);
 
    /* ITERATE THROUGHT ANTI-DIAGONALS */
    for (d = d_end; d >= d_st; d--, d_cnt++)
    {
-      d_0 = d;      /* current diagonal */
-      d_1 = (d+1);  /* look back 1 diagonal */
-      d_2 = (d+2);  /* look back 2 diagonals */
+      d_0 = d;       /* current diagonal */
+      d_1 = (d+1);   /* look back 1 diagonal */
+      d_2 = (d+2);   /* look back 2 diagonals */
+      /* mod-mapping of antidiagonals into linear space */
+      d0  = d_0 % 3; 
+      d1  = d_1 % 3;
+      d2  = d_2 % 3;
 
       /* Is dp matrix diagonal growing or shrinking? */
       if (d >= dim_max)
@@ -527,8 +434,8 @@ void cloud_backward_Run(const SEQ* query,
       /* if free passes are complete (beta < d), prune and set new edgebounds */
       if (beta < d_cnt)
       {
-         lb_new = -100; /* impossible state */
-         rb_new = -100; /* impossible state */
+         lb_new = VERY_SMALL; /* impossible state */
+         rb_new = VERY_SMALL; /* impossible state */
 
          /* Traverse current bounds to find max score on diag */
          diag_max = -INF;
@@ -569,7 +476,7 @@ void cloud_backward_Run(const SEQ* query,
          }
 
          /* If no boundary edges are found on diag, then branch is pruned entirely and we are done */
-         if (lb_new == -100)
+         if (lb_new == VERY_SMALL)
             break;
 
          /* Find the first cell from the right which passes above threshold */
@@ -623,8 +530,7 @@ void cloud_backward_Run(const SEQ* query,
          edg->bounds = (BOUND *)realloc(edg->bounds, edg->size * sizeof(BOUND) );
       }
 
-      // printf("%d: new[%d,%d] -> edg[%d,%d] -> [%d,%d]\n", d, lb_new, rb_new, le, re, lb, rb);
-
+      /* MAIN RECURSION */
       /* ITERATE THROUGH CELLS OF ANTI-DIAGONAL */
       for (k = lb; k < rb; k++, total_cnt++)
       {
@@ -634,31 +540,7 @@ void cloud_backward_Run(const SEQ* query,
          /* Get next sequence character */
          a = seq[i];
          A = AA_REV[a];
-
-         // /* SPECIAL STATES */
-         // XMX(SP_B,i) = MMX(i+1,1) + TSC(0,B2M) + MSC(1,A);
-
-         // /* B -> MATCH */
-         // for (b = 2; b <= T; b++)
-         // {
-         //    XMX(SP_B,i) = calc_Logsum( XMX(SP_B,i),
-         //                               MMX(i+1,j) + TSC(j-1,B2M) + MSC(j,A) );
-         // }
-
-         // XMX(SP_J,i) = calc_Logsum( XMX(SP_J,i+1) + XSC(SP_J,SP_LOOP),
-         //                            XMX(SP_B,i)   + XSC(SP_J,SP_MOVE) );
-
-         // XMX(SP_C,i) = XMX(SP_C,i+1) + XSC(SP_C,SP_LOOP);
-
-         // XMX(SP_E,i) = calc_Logsum( XMX(SP_J,i) + XSC(SP_E,SP_LOOP),
-         //                            XMX(SP_C,i) + XSC(SP_E,SP_MOVE) );
-
-         // XMX(SP_N,i) = calc_Logsum( XMX(SP_N,i+1) + XSC(SP_N,SP_LOOP),
-         //                         XMX(SP_B,i)   + XSC(SP_N,SP_MOVE) );
-         // MMX(i,T) = DMX(i,T) = XMX(SP_E,i);
-         // IMX(i,T) = -INF;
          
-         /* MAIN RECURSION */
          sc_M = MSC(j+1,A);
          sc_I = ISC(j+1,A);
 
@@ -689,8 +571,6 @@ void cloud_backward_Run(const SEQ* query,
          prev_sum = calc_Logsum( prev_mat, prev_del );
          prev_sum = calc_Logsum( prev_sum, prev_end );
          DMX(i,j) = prev_sum;
-
-         // printf("CALC %d=>(%d,%d): %.1f %.1f %.1f \n", d, i, j, MMX(i,j),IMX(i,j),DMX(i,j));
       }
    }
 

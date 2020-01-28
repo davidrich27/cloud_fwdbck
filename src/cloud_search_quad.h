@@ -1,6 +1,8 @@
 /*******************************************************************************
- *  @file cloud_search.h
- *  @brief The "Cloud Search" Algorithm for the heuristic Forward-Backward.
+ *  @file cloud_search_quad.c
+ *  @brief Cloud Search for Forward-Backward Pruning Alg. (QUADRATIC SPACE)
+ *
+ *  @synopsis
  *
  *  @author Dave Rich (devrek)
  *  @bug Lots.

@@ -41,8 +41,9 @@
 
 
 void parse_args(int argc, char *argv[], ARGS *args);
-void test(char *hmm_file, char *fasta_file, float alpha, int beta);
+void test(ARGS *args, char *hmm_file, char *fasta_file, float alpha, int beta);
 void test_barrage(char *hmm_file, char *fasta_file);
+void cloud_search_pipeline(ARGS *args, char *hmm_file, char *fasta_file, float alpha, int beta);
 
 /* MAIN */
 int main (int argc, char *argv[])
@@ -59,12 +60,16 @@ int main (int argc, char *argv[])
    args->query_fasta_file = "data/test1_1.fa";
    args->alpha = 20.0f;
    args->beta = 5;
+   args->search_mode = MODE_NAIVE;
+   args->outfile_name = "scripts/cloud_stats.tsv";
+   // args->outfile = stdout;
 
    printf("parsing args...\n");
    parse_args(argc, argv, args);
 
    printf("begin test...\n");
-   test(args->target_hmm_file, args->query_fasta_file, args->alpha, args->beta);
+   test(args, args->target_hmm_file, args->query_fasta_file, args->alpha, args->beta);
+   // cloud_search_pipeline(args, args->target_hmm_file, args->query_fasta_file, args->alpha, args->beta);
 }
 
 /* Parses Arguments from the command line */
@@ -81,16 +86,15 @@ void parse_args (int argc, char *argv[], ARGS *args)
       if ( argv[i][0] == '-' )
       {
          switch (argv[i][1]) {
-            case 'a':   /* alpha */
+            case 'a':   /* alpha value */
                i++;
                if (i < argc) {
                   args->alpha = atof(argv[i]);
-                  break;
                } else {
                   fprintf(stderr, "Error: -a flag requires argument.\n");
                }
                break;
-            case 'b':   /* beta */
+            case 'b':   /* beta value */
                i++;
                if (i < argc) {
                   args->beta = atoi(argv[i]);
@@ -98,14 +102,45 @@ void parse_args (int argc, char *argv[], ARGS *args)
                   fprintf(stderr, "Error: -b flag requires argument.\n");
                }
                break;
-            case 'o':   /* outfile */
+            case 'o':   /* append to outfile */
                i++;
                if (i < argc) {
-                  args->outfile = argv[i];
+                  args->outfile_name = argv[i];
+                  // args->outfile = fopen(argv[i], "w+");
                } else {
                   fprintf(stderr, "Error: -o flag requires argument.\n");
                } 
                break;
+            // case 'q':   /* window range for query */
+            //    i++;
+            //    if (i+1 < argc) {
+            //       args->range_query = malloc( sizeof(RANGE) );
+            //       args->range_query->st = atoi(argv[i]);
+            //       i++;
+            //       args->range_query->end = atoi(argv[i]);
+            //    } else {
+            //       fprintf(stderr, "Error: -q flag requires two arguments.\n");
+            //    }
+            //    break;
+            // case 't':   /* window range for target */
+            //    i++;
+            //    if (i+1 < argc) {
+            //       args->range_target = malloc( sizeof(RANGE) );
+            //       args->range_target->st = atoi(argv[i]);
+            //       i++;
+            //       args->range_target->end = atoi(argv[i]);
+            //    } else {
+            //       fprintf(stderr, "Error: -t flag requires two arguments.\n");
+            //    } 
+            //    break;
+            // case 'm':   /* mode */
+            //    i++;
+            //    if (i < argc) {
+            //       args->search_mode = atoi(argv[i]);
+            //    } else {
+            //       fprintf(stderr, "Error: -m flag requires argument.\n");
+            //    }  
+            //    break; 
             default:
                fprintf(stderr, "Error: -%c is not a valid flag.\n", argv[i][1]);
                exit(1);
@@ -133,7 +168,7 @@ void parse_args (int argc, char *argv[], ARGS *args)
 }
 
 /* unit test */
-void test(char *hmm_file, char *fasta_file, float alpha, int beta)
+void test(ARGS *args, char *hmm_file, char *fasta_file, float alpha, int beta)
 {
    /* PRINT ARGS */
    printf("HMM_FILENAME: %s\n", hmm_file);
@@ -239,27 +274,44 @@ void test(char *hmm_file, char *fasta_file, float alpha, int beta)
    printf("=== TEST -> END ===\n\n");
 
    /* cloud forward */
-   printf("=== CLOUD FORWARD -> START ===\n");
+   printf("=== CLOUD FORWARD (Quadratic) -> START ===\n");
    cloud_forward_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, tr, edg_fwd, alpha, beta);
    dp_matrix_trace_Save(Q, T, st_MX, sp_MX, tr, "output/myversion.cloud_fwd_vals.tsv");
    dp_matrix_Clear_X(Q, T, st_MX, sp_MX, 0);
    cloud_Fill(Q, T, st_MX, sp_MX, edg_fwd, 1, MODE_DIAG);
    dp_matrix_trace_Save(Q, T, st_MX, sp_MX, tr, "output/myversion.cloud_fwd_diag.tsv");
    edgebounds_Save(edg_fwd, "output/myversion.edgebounds_fwd_diag.tsv");
-   printf("=== CLOUD FORWARD -> END ===\n\n");
+   printf("=== CLOUD FORWARD (Quadratic) -> END ===\n\n");
 
    /* cloud backward */
-   printf("=== CLOUD BACKWARD -> START ===\n");
+   printf("=== CLOUD BACKWARD (Quadratic) -> START ===\n");
    cloud_backward_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, tr, edg_bck, alpha, beta);
    dp_matrix_trace_Save(Q, T, st_MX, sp_MX, tr, "output/myversion.cloud_bck_vals.tsv");
    dp_matrix_Clear_X(Q, T, st_MX, sp_MX, 0);
    cloud_Fill(Q, T, st_MX, sp_MX, edg_bck, 1, MODE_DIAG);
    dp_matrix_trace_Save(Q, T, st_MX, sp_MX, tr, "output/myversion.cloud_bck_diag.tsv");
    edgebounds_Save(edg_bck, "output/myversion.edgebounds_bck_diag.tsv");
-   printf("=== CLOUD BACKWARD -> END ===\n\n");
+   printf("=== CLOUD BACKWARD (Quadratic) -> END ===\n\n");
 
-   /* FORWARD/BACKWARD MODE OPTIONS = {MODE_LINEAR, MODE_QUAD, MODE_NAIVE} */
-   int fwdbck_mode = MODE_NAIVE;
+   /* cloud forward */
+   printf("=== CLOUD FORWARD (Linear) -> START ===\n");
+   cloud_forward_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, tr, edg_fwd, alpha, beta);
+   dp_matrix_trace_Save(Q, T, st_MX, sp_MX, tr, "output/myversion.cloud_fwd_vals.tsv");
+   dp_matrix_Clear_X(Q, T, st_MX, sp_MX, 0);
+   cloud_Fill(Q, T, st_MX, sp_MX, edg_fwd, 1, MODE_DIAG);
+   dp_matrix_trace_Save(Q, T, st_MX, sp_MX, tr, "output/myversion.cloud_fwd_diag.tsv");
+   edgebounds_Save(edg_fwd, "output/myversion.edgebounds_fwd_diag.tsv");
+   printf("=== CLOUD FORWARD (Linear) -> END ===\n\n");
+
+   /* cloud backward */
+   printf("=== CLOUD BACKWARD (Linear) -> START ===\n");
+   cloud_backward_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, tr, edg_bck, alpha, beta);
+   dp_matrix_trace_Save(Q, T, st_MX, sp_MX, tr, "output/myversion.cloud_bck_vals.tsv");
+   dp_matrix_Clear_X(Q, T, st_MX, sp_MX, 0);
+   cloud_Fill(Q, T, st_MX, sp_MX, edg_bck, 1, MODE_DIAG);
+   dp_matrix_trace_Save(Q, T, st_MX, sp_MX, tr, "output/myversion.cloud_bck_diag.tsv");
+   edgebounds_Save(edg_bck, "output/myversion.edgebounds_bck_diag.tsv");
+   printf("=== CLOUD BACKWARD (Linear) -> END ===\n\n");
 
    /* merge forward and backward clouds, then reorient edgebounds from by-diag to by-row */
    printf("=== MERGE & REORIENT CLOUD -> START ===\n");
@@ -300,7 +352,7 @@ void test(char *hmm_file, char *fasta_file, float alpha, int beta)
 
    dp_matrix_Clear(Q, T, st_MX, sp_MX);
    forward_bounded_Run3(query_seq, target_prof, Q, T, st_MX3, st_MX, sp_MX, edg, &sc);
-   printf("Bound Backward Score (Linear): %f\n", sc);
+   printf("Bound Forward Score (Linear): %f\n", sc);
    dp_matrix_trace_Save(Q, T, st_MX, sp_MX, tr, "output/myversion.bounded_fwd.linear.tsv");
    printf("=== BOUNDED FORWARD -> END ===\n\n");
 
@@ -324,7 +376,9 @@ void test(char *hmm_file, char *fasta_file, float alpha, int beta)
    printf("=== BOUNDED BACKWARD -> END ===\n\n");
 
    /* sample stats */
-   FILE *fp = fopen("scripts/cloud_stats.tsv", "a+");
+   char *fileout = args->outfile_name;
+   printf("Writing results to: '%s'\n", fileout);
+   FILE *fp = fopen(fileout, "a+");
    fprintf(fp, "%s\t", hmm_file);
    fprintf(fp, "%f\t", scores->viterbi_sc);
    fprintf(fp, "%f\t", scores->fwd_sc);
@@ -354,9 +408,50 @@ void test(char *hmm_file, char *fasta_file, float alpha, int beta)
 
 
 /* standard pipeline */
-void pipeline() 
+void cloud_search_pipeline(ARGS *args, char *hmm_file, char *fasta_file, float alpha, int beta) 
 {
+   /* get target profile */
+   HMM_PROFILE *target_prof = (HMM_PROFILE *)malloc( sizeof(HMM_PROFILE) );
+   hmmprofile_Create(target_prof, hmm_file);
 
+   /* config profile */
+   int mode; 
+   mode = MODE_UNILOCAL;   /* Cloud mode (prohibits jumps) */
+   hmmprofile_Config(target_prof, mode);
+   int T = target_prof->leng;
+
+   /* get query sequence */
+   SEQ *query_seq = (SEQ *)malloc( sizeof(SEQ) );
+   seq_Create(query_seq, fasta_file);
+   int Q = query_seq->leng;
+   
+   /* allocate memory */
+   SCORES *scores = (SCORES *)malloc( sizeof(SCORES) );
+   float sc;
+   TRACEBACK *tr = (TRACEBACK *)malloc( sizeof(TRACEBACK) );
+   EDGEBOUNDS *edg_fwd = (EDGEBOUNDS *)malloc( sizeof(EDGEBOUNDS) );
+   EDGEBOUNDS *edg_bck = (EDGEBOUNDS *)malloc( sizeof(EDGEBOUNDS) );
+   EDGEBOUNDS *edg = (EDGEBOUNDS *)malloc( sizeof(EDGEBOUNDS) );
+   float *st_MX = (float *) malloc( sizeof(float) * (NUM_NORMAL_STATES * (Q+1) * (T+1)) );
+   float *sp_MX = (float *) malloc( sizeof(float) * (NUM_SPECIAL_STATES * (Q+1)) );
+   /* allocate memory for cloud matrices (for testing) */
+   float *st_MX_cloud = (float *) malloc( sizeof(float) * (NUM_NORMAL_STATES * (Q+1) * (T+1)) );
+   float *sp_MX_cloud = (float *) malloc( sizeof(float) * (NUM_SPECIAL_STATES * (Q+1)) );
+   /* allocate memory for linear algs */
+   float *st_MX3 = (float *) malloc( sizeof(float) * (NUM_NORMAL_STATES * (T+1) * 3) ); 
+
+   /* cloud forward-backward */
+   cloud_forward_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, tr, edg_fwd, alpha, beta);
+   cloud_backward_Run(query_seq, target_prof, Q, T, st_MX, sp_MX, tr, edg_bck, alpha, beta);
+   /* merge edgebounds */
+   edgebounds_Merge_Reorient_Cloud(edg_fwd, edg_bck, edg, Q, T, st_MX, sp_MX);
+   /* bound forward-backward */
+   forward_bounded_Run3(query_seq, target_prof, Q, T, st_MX3, st_MX, sp_MX, edg, &sc);
+   scores->cloud_fwd_sc = sc;
+   backward_bounded_Run3(query_seq, target_prof, Q, T, st_MX3, st_MX, sp_MX, edg, &sc);
+   scores->cloud_bck_sc = sc;
+
+   fprintf(stdout, "cloud_fwd: %f\tcloud_bck: %f\n", scores->cloud_fwd_sc, scores->cloud_bck_sc);
 }
 
 
